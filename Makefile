@@ -7,6 +7,7 @@ BONUS_PATH  := ./src_bonus
 CFLAGS      := -Wall -Wextra -Werror -g
 OBJECTS_PATH := ./obj
 HEADERS     := -I $(LIBFT_PATH) -I ./include
+LDFLAGS     := -lreadline
 
 SRC_MINISHELL = 
             
@@ -38,7 +39,7 @@ $(OBJECTS_PATH)/%.o: $(BONUS_PATH)/%.c | $(OBJECTS_PATH)
 
 $(NAME): $(MINISHELL_OBJS) $(MINISHELL_MAIN_OBJ) $(LIBFT)
 	@echo "Linking $@"
-	@$(CC) $(CFLAGS) -o $@ $(MINISHELL_OBJS) $(MINISHELL_MAIN_OBJ) -L$(LIBFT_PATH) -lft
+	@$(CC) $(CFLAGS) -o $@ $(MINISHELL_OBJS) $(MINISHELL_MAIN_OBJ) -L$(LIBFT_PATH) -lft $(LDFLAGS)
 
 $(BONUS_NAME): $(MINISHELL_BONUS_OBJS) $(LIBFT)
 	@echo "Linking $@"
