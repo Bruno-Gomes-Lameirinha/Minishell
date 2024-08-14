@@ -14,4 +14,12 @@
 # include <readline/history.h>
 # include <termios.h>
 
+typedef struct s_env
+{
+	char	*user;
+    char	*pwd;
+    char	*old_pwd;
+
+}	t_env;
+
 #endif
