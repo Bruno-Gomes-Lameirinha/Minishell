@@ -6,7 +6,7 @@
 #    By: livieira <livieira@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/10 13:30:54 by bgomes-l          #+#    #+#              #
-#    Updated: 2024/08/15 12:02:33 by livieira         ###   ########.fr        #
+#    Updated: 2024/08/15 14:36:33 by livieira         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,10 @@ HEADER = libft.h
 
 FLAGS = -Wall -Wextra -Werror
 
-all: $(NAME)
+all: echo_message $(NAME)
+
+echo_message:
+	@echo "Compiling Libft"
 
 $(NAME): $(M_OBJ)
 

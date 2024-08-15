@@ -16,10 +16,8 @@
 
 typedef struct s_env
 {
-	char	*user;
-    char	*pwd;
-    char	*old_pwd;
-
+	char	*key;
+	char	*value;
 }	t_env;
 
 #endif
