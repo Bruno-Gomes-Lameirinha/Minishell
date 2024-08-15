@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+         #
+#    By: livieira <livieira@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/10 13:30:54 by bgomes-l          #+#    #+#              #
-#    Updated: 2023/08/15 16:59:50 by bgomes-l         ###   ########.fr        #
+#    Updated: 2024/08/15 12:02:33 by livieira         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,8 +41,8 @@ $(NAME): $(M_OBJ)
 bonus: $(B_OBJ)
 
 %.o: %.c $(HEADER)
-	cc $(FLAGS) -c $< -o $@
-	ar -rcs $(NAME) $@
+	@cc $(FLAGS) -c $< -o $@
+	@ar -rcs $(NAME) $@
 
 clean:
 	rm -f $(M_OBJ) $(B_OBJ)

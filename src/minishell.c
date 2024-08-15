@@ -10,7 +10,7 @@ int main()
 	i = 0;
 	env->pwd = getenv("PWD");
 	printf("pwd: %s\n", env->pwd);
-	while(i < 3)
+	while(1)
 	{
 		input = readline("$");
 		add_history(input);

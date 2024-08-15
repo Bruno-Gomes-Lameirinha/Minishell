@@ -24,6 +24,7 @@ all: $(LIBFT) $(NAME)
 bonus: $(LIBFT) $(BONUS_NAME)
 
 $(LIBFT):
+	@echo "Making Libft..."
 	@make -C libft --no-print-directory
 
 $(OBJECTS_PATH):
