@@ -10,27 +10,27 @@
 
 void	ft_tokenize(char *input)
 {
-	State state = STATE_START;
-	char	token[128] = "";;
+	State state = TOKEN_STATE_START;
+	char	current_token[128] = "";;
 	int i;
 	
 	i = 0;
 	while(*input)
 	{
-		if (state == STATE_START)
+		if (state == TOKEN_STATE_START)
 		{
 		if (ft_is_space(*input))
 			input++;
 		else if (*input == '|' || *input == '"' || *input == '&'|| *input == '>'\
 		|| *input == '<')
 		{
-			state = STATE_OPERATOR;
-			token[i] = *input;
+			state = TOKEN_STATE_OPERATOR;
+			current_token[i] = *input;
 			i++;
 			input++;
 			if (*input == '&' || *input == '>' || *input == '<' ) 
 			{
-				token[i++] = *input;
+				current_token[i++] = *input;
 				input++;
 			}
 		}
@@ -38,29 +38,29 @@ void	ft_tokenize(char *input)
 		{
 			input++;
 			while (*input && *input != '\'')
-				token[i++] = *input++;
+				current_token[i++] = *input++;
 			if (*input == '\'')
 				input++;
-			state = STATE_COMMAND;
+			state = TOKEN_STATE_COMMAND;
 		}
 		else
 		{
-			state = STATE_COMMAND;
-			token[i] = *input;
+			state = TOKEN_STATE_COMMAND;
+			current_token[i] = *input;
 			i++;
 			input++;
 		}
 		}
-		if (state == STATE_COMMAND)
+		if (state == TOKEN_STATE_COMMAND)
 		{
 			if (ft_is_space(*input))
 			{
-				token[i] = '\0';
+				current_token[i] = '\0';
 				int j = 0;
 				printf("o token é:");
-				while (token[j] != '\0')
+				while (current_token[j] != '\0')
 				{
-					printf("%c", token[j]);
+					printf("%c", current_token[j]);
 					j++;
 				}
 				printf("\n");
@@ -69,18 +69,18 @@ void	ft_tokenize(char *input)
 				// usar strdup no char token para passar ele no heap;
 				// t_token->token_node = a string duplicada pelo strdup
 				i = 0;
-				state = STATE_START;
+				state = TOKEN_STATE_START;
 				input++;
 			}
 			else if (*input == '|' || *input == '"' || *input == '&'|| *input == '>'\
 			|| *input == '<' )
 			{
-				token[i] = '\0';
+				current_token[i] = '\0';
 				printf("o token é:");
 				int j = 0;
-				while (token[j] != '\0')
+				while (current_token[j] != '\0')
 				{
-					printf("%c", token[j]);
+					printf("%c", current_token[j]);
 					j++;
 				}
 				printf("\n");
@@ -88,49 +88,49 @@ void	ft_tokenize(char *input)
 				// adicionar o token a lista ligada 
 				// a mudança para State Operator vai fazer com que o metacaractere seja processado;
 				i= 0;
-				state = STATE_OPERATOR;
+				state = TOKEN_STATE_OPERATOR;
 			}
 			else if (*input == '\'')
 			{
 				input++;
 				while (*input && *input != '\'')
-					token[i++] = *input++;
+					current_token[i++] = *input++;
 				if (*input == '\'')
 					input++;
 			}
 			else
 			{
-				token[i] = *input;
+				current_token[i] = *input;
 				i++;
 				input++;
 			}
 		}
-		if (state == STATE_OPERATOR)
+		if (state == TOKEN_STATE_OPERATOR)
 		{
-			token[i] = '\0';
+			current_token[i] = '\0';
 			printf("o token é:");
 			int j = 0;
-			while (token[j] != '\0')
+			while (current_token[j] != '\0')
 			{
-				printf("%c", token[j]);
+				printf("%c", current_token[j]);
 				j++;
 			}
 			printf("\n");
 			j = 0;
 			//incluir o token na lista ligada
 			i = 0;
-			state = STATE_START;
+			state = TOKEN_STATE_START;
 		}
 	}
 	if (i > 0) 
 	{
-    token[i] = '\0';
+    current_token[i] = '\0';
   	//incluir o token na lista ligada
 	printf("o token é:");
 	int j = 0;
-	while (token[j] != '\0')
+	while (current_token[j] != '\0')
 	{
-		printf("%c", token[j]);
+		printf("%c", current_token[j]);
 		j++;
 	}
 	printf("\n");

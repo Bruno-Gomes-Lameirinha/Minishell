@@ -27,9 +27,9 @@ typedef struct s_token
 }	t_token;
 
 typedef enum { 
-	STATE_START,
-	STATE_COMMAND,
-	STATE_OPERATOR, 
+	TOKEN_STATE_START,
+	TOKEN_STATE_COMMAND,
+	TOKEN_STATE_OPERATOR, 
 } State;
 
 void	ft_tokenize(char *input);
