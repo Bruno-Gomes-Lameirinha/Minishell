@@ -21,16 +21,23 @@ void	ft_tokenize(char *input)
 		{
 		if (ft_is_space(*input))
 			input++;
-		else if (ft_isalpha(*input) || ft_isdigit(*input))
+		else if (*input == '|' || *input == '"' || *input == '&'|| *input == '>')
+		{
+			state = STATE_OPERATOR;
+			token[i] = *input;
+			i++;
+			input++;
+			if (*input == '&') 
+			{
+                token[i++] = *input;
+				input++;
+			}
+		}
+		else
 		{
 			state = STATE_COMMAND;
 			token[i] = *input;
 			i++;
-			input++;
-		}
-		else if (*input == '|' || *input == '"' || *input == '&')
-		{
-			state = STATE_OPERATOR;
 			input++;
 		}
 		}
@@ -55,7 +62,7 @@ void	ft_tokenize(char *input)
 				state = STATE_START;
 				input++;
 			}
-			else if (*input == '|' || *input == '"' || *input == '&')
+			else if (*input == '|' || *input == '"' || *input == '&' || *input == '>')
 			{
 				token[i] = '\0';
 				printf("o token é:");
