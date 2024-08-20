@@ -8,6 +8,18 @@
 	return (0);
 }
 
+t_token	*ft_list_token(void *content)
+{
+	t_token	*new_node;
+
+	new_node = calloc(1 , sizeof (t_token));
+	if (new_node == NULL)
+		return (NULL);
+	new_node->next = NULL;
+	new_node->token_node = content;
+	return (new_node);
+}
+
 void	ft_tokenize(char *input)
 {
 	State state = TOKEN_STATE_START;
@@ -65,11 +77,16 @@ void	ft_tokenize(char *input)
 				}
 				printf("\n");
 				j = 0;
+				ft_list_token(current_token);
+				
 				// adicionar um nó na lista ligada;
 				// usar strdup no char token para passar ele no heap;
 				// t_token->token_node = a string duplicada pelo strdup
+
+				//ft_add_token(token_node, current_token);
+	
 				i = 0;
-				state = TOKEN_STATE_START;
+				state = TOKEN_STATE_START
 				input++;
 			}
 			else if (*input == '|' || *input == '"' || *input == '&'|| *input == '>'\
@@ -125,7 +142,7 @@ void	ft_tokenize(char *input)
 	if (i > 0) 
 	{
     current_token[i] = '\0';
-  	//incluir o token na lista ligada
+  	//incluir o token na lista ligada*token_node
 	printf("o token é:");
 	int j = 0;
 	while (current_token[j] != '\0')
@@ -158,4 +175,19 @@ int main()
 	}
 	free(env);
 	return 0;
+}
+
+void	ft_add_token(t_token **token_node, t_token *new)
+{
+	t_token	*start;
+
+	start = *token_node;
+	if (*token_node != NULL)
+	{
+		while (start->next)
+			start = start->next;
+		start->next = new;
+	}
+	else
+		*token_node = new;
 }
