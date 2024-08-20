@@ -1,4 +1,4 @@
-#ifndef MINI_SHELL_H
+# ifndef MINI_SHELL_H
 # define MINI_SHELL_H
 
 # include "../libft/libft.h"
@@ -27,10 +27,9 @@ typedef struct s_token
 }	t_token;
 
 typedef enum { 
-    STATE_START, 
-    STATE_COMMAND, 
-    STATE_OPERATOR, 
-    STATE_END 
+	STATE_START,
+	STATE_COMMAND,
+	STATE_OPERATOR, 
 } State;
 
 void	ft_tokenize(char *input);
