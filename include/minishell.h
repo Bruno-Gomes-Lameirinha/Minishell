@@ -20,4 +20,20 @@ typedef struct s_env
 	char	*value;
 }	t_env;
 
+typedef struct s_token
+{
+	char			*token_node;
+	struct s_token	*next;
+}	t_token;
+
+typedef enum { 
+    STATE_START, 
+    STATE_COMMAND, 
+    STATE_OPERATOR, 
+    STATE_END 
+} State;
+
+void	ft_tokenize(char *input);
+int		ft_is_space(char c);
+
 #endif
