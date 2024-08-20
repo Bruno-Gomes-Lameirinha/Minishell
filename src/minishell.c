@@ -21,17 +21,27 @@ void	ft_tokenize(char *input)
 		{
 		if (ft_is_space(*input))
 			input++;
-		else if (*input == '|' || *input == '"' || *input == '&'|| *input == '>')
+		else if (*input == '|' || *input == '"' || *input == '&'|| *input == '>'\
+		|| *input == '<')
 		{
 			state = STATE_OPERATOR;
 			token[i] = *input;
 			i++;
 			input++;
-			if (*input == '&') 
+			if (*input == '&' || *input == '>' || *input == '<' ) 
 			{
-                token[i++] = *input;
+				token[i++] = *input;
 				input++;
 			}
+		}
+		else if (*input == '\'')
+		{
+			input++;
+			while (*input && *input != '\'')
+				token[i++] = *input++;
+			if (*input == '\'')
+				input++;
+			state = STATE_COMMAND;
 		}
 		else
 		{
@@ -62,7 +72,8 @@ void	ft_tokenize(char *input)
 				state = STATE_START;
 				input++;
 			}
-			else if (*input == '|' || *input == '"' || *input == '&' || *input == '>')
+			else if (*input == '|' || *input == '"' || *input == '&'|| *input == '>'\
+			|| *input == '<' )
 			{
 				token[i] = '\0';
 				printf("o token é:");
@@ -78,6 +89,14 @@ void	ft_tokenize(char *input)
 				// a mudança para State Operator vai fazer com que o metacaractere seja processado;
 				i= 0;
 				state = STATE_OPERATOR;
+			}
+			else if (*input == '\'')
+			{
+				input++;
+				while (*input && *input != '\'')
+					token[i++] = *input++;
+				if (*input == '\'')
+					input++;
 			}
 			else
 			{
