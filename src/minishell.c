@@ -8,7 +8,7 @@
 	return (0);
 }
 
-t_token	*ft_list_token(void *content)
+t_token	*ft_list_new_token(void)
 {
 	t_token	*new_node;
 
@@ -16,14 +16,15 @@ t_token	*ft_list_token(void *content)
 	if (new_node == NULL)
 		return (NULL);
 	new_node->next = NULL;
-	new_node->token_node = content;
+	new_node->token_node = NULL;
 	return (new_node);
 }
 
-void	ft_tokenize(char *input)
+
+void	ft_tokenize(char *input, t_token **lexeme)
 {
 	State state = TOKEN_STATE_START;
-	char	current_token[128] = "";;
+	char	current_token[128] = "";
 	int i;
 	
 	i = 0;
@@ -37,14 +38,9 @@ void	ft_tokenize(char *input)
 		|| *input == '<')
 		{
 			state = TOKEN_STATE_OPERATOR;
-			current_token[i] = *input;
-			i++;
-			input++;
+			current_token[i++] = *input++;
 			if (*input == '&' || *input == '>' || *input == '<' ) 
-			{
-				current_token[i++] = *input;
-				input++;
-			}
+				current_token[i++] = *input++;
 		}
 		else if (*input == '\'')
 		{
@@ -58,9 +54,7 @@ void	ft_tokenize(char *input)
 		else
 		{
 			state = TOKEN_STATE_COMMAND;
-			current_token[i] = *input;
-			i++;
-			input++;
+			current_token[i++] = *input++;
 		}
 		}
 		if (state == TOKEN_STATE_COMMAND)
@@ -68,42 +62,16 @@ void	ft_tokenize(char *input)
 			if (ft_is_space(*input))
 			{
 				current_token[i] = '\0';
-				int j = 0;
-				printf("o token é:");
-				while (current_token[j] != '\0')
-				{
-					printf("%c", current_token[j]);
-					j++;
-				}
-				printf("\n");
-				j = 0;
-				ft_list_token(current_token);
-				
-				// adicionar um nó na lista ligada;
-				// usar strdup no char token para passar ele no heap;
-				// t_token->token_node = a string duplicada pelo strdup
-
-				//ft_add_token(token_node, current_token);
-	
+				ft_add_token(lexeme, ft_strdup(current_token));
 				i = 0;
-				state = TOKEN_STATE_START
+				state = TOKEN_STATE_START;
 				input++;
 			}
 			else if (*input == '|' || *input == '"' || *input == '&'|| *input == '>'\
 			|| *input == '<' )
 			{
 				current_token[i] = '\0';
-				printf("o token é:");
-				int j = 0;
-				while (current_token[j] != '\0')
-				{
-					printf("%c", current_token[j]);
-					j++;
-				}
-				printf("\n");
-				j = 0;
-				// adicionar o token a lista ligada 
-				// a mudança para State Operator vai fazer com que o metacaractere seja processado;
+				ft_add_token(lexeme, ft_strdup(current_token));
 				i= 0;
 				state = TOKEN_STATE_OPERATOR;
 			}
@@ -116,42 +84,20 @@ void	ft_tokenize(char *input)
 					input++;
 			}
 			else
-			{
-				current_token[i] = *input;
-				i++;
-				input++;
-			}
+				current_token[i++] = *input++;
 		}
 		if (state == TOKEN_STATE_OPERATOR)
 		{
 			current_token[i] = '\0';
-			printf("o token é:");
-			int j = 0;
-			while (current_token[j] != '\0')
-			{
-				printf("%c", current_token[j]);
-				j++;
-			}
-			printf("\n");
-			j = 0;
-			//incluir o token na lista ligada
+			ft_add_token(lexeme, ft_strdup(current_token));
 			i = 0;
 			state = TOKEN_STATE_START;
 		}
 	}
 	if (i > 0) 
 	{
-    current_token[i] = '\0';
-  	//incluir o token na lista ligada*token_node
-	printf("o token é:");
-	int j = 0;
-	while (current_token[j] != '\0')
-	{
-		printf("%c", current_token[j]);
-		j++;
-	}
-	printf("\n");
-	j = 0;
+    	current_token[i] = '\0';
+  		ft_add_token(lexeme, ft_strdup(current_token));
     }
 	
 }
@@ -160,8 +106,10 @@ int main()
 {
 	char *input;
 	t_env	*env;
+	t_token **lexeme;
 
 	env = (t_env*)malloc(sizeof(t_env));
+	lexeme = (t_token**)malloc(sizeof(t_token));
 	while(1)
 	{
 		input = readline("Minishell$ ");
@@ -169,7 +117,8 @@ int main()
 		if (input) 
 		{
 			printf("Você digitou: %s\n", input);
-			ft_tokenize(input);
+			ft_tokenize(input, lexeme);
+			ft_print_linked_list(lexeme);
 			free(input);
 		}
 	}
@@ -177,17 +126,31 @@ int main()
 	return 0;
 }
 
-void	ft_add_token(t_token **token_node, t_token *new)
+void	ft_add_token(t_token **lexeme, char *node)
 {
-	t_token	*start;
-
-	start = *token_node;
-	if (*token_node != NULL)
+	t_token	*new_node;
+	t_token *current;
+	new_node = ft_list_new_token();
+	new_node->token_node = node;
+	current = *lexeme;
+	if (*lexeme != NULL)
 	{
-		while (start->next)
-			start = start->next;
-		start->next = new;
+		while (current->next)
+			current = current->next;
+		current->next = new_node;
 	}
 	else
-		*token_node = new;
+		*lexeme = new_node;
+}
+
+void	ft_print_linked_list(t_token **lexeme)
+{
+	t_token *current;
+
+	current = *lexeme;
+	while (current != NULL)
+	{
+		printf("%s\n", current->token_node);
+		current = current->next;
+	}
 }
