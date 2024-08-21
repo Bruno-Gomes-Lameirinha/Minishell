@@ -54,7 +54,7 @@ void ft_state_command(t_token **lexeme, char **input, State *state, char *curren
 	{
 		current_token[(*i)] = '\0';
 		ft_add_token(lexeme, ft_strdup(current_token));
-		i = 0;
+		*i = 0;
 		*state = TOKEN_STATE_START;
 		(*input)++;
 	}
@@ -63,7 +63,7 @@ void ft_state_command(t_token **lexeme, char **input, State *state, char *curren
 	{
 		current_token[(*i)] = '\0';
 		ft_add_token(lexeme, ft_strdup(current_token));
-		i= 0;
+		*i= 0;
 		*state = TOKEN_STATE_OPERATOR;
 	}
 	else if (**input == '\'')
