@@ -32,11 +32,12 @@ typedef enum {
 	TOKEN_STATE_OPERATOR, 
 } State;
 
-void	ft_tokenize(char *input, t_token **lexeme);
-int		ft_is_space(char c);
-void	ft_add_token(t_token **lexeme, char *node);
-t_token	*ft_list_new_token(void);
-void	ft_print_linked_list(t_token **lexeme);
-void ft_state_start(char **input, State *state, char *current_token, int *i);
+t_token		*ft_list_new_token(void);
+int			ft_is_space(char c);
+void		ft_add_token(t_token **lexeme, char *node);
+void		ft_print_linked_list(t_token **lexeme);
+void		ft_tokenize(char *input, t_token **lexeme);
+void		ft_state_start(char **input, State *state, char *current_token, int *i);
+void		ft_state_command(t_token **lexeme, char **input, State *state, char *current_token, int *i);
 
 #endif

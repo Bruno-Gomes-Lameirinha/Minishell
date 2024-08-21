@@ -48,6 +48,36 @@ void ft_state_start(char **input, State *state, char *current_token, int *i)
 		}
 }
 
+void ft_state_command(t_token **lexeme, char **input, State *state, char *current_token, int *i)
+{
+	if (ft_is_space(**input))
+	{
+		current_token[(*i)] = '\0';
+		ft_add_token(lexeme, ft_strdup(current_token));
+		i = 0;
+		*state = TOKEN_STATE_START;
+		(*input)++;
+	}
+	else if (**input == '|' || **input == '"' || **input == '&'|| **input == '>'\
+	|| **input == '<' )
+	{
+		current_token[(*i)] = '\0';
+		ft_add_token(lexeme, ft_strdup(current_token));
+		i= 0;
+		*state = TOKEN_STATE_OPERATOR;
+	}
+	else if (**input == '\'')
+	{
+		(*input)++;
+		while (**input && **input != '\'')
+			current_token[(*i)++] = *(*input)++;
+		if (**input == '\'')
+			(*input)++;
+	}
+	else
+		current_token[(*i)++] = *(*input)++;
+}
+
 void	ft_tokenize(char *input, t_token **lexeme)
 {
 	State state = TOKEN_STATE_START;
@@ -60,34 +90,7 @@ void	ft_tokenize(char *input, t_token **lexeme)
 		if (state == TOKEN_STATE_START)
 			ft_state_start(&input, &state, current_token, &i);
 		if (state == TOKEN_STATE_COMMAND)
-		{
-			if (ft_is_space(*input))
-			{
-				current_token[i] = '\0';
-				ft_add_token(lexeme, ft_strdup(current_token));
-				i = 0;
-				state = TOKEN_STATE_START;
-				input++;
-			}
-			else if (*input == '|' || *input == '"' || *input == '&'|| *input == '>'\
-			|| *input == '<' )
-			{
-				current_token[i] = '\0';
-				ft_add_token(lexeme, ft_strdup(current_token));
-				i= 0;
-				state = TOKEN_STATE_OPERATOR;
-			}
-			else if (*input == '\'')
-			{
-				input++;
-				while (*input && *input != '\'')
-					current_token[i++] = *input++;
-				if (*input == '\'')
-					input++;
-			}
-			else
-				current_token[i++] = *input++;
-		}
+			ft_state_command(lexeme, &input, &state, current_token, &i);
 		if (state == TOKEN_STATE_OPERATOR)
 		{
 			current_token[i] = '\0';
@@ -101,7 +104,6 @@ void	ft_tokenize(char *input, t_token **lexeme)
     	current_token[i] = '\0';
   		ft_add_token(lexeme, ft_strdup(current_token));
     }
-	
 }
 
 int main()
