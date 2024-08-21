@@ -37,5 +37,6 @@ int		ft_is_space(char c);
 void	ft_add_token(t_token **lexeme, char *node);
 t_token	*ft_list_new_token(void);
 void	ft_print_linked_list(t_token **lexeme);
+void ft_state_start(char **input, State *state, char *current_token, int *i);
 
 #endif

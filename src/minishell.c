@@ -20,6 +20,33 @@ t_token	*ft_list_new_token(void)
 	return (new_node);
 }
 
+void ft_state_start(char **input, State *state, char *current_token, int *i)
+{
+	if (ft_is_space(**input))
+			(*input)++;
+		else if (**input == '|' || **input == '"' || **input == '&'|| **input == '>'\
+		|| **input == '<')
+		{
+			*state = TOKEN_STATE_OPERATOR;
+			current_token[(*i)++] = *(*input)++;
+			if (**input == '&' || **input == '>' || **input == '<' ) 
+				current_token[(*i)++] = *(*input)++;
+		}
+		else if (**input == '\'')
+		{
+			(*input)++;
+			while (**input && **input != '\'')
+				current_token[(*i)++] = *(*input)++;
+			if (**input == '\'')
+				(*input)++;
+			*state = TOKEN_STATE_COMMAND;
+		}
+		else
+		{
+			*state = TOKEN_STATE_COMMAND;
+			current_token[(*i)++] = *(*input)++;
+		}
+}
 
 void	ft_tokenize(char *input, t_token **lexeme)
 {
@@ -31,32 +58,7 @@ void	ft_tokenize(char *input, t_token **lexeme)
 	while(*input)
 	{
 		if (state == TOKEN_STATE_START)
-		{
-		if (ft_is_space(*input))
-			input++;
-		else if (*input == '|' || *input == '"' || *input == '&'|| *input == '>'\
-		|| *input == '<')
-		{
-			state = TOKEN_STATE_OPERATOR;
-			current_token[i++] = *input++;
-			if (*input == '&' || *input == '>' || *input == '<' ) 
-				current_token[i++] = *input++;
-		}
-		else if (*input == '\'')
-		{
-			input++;
-			while (*input && *input != '\'')
-				current_token[i++] = *input++;
-			if (*input == '\'')
-				input++;
-			state = TOKEN_STATE_COMMAND;
-		}
-		else
-		{
-			state = TOKEN_STATE_COMMAND;
-			current_token[i++] = *input++;
-		}
-		}
+			ft_state_start(&input, &state, current_token, &i);
 		if (state == TOKEN_STATE_COMMAND)
 		{
 			if (ft_is_space(*input))
