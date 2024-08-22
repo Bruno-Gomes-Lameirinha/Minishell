@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2023/08/15 17:11:33 by bgomes-l         ###   ########.fr       */
+/*   Updated: 2024/08/22 17:31:01 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,59 +31,74 @@ t_token	*ft_list_new_token(void)
 	return (new_node);
 }
 
-void	ft_state_start(char **input, State *state, char **current_token)
+void	ft_state_start(char **input, State *state, char **i_token, int *type)
 {
 	if (ft_is_space(**input))
 			(*input)++;
-	else if (**input == '|' || **input == '"' || **input == '&' \
+	else if (**input == '|' || **input == '&' \
 	|| **input == '>' || **input == '<')
 	{
 		*state = TOKEN_STATE_OPERATOR;
-		*(*current_token)++ = *(*input)++;
+		*(*i_token)++ = *(*input)++;
 		if ((**input == '&' && *(*input - 1) == '&') || (**input == '>' && \
-		*(*input - 1) == '>') || (**input == '<' && *(*input - 1) == '<'))
-			*(*current_token)++ = *(*input)++;
+		*(*input - 1) == '>') || (**input == '<' && *(*input - 1) == '<')) //handle_operators>>para colocar o tipo de cada op
+			*(*i_token)++ = *(*input)++;
 	}
-	else if (**input == '\'')
+	else if (**input == '\'' || **input == '\"')
 	{
-		(*input)++;
-		while (**input && **input != '\'')
-			*(*current_token)++ = *(*input)++;
-		if (**input == '\'')
-			(*input)++;
+		ft_handle_quotes(&input, &i_token, &type);
 		*state = TOKEN_STATE_COMMAND;
 	}
 	else
 	{
 		*state = TOKEN_STATE_COMMAND;
-		*(*current_token)++ = *(*input)++;
+		*(*i_token)++ = *(*input)++;
 	}
 }
 
-void	ft_state_command(char **input, State *state, char **current_token)
+void	ft_handle_quotes(char ***input, char ***i_token, int **type)
+{
+	if (***input == '\'')
+	{
+		(**input)++;
+		while (***input && ***input != '\'')
+			*(**i_token)++ = *(**input)++;
+		if (***input == '\'')
+			(**input)++;
+		**type = SINGLE_QUOTES;
+	}
+	else if (***input == '\"')
+	{
+		(**input)++;
+		while (***input && ***input != '\"')
+			*(**i_token)++ = *(**input)++;
+		if (***input == '\"')
+			(**input)++;
+		**type = DOUBLE_QUOTES;
+	}
+}
+
+void	ft_state_command(char **input, State *state, char **i_token, int *type)
 {
 	if (ft_is_space(**input))
 	{
-		**current_token = '\0';
+		**i_token = '\0';
 		*state = TOKEN_STATE_END;
 		(*input)++;
 	}
-	else if (**input == '|' || **input == '"' || **input == '&' \
+	else if (**input == '|' || **input == '&' \
 	|| **input == '>' || **input == '<' )
 	{
-		**current_token = '\0';
+		**i_token = '\0';
 		*state = TOKEN_STATE_END;
 	}
-	else if (**input == '\'')
+	else if (**input == '\'' || **input == '\"')
 	{
-		(*input)++;
-		while (**input && **input != '\'')
-			*(*current_token)++ = *(*input)++;
-		if (**input == '\'')
-			(*input)++;
+		ft_handle_quotes(&input, &i_token, &type);
+		*state = TOKEN_STATE_COMMAND;
 	}
 	else
-		*(*current_token)++ = *(*input)++;
+		*(*i_token)++ = *(*input)++;
 }
 
 char	*ft_mem_token(char *input)
@@ -99,40 +114,43 @@ char	*ft_mem_token(char *input)
 	return (memset_token);
 }
 
-void	ft_last_token(char *current_token, t_token **lexeme)
+void	ft_last_token(char *current_token, t_token **lexeme, int *type)
 {
-	ft_add_token(lexeme, ft_strdup(current_token));
+	ft_add_token(lexeme, ft_strdup(current_token), *type);
 	free(current_token);
+	free(type);
 }
 
 void	ft_tokenize(char *input, t_token **lexeme)
 {
 	State	state;
 	char	*current_token;
-	char	*token_index;
+	char	*i_token;
+	int		*type;
 
+	type = malloc(sizeof(int));
 	state = TOKEN_STATE_START;
 	current_token = ft_mem_token(input);
-	token_index = current_token;
+	i_token = current_token;
 	while (*input)
 	{
 		if (state == TOKEN_STATE_START)
-			ft_state_start(&input, &state, &token_index);
+			ft_state_start(&input, &state, &i_token, type);
 		if (state == TOKEN_STATE_COMMAND)
-			ft_state_command(&input, &state, &token_index);
+			ft_state_command(&input, &state, &i_token, type);
 		if (state == TOKEN_STATE_OPERATOR || state == TOKEN_STATE_END)
 		{
-			ft_add_token(lexeme, ft_strdup(current_token));
+			ft_add_token(lexeme, ft_strdup(current_token), *type);
 			ft_memset(current_token, '\0', ft_strlen(current_token));
-			token_index = current_token;
+			i_token = current_token;
 			state = TOKEN_STATE_START;
 		}
 	}
 	if (*current_token)
-		ft_last_token(current_token, lexeme);
+		ft_last_token(current_token, lexeme, type);
 }
 
-int	main()
+int	main(void)
 {
 	char	*input;
 	t_env	*env;
@@ -147,7 +165,7 @@ int	main()
 		exit(EXIT_FAILURE);
 	}
 	*lexeme = NULL;
-	while (i < 3)
+	while (1)
 	{
 		input = readline("Minishell$ ");
 		add_history(input);
@@ -166,10 +184,10 @@ int	main()
 	return (0);
 }
 
-void	ft_add_token(t_token **lexeme, char *node)
+void	ft_add_token(t_token **lexeme, char *node, int type)
 {
 	t_token	*new_node;
-	t_token *current;
+	t_token	*current;
 
 	new_node = ft_list_new_token();
 	if (!new_node)
@@ -178,6 +196,7 @@ void	ft_add_token(t_token **lexeme, char *node)
 		exit(EXIT_FAILURE);
 	}
 	new_node->token_node = node;
+	new_node->type_token = type;
 	if (*lexeme == NULL)
 		*lexeme = new_node;
 	else
@@ -196,10 +215,12 @@ void	ft_print_linked_list(t_token **lexeme)
 	current = *lexeme;
 	while (current != NULL)
 	{
-		printf("%s\n", current->token_node);
+		printf("Valor do token: %s\n", current->token_node);
+		printf("Tipo do token: %d\n", current->type_token);
 		current = current->next;
 	}
 }
+
 void	ft_clean_token_list(t_token **lst)
 {
 	t_token	*node_to_del;
