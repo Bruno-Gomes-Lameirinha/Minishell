@@ -28,21 +28,16 @@ void ft_state_start(char **input, State *state, char **current_token)
 		|| **input == '<')
 		{
 			*state = TOKEN_STATE_OPERATOR;
-			**current_token = **input;
-			(*current_token)++;
-			(*input)++;
-			if (**input == '&' || **input == '>' || **input == '<' ) 
+			*(*current_token)++  = *(*input)++;
+			if ((**input == '&' && *(*input - 1) == '&') || (**input == '>' && *(*input - 1) == '>')\
+			 || (**input == '<' && *(*input - 1) == '<')) 
 				*(*current_token)++ = *(*input)++;
 		}
 		else if (**input == '\'')
 		{
 			(*input)++;
 			while (**input && **input != '\'')
-			{
-				**current_token = **input;
-				(*current_token)++;
-				(*input)++;
-			}
+				*(*current_token)++ = *(*input)++;
 			if (**input == '\'')
 				(*input)++;
 			*state = TOKEN_STATE_COMMAND;
@@ -50,9 +45,7 @@ void ft_state_start(char **input, State *state, char **current_token)
 		else
 		{
 			*state = TOKEN_STATE_COMMAND;
-			**current_token = **input;
-			(*current_token)++;
-			(*input)++;
+			*(*current_token)++  = *(*input)++;
 		}
 }
 
@@ -74,20 +67,12 @@ void ft_state_command(char **input, State *state, char **current_token)
 	{
 		(*input)++;
 		while (**input && **input != '\'')
-		{	
-			**current_token = **input;
-			(*current_token)++;
-			(*input)++;
-		}
+			*(*current_token)++  = *(*input)++;
 		if (**input == '\'')
 			(*input)++;
 	}
 	else
-	{
-		**current_token = **input;
-		(*current_token)++;
-		(*input)++;
-	}
+		*(*current_token)++  = *(*input)++;
 }
 
 char	*ft_mem_token(char *input)
@@ -101,6 +86,11 @@ char	*ft_mem_token(char *input)
 		return NULL; // fazer tratativa de erros dos tokens
 	return (memset_token);
 
+}
+void	ft_last_token(char *current_token, t_token **lexeme)
+{
+	ft_add_token(lexeme, ft_strdup(current_token));
+	free(current_token);
 }
 
 void	ft_tokenize(char *input, t_token **lexeme)
@@ -118,28 +108,16 @@ void	ft_tokenize(char *input, t_token **lexeme)
 			ft_state_start(&input, &state, &token_index);
 		if (state == TOKEN_STATE_COMMAND)
 			ft_state_command(&input, &state, &token_index);
-		if (state == TOKEN_STATE_OPERATOR)
-		{
-			*token_index = '\0';
-			ft_add_token(lexeme, ft_strdup(current_token));
-			ft_memset(current_token, '\0', ft_strlen(input));
-			token_index = current_token;
-			state = TOKEN_STATE_START;
-		}
-		if (state == TOKEN_STATE_END)
+		if (state == TOKEN_STATE_OPERATOR || state == TOKEN_STATE_END)
 		{
 			ft_add_token(lexeme, ft_strdup(current_token));
-			ft_memset(current_token, '\0', ft_strlen(input));
+			ft_memset(current_token, '\0', ft_strlen(current_token));
 			token_index = current_token;
 			state = TOKEN_STATE_START;
 		}
 	}
 	if (*current_token) 
-	{
-    	*token_index = '\0'; // me pare dispensavel pois o menset ja fez isso
-  		ft_add_token(lexeme, ft_strdup(current_token));
-		free(current_token);
-    }
+		ft_last_token(current_token, lexeme);
 }
 
 int main()
