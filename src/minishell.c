@@ -35,14 +35,11 @@ void	ft_state_start(char **input, State *state, char **i_token, int *type)
 {
 	if (ft_is_space(**input))
 			(*input)++;
-	else if (**input == '|' || **input == '&' \
+	else if (**input == '|' || (**input == '&' && *(*input + 1) == '&') \
 	|| **input == '>' || **input == '<')
 	{
+		ft_handle_operators(&input, &i_token, &type);
 		*state = TOKEN_STATE_OPERATOR;
-		*(*i_token)++ = *(*input)++;
-		if ((**input == '&' && *(*input - 1) == '&') || (**input == '>' && \
-		*(*input - 1) == '>') || (**input == '<' && *(*input - 1) == '<')) //handle_operators>>para colocar o tipo de cada op
-			*(*i_token)++ = *(*input)++;
 	}
 	else if (**input == '\'' || **input == '\"')
 	{
@@ -53,6 +50,50 @@ void	ft_state_start(char **input, State *state, char **i_token, int *type)
 	{
 		*state = TOKEN_STATE_COMMAND;
 		*(*i_token)++ = *(*input)++;
+		*type = WORD;
+	}
+}
+
+void	ft_handle_operators(char ***input, char ***i_token, int **type)
+{
+	if (***input == '|')
+	{
+		*(**i_token)++ = *(**input)++;
+		if (***input == '|')
+		{
+			*(**i_token)++ = *(**input)++;
+			**type = OR;
+		}
+		else
+			**type = PIPE;
+	}
+	else if (***input == '&' && *(**input + 1) == '&')
+	{
+		*(**i_token)++ = *(**input)++;
+		*(**i_token)++ = *(**input)++;
+		**type = AND;
+	}
+	else if (***input == '>')
+	{
+		*(**i_token)++ = *(**input)++;
+		if (***input == '>')
+		{
+			*(**i_token)++ = *(**input)++;
+			**type = REDIR_OUTAPP;
+		}
+		else
+			**type = REDIR_OUT;
+	}
+	else if (***input == '<')
+	{
+		*(**i_token)++ = *(**input)++;
+		if (***input == '<')
+		{
+			*(**i_token)++ = *(**input)++;
+			**type = REDIR_HDOC;
+		}
+		else
+			**type = REDIR_IN;
 	}
 }
 
@@ -86,12 +127,9 @@ void	ft_state_command(char **input, State *state, char **i_token, int *type)
 		*state = TOKEN_STATE_END;
 		(*input)++;
 	}
-	else if (**input == '|' || **input == '&' \
+	else if (**input == '|' || (**input == '&' && *(*input + 1) == '&') \
 	|| **input == '>' || **input == '<' )
-	{
-		**i_token = '\0';
 		*state = TOKEN_STATE_END;
-	}
 	else if (**input == '\'' || **input == '\"')
 	{
 		ft_handle_quotes(&input, &i_token, &type);
@@ -171,7 +209,7 @@ int	main(void)
 		add_history(input);
 		if (input)
 		{
-			printf("Você digitou: %s\n", input);
+			//printf("Você digitou: %s\n", input);
 			ft_tokenize(input, lexeme);
 			ft_print_linked_list(lexeme);
 			ft_clean_token_list(lexeme);
@@ -215,8 +253,8 @@ void	ft_print_linked_list(t_token **lexeme)
 	current = *lexeme;
 	while (current != NULL)
 	{
-		printf("Valor do token: %s\n", current->token_node);
-		printf("Tipo do token: %d\n", current->type_token);
+		printf("Conteúdo do token: %s\n", current->token_node);
+		printf("Type do token: %d\n", current->type_token);
 		current = current->next;
 	}
 }

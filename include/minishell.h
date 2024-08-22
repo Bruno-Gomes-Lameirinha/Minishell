@@ -39,17 +39,18 @@ typedef enum {
 enum e_token
 {
     WORD,
-    PIPE,
-    REDIR_IN,
-    REDIR_HDOC,
-    REDIR_OUT,
-    REDIR_OUTAPP,
-    OR,
-    AND,
-    SUBSHELL,
-    ARCHIVE,
-    DOUBLE_QUOTES,
-    SINGLE_QUOTES
+    PIPE,// |
+    REDIR_IN, // <
+    REDIR_HDOC, // <<
+    REDIR_OUT, // >
+    REDIR_OUTAPP, //>>
+    OR,// ||
+    AND,// &&
+    SUBSHELL, // ()
+    ARCHIVE, 
+    DOUBLE_QUOTES, // ""
+    SINGLE_QUOTES // ''
+    //$?
 }; 
 
 t_token		*ft_list_new_token(void);
@@ -62,5 +63,6 @@ void		ft_state_command(char **input, State *state, char **index_token, int *type
 void		ft_handle_quotes(char ***input, char ***index_token, int **type);
 void		ft_last_token(char *current_token, t_token **lexeme, int *type);
 void		ft_clean_token_list(t_token **lst);
+void	    ft_handle_operators(char ***input, char ***i_token, int **type);
 
 #endif
