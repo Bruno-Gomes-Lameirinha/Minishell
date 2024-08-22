@@ -130,7 +130,6 @@ int main()
 	lexeme = (t_token**)malloc(sizeof(t_token));
 	while(1)
 	{
-		// precisa liberar o lexeme antes da proxima readline
 		input = readline("Minishell$ ");
 		add_history(input);
 		if (input) 
@@ -138,6 +137,7 @@ int main()
 			printf("Você digitou: %s\n", input);
 			ft_tokenize(input, lexeme);
 			ft_print_linked_list(lexeme);
+			ft_clean_token_list(lexeme);
 			free(input);
 		}
 	}
@@ -172,4 +172,21 @@ void	ft_print_linked_list(t_token **lexeme)
 		printf("%s\n", current->token_node);
 		current = current->next;
 	}
+}
+void	ft_clean_token_list(t_token **lst)
+{
+	t_token	*node_to_del;
+	t_token	*current;
+
+	if (*lst == NULL)
+		return ;
+	current = *lst;
+	while (current != NULL)
+	{
+		node_to_del = current;
+		current = current->next;
+		free(node_to_del->token_node);
+		free (node_to_del);
+	}
+	*lst = NULL;
 }

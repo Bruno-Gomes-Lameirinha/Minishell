@@ -41,5 +41,6 @@ void		ft_tokenize(char *input, t_token **lexeme);
 void		ft_state_start(char **input, State *state, char **current_token);
 void		ft_state_command(char **input, State *state, char **current_token);
 void		ft_last_token(char *current_token, t_token **lexeme);
+void		ft_clean_token_list(t_token **lst);
 
 #endif
