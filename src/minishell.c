@@ -56,23 +56,19 @@ void ft_state_start(char **input, State *state, char **current_token)
 		}
 }
 
-void ft_state_command(t_token **lexeme, char **input, State *state, char **current_token)
+void ft_state_command(char **input, State *state, char **current_token)
 {
 	if (ft_is_space(**input))
 	{
 		**current_token = '\0';
-		ft_add_token(lexeme, *current_token);
-		ft_memset(current_token, '\0', ft_strlen(*input));
-		*state = TOKEN_STATE_START;
+		*state = TOKEN_STATE_END;
 		(*input)++;
 	}
 	else if (**input == '|' || **input == '"' || **input == '&'|| **input == '>'\
 	|| **input == '<' )
 	{
 		**current_token = '\0';
-		ft_add_token(lexeme, *current_token);
-		ft_memset(current_token, '\0', ft_strlen(*input));
-		*state = TOKEN_STATE_OPERATOR;
+		*state = TOKEN_STATE_END;
 	}
 	else if (**input == '\'')
 	{
@@ -111,29 +107,39 @@ void	ft_tokenize(char *input, t_token **lexeme)
 {
 	State	state;
 	char	*current_token;
+	char 	*token_index;
 	
 	state = TOKEN_STATE_START;
 	current_token = ft_mem_token(input);
+	token_index = current_token;
 	while(*input)
 	{
 		if (state == TOKEN_STATE_START)
-			ft_state_start(&input, &state, &current_token);
+			ft_state_start(&input, &state, &token_index);
 		if (state == TOKEN_STATE_COMMAND)
-			ft_state_command(lexeme, &input, &state, &current_token);
+			ft_state_command(&input, &state, &token_index);
 		if (state == TOKEN_STATE_OPERATOR)
 		{
-			*current_token = '\0';
-			ft_add_token(lexeme, current_token);
+			*token_index = '\0';
+			ft_add_token(lexeme, ft_strdup(current_token));
 			ft_memset(current_token, '\0', ft_strlen(input));
+			token_index = current_token;
+			state = TOKEN_STATE_START;
+		}
+		if (state == TOKEN_STATE_END)
+		{
+			ft_add_token(lexeme, ft_strdup(current_token));
+			ft_memset(current_token, '\0', ft_strlen(input));
+			token_index = current_token;
 			state = TOKEN_STATE_START;
 		}
 	}
 	if (*current_token) 
 	{
-    	*current_token = '\0';
-  		ft_add_token(lexeme, current_token);
+    	*token_index = '\0'; // me pare dispensavel pois o menset ja fez isso
+  		ft_add_token(lexeme, ft_strdup(current_token));
+		free(current_token);
     }
-	//free(current_token);
 }
 
 int main()
@@ -146,6 +152,7 @@ int main()
 	lexeme = (t_token**)malloc(sizeof(t_token));
 	while(1)
 	{
+		// precisa liberar o lexeme antes da proxima readline
 		input = readline("Minishell$ ");
 		add_history(input);
 		if (input) 
