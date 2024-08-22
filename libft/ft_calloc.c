@@ -23,6 +23,6 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	ptr = (malloc (nmemb * size));
 	if (ptr == NULL)
 		return (NULL);
-	ft_memset(ptr, 0, nmemb * size);
+	ft_memset(ptr, '\0', nmemb * size);
 	return (ptr);
 }

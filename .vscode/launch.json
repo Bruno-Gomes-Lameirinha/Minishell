@@ -1,0 +1,33 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Depurar Minishell",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/minishell",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Habilitar impressão de valores",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Compilar Minishell",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "miDebuggerArgs": "",
+            "logging": {
+                "moduleLoad": true,
+                "trace": true,
+                "engineLogging": true
+            },
+            "internalConsoleOptions": "openOnSessionStart"
+        }
+    ]
+}

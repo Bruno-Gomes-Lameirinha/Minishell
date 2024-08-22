@@ -20,7 +20,7 @@ t_token	*ft_list_new_token(void)
 	return (new_node);
 }
 
-void ft_state_start(char **input, State *state, char *current_token, int *i)
+void ft_state_start(char **input, State *state, char **current_token)
 {
 	if (ft_is_space(**input))
 			(*input)++;
@@ -28,15 +28,21 @@ void ft_state_start(char **input, State *state, char *current_token, int *i)
 		|| **input == '<')
 		{
 			*state = TOKEN_STATE_OPERATOR;
-			current_token[(*i)++] = *(*input)++;
+			**current_token = **input;
+			(*current_token)++;
+			(*input)++;
 			if (**input == '&' || **input == '>' || **input == '<' ) 
-				current_token[(*i)++] = *(*input)++;
+				*(*current_token)++ = *(*input)++;
 		}
 		else if (**input == '\'')
 		{
 			(*input)++;
 			while (**input && **input != '\'')
-				current_token[(*i)++] = *(*input)++;
+			{
+				**current_token = **input;
+				(*current_token)++;
+				(*input)++;
+			}
 			if (**input == '\'')
 				(*input)++;
 			*state = TOKEN_STATE_COMMAND;
@@ -44,66 +50,90 @@ void ft_state_start(char **input, State *state, char *current_token, int *i)
 		else
 		{
 			*state = TOKEN_STATE_COMMAND;
-			current_token[(*i)++] = *(*input)++;
+			**current_token = **input;
+			(*current_token)++;
+			(*input)++;
 		}
 }
 
-void ft_state_command(t_token **lexeme, char **input, State *state, char *current_token, int *i)
+void ft_state_command(t_token **lexeme, char **input, State *state, char **current_token)
 {
 	if (ft_is_space(**input))
 	{
-		current_token[(*i)] = '\0';
-		ft_add_token(lexeme, ft_strdup(current_token));
-		*i = 0;
+		**current_token = '\0';
+		ft_add_token(lexeme, *current_token);
+		ft_memset(current_token, '\0', ft_strlen(*input));
 		*state = TOKEN_STATE_START;
 		(*input)++;
 	}
 	else if (**input == '|' || **input == '"' || **input == '&'|| **input == '>'\
 	|| **input == '<' )
 	{
-		current_token[(*i)] = '\0';
-		ft_add_token(lexeme, ft_strdup(current_token));
-		*i= 0;
+		**current_token = '\0';
+		ft_add_token(lexeme, *current_token);
+		ft_memset(current_token, '\0', ft_strlen(*input));
 		*state = TOKEN_STATE_OPERATOR;
 	}
 	else if (**input == '\'')
 	{
 		(*input)++;
 		while (**input && **input != '\'')
-			current_token[(*i)++] = *(*input)++;
+		{	
+			**current_token = **input;
+			(*current_token)++;
+			(*input)++;
+		}
 		if (**input == '\'')
 			(*input)++;
 	}
 	else
-		current_token[(*i)++] = *(*input)++;
+	{
+		**current_token = **input;
+		(*current_token)++;
+		(*input)++;
+	}
+}
+
+char	*ft_mem_token(char *input)
+{
+	int 	len;
+	char 	*memset_token;
+
+	len = ft_strlen(input);
+	memset_token = (char *)ft_calloc(len + 1, sizeof(char *));
+	if (!memset_token)
+		return NULL; // fazer tratativa de erros dos tokens
+	return (memset_token);
+
 }
 
 void	ft_tokenize(char *input, t_token **lexeme)
 {
-	State state = TOKEN_STATE_START;
-	char	current_token[128] = "";
-	int i;
+	State	state;
+	char	*current_token;
 	
-	i = 0;
+	state = TOKEN_STATE_START;
+	current_token = ft_mem_token(input);
 	while(*input)
 	{
 		if (state == TOKEN_STATE_START)
-			ft_state_start(&input, &state, current_token, &i);
+			ft_state_start(&input, &state, &current_token);
 		if (state == TOKEN_STATE_COMMAND)
-			ft_state_command(lexeme, &input, &state, current_token, &i);
+			ft_state_command(lexeme, &input, &state, &current_token);
 		if (state == TOKEN_STATE_OPERATOR)
 		{
-			current_token[i] = '\0';
-			ft_add_token(lexeme, ft_strdup(current_token));
-			i = 0;
+			*current_token = '\0';
+			ft_add_token(lexeme, current_token);
+			ft_memset(current_token, '\0', ft_strlen(input));
 			state = TOKEN_STATE_START;
 		}
 	}
-	if (i > 0) 
+	if (*current_token) 
 	{
-    	current_token[i] = '\0';
-  		ft_add_token(lexeme, ft_strdup(current_token));
+    	*current_token = '\0';
+  		ft_add_token(lexeme, current_token);
     }
+	//free(current_token);
 }
 
 int main()
