@@ -213,6 +213,7 @@ int	main(void)
 			ft_tokenize(input, lexeme);
 			//ft_print_linked_list(lexeme);
 			ft_echo_command(lexeme);
+			ft_cd_command(lexeme);
 			ft_clean_token_list(lexeme);
 			free(input);
 			i++;
