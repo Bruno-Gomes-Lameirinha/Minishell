@@ -11,9 +11,9 @@ LDFLAGS     := -lreadline
 
 SRC_MINISHELL = 
             
-SRC_MINISHELL_MAIN = $(SRC_PATH)/minishell.c
+SRC_MINISHELL_MAIN = $(SRC_PATH)/minishell.c built_in.c
 
-SRC_MINISHELL_BONUS = $(BONUS_PATH)/minishell_bonus.c
+SRC_MINISHELL_BONUS = $(BONUS_PATH)/minishell_bonus.c 
 
 MINISHELL_OBJS := $(addprefix $(OBJECTS_PATH)/, $(notdir $(SRC_MINISHELL:.c=.o)))
 MINISHELL_MAIN_OBJ := $(addprefix $(OBJECTS_PATH)/, $(notdir $(SRC_MINISHELL_MAIN:.c=.o)))
