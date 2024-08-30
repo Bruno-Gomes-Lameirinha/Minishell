@@ -191,7 +191,7 @@ void ft_execute_ast(t_ast_node *root, t_pipex *pipex, char **env)
 	}
 }
 
-void	first_child(t_pipex *pipex)
+void	first_child(t_pipex *pipex, t_ast_node	*root)
 {
     pipex->first_child = fork();
     if (pipex->first_child == 0)
@@ -202,7 +202,9 @@ void	first_child(t_pipex *pipex)
         dup2(pipex->channel[1], STDOUT_FILENO);
         close(pipex->channel[1]); // Fecha o descritor de escrita do pipe após redirecionamento
 
-        execute(pipex, "echo abc"); // Executa o comando
+        //execute(pipex, "echo abc"); // Executa o comando
+        if (root->left == Node_command)
+            ft_echo_comand_with_ast(root);
         exit(EXIT_SUCCESS); // Certifique-se de que o processo filho termine corretamente
     }
 }
