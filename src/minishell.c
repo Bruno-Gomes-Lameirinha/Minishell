@@ -182,7 +182,7 @@ void ft_execute_ast(t_ast_node *root, t_pipex *pipex, char **env)
 			perror("pipe");
 			exit(EXIT_FAILURE);
 		}
-		first_child(pipex);
+		first_child(pipex, NULL);
 		second_child(pipex);
 		close(pipex->channel[0]);
         close(pipex->channel[1]);
@@ -203,8 +203,8 @@ void	first_child(t_pipex *pipex, t_ast_node	*root)
         close(pipex->channel[1]); // Fecha o descritor de escrita do pipe após redirecionamento
 
         //execute(pipex, "echo abc"); // Executa o comando
-        if (root->left == Node_command)
-            ft_echo_comand_with_ast(root);
+        if (root->left->type == NODE_COMMAND)
+            ft_echo_command_with_ast(root);
         exit(EXIT_SUCCESS); // Certifique-se de que o processo filho termine corretamente
     }
 }
