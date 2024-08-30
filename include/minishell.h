@@ -97,7 +97,7 @@ void ft_execute_ast(t_ast_node *root, t_pipex *pipex, char **env);
 void        ft_echo_command_with_ast(t_ast_node *node);
 
 //pipe
-void		first_child(t_pipex *pipex);
+void		first_child(t_pipex *pipex, t_ast_node	*root);
 void		second_child(t_pipex *pipex);
 
 void		open_channel(t_pipex *pipex);
