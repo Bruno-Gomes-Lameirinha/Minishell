@@ -7,6 +7,7 @@
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 18:33:00 by bgomes-l          #+#    #+#             */
 /*   Updated: 2024/08/30 21:37:23 by livieira         ###   ########.fr       */
+/*   Updated: 2024/08/30 20:57:30 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +52,7 @@ int	main(void)
 			ft_tokenize(input, lexeme);
 			//ft_print_linked_list(lexeme);
 			//ft_echo_command(lexeme);
+			ft_print_linked_list(lexeme);
 			ast = ft_build_ast(lexeme);
 			ft_execute_ast(ast, pipex);
 
