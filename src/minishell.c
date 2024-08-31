@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
+/*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/08/29 15:07:39 by livieira         ###   ########.fr       */
+/*   Updated: 2024/08/30 20:57:30 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ int	main(int argc, char **env)
 			ft_tokenize(input, lexeme);
 			//ft_print_linked_list(lexeme);
 			//ft_echo_command(lexeme);
+			ft_print_linked_list(lexeme);
 			ast = ft_build_ast(lexeme);
 			ft_execute_ast(ast, pipex, env);
 
@@ -122,10 +123,12 @@ t_ast_node *ft_build_ast(t_token **tokens)
 		{
 			metachar_node = malloc(sizeof(t_ast_node));
 			metachar_node->type = current->type_token;
-			metachar_node->value = ft_strdup(current->next->token_node);
+			//metachar_node->value = ft_strdup(current->next->token_node);
+			metachar_node->value = ft_strdup(current->token_node);
 			metachar_node->left = cmd_node;
 			metachar_node->right = NULL;
 			metachar_node->next = NULL;
+			//root = metachar_node;
 			root = metachar_node;
 			current = current->next;
 		}
