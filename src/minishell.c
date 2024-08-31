@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
+/*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/08/29 15:07:39 by livieira         ###   ########.fr       */
+/*   Updated: 2024/08/30 21:37:23 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,20 +22,19 @@ void	ft_free_split(char **split)
 	free(split);
 }
 
-int	main(int argc, char **env)
+int	main(void)
 {
 	char	*input;
-	//t_env	*env;
+	t_env	*env;
 	t_token	**lexeme;
 	t_ast_node *ast;
 	t_pipex		*pipex;
 	
-	printf("%d\n", argc);
-
 	pipex = NULL;
-	//env = (t_env*)malloc(sizeof(t_env));
+	env = (t_env*)malloc(sizeof(t_env));
 	lexeme = (t_token**)malloc(sizeof(t_token*));
 	pipex = (t_pipex*)malloc(sizeof(t_pipex));
+    
 	if (!lexeme)
 	{
 		perror("Failed to allocate memory for lexeme");
@@ -53,7 +52,7 @@ int	main(int argc, char **env)
 			//ft_print_linked_list(lexeme);
 			//ft_echo_command(lexeme);
 			ast = ft_build_ast(lexeme);
-			ft_execute_ast(ast, pipex, env);
+			ft_execute_ast(ast, pipex);
 
 			//ft_cd_command(lexeme);
 			ft_clean_token_list(lexeme);
@@ -67,71 +66,87 @@ int	main(int argc, char **env)
 
 t_ast_node *ft_build_ast(t_token **tokens)
 {
-	t_ast_node	*root;
-	t_token		*current;
-	t_ast_node *last_arg_node;
-	t_ast_node *cmd_node;
-	t_ast_node *arg_node;
-	t_ast_node *metachar_node;
-	current = *tokens;
+    t_ast_node *root;
+    t_ast_node *current_node = NULL;
+    t_ast_node *last_arg_node = NULL;
+    t_token *current = *tokens;
 
+	current = *tokens;
+	current_node = NULL;
 	last_arg_node = NULL;
 	root = NULL;
-	cmd_node = NULL;
-	arg_node = NULL;
-	while (current)	
-	{
-		if (current->type_token == WORD)
-			if (!cmd_node)
-			{
-				cmd_node = malloc(sizeof(t_ast_node));
-				cmd_node->type = NODE_COMMAND;
-				cmd_node->value = ft_strdup(current->token_node);
-				cmd_node->left = NULL;
-				cmd_node->right = NULL;
-				cmd_node->next = NULL;
-				root = cmd_node;
-			}
-			else 
-			{
-				arg_node = malloc(sizeof(t_ast_node));
-				arg_node->type = NODE_ARGUMENT;
-				arg_node->value = ft_strdup(current->token_node);
-				arg_node->left = NULL;
-				arg_node->right = NULL;
-				arg_node->next = NULL;
-				if (!last_arg_node) 
-					cmd_node->right = arg_node;
-				else
-					last_arg_node->next = arg_node;
-				last_arg_node = arg_node;
-			}
-		
-		else if (current->type_token == REDIR_OUT || current->type_token == REDIR_OUTAPP)
-		{
-			metachar_node = malloc(sizeof(t_ast_node));
-			metachar_node->type = current->type_token;
-			metachar_node->value = ft_strdup(current->next->token_node);
-			metachar_node->left = cmd_node;
-			metachar_node->right = NULL;
-			metachar_node->next = NULL;
-			root = metachar_node;
-			current = current->next;
-		}
-		else if (current->type_token == PIPE)
-		{
-			metachar_node = malloc(sizeof(t_ast_node));
-			metachar_node->type = current->type_token;
-			metachar_node->value = ft_strdup(current->next->token_node);
-			metachar_node->left = cmd_node;
-			metachar_node->right = NULL;
-			metachar_node->next = NULL;
-			root = metachar_node;
-			current = current->next;
-		}
-		current = current->next;
-	}
-	return root;
+	while (current)
+    {
+        if (current->type_token == WORD)
+        {
+            if (!current_node || current_node->type != NODE_COMMAND)
+            {
+                // Criando um novo nó de comando
+                t_ast_node *cmd_node = malloc(sizeof(t_ast_node));
+                cmd_node->type = NODE_COMMAND;
+                cmd_node->value = ft_strdup(current->token_node);
+                cmd_node->left = NULL;
+                cmd_node->right = NULL;
+                cmd_node->next = NULL;
+
+                if (root == NULL)
+                {
+                    root = cmd_node;
+                }
+                else if (current_node && (current_node->type == NODE_PIPE || current_node->type == REDIR_OUT || current_node->type == REDIR_OUTAPP))
+                {
+                    current_node->right = cmd_node;
+                }
+
+                current_node = cmd_node;
+                last_arg_node = NULL; // Reinicia o último argumento, pois é um novo comando
+            }
+            else
+            {
+                // Adicionando argumentos ao comando
+                t_ast_node *arg_node = malloc(sizeof(t_ast_node));
+                arg_node->type = NODE_ARGUMENT;
+                arg_node->value = ft_strdup(current->token_node);
+                arg_node->left = NULL;
+                arg_node->right = NULL;
+                arg_node->next = NULL;
+
+                if (!last_arg_node)
+                {
+                    current_node->right = arg_node;
+                }
+                else
+                {
+                    last_arg_node->next = arg_node;
+                }
+                last_arg_node = arg_node;
+            }
+        }
+        else if (current->type_token == PIPE)
+        {
+            t_ast_node *pipe_node = malloc(sizeof(t_ast_node));
+            pipe_node->type = NODE_PIPE;
+            pipe_node->value = NULL; // Sem valor para o pipe em si
+            pipe_node->left = root;
+            pipe_node->right = NULL;
+            root = pipe_node;
+            current_node = pipe_node;
+        }
+        else if (current->type_token == REDIR_OUT || current->type_token == REDIR_OUTAPP)
+        {
+            t_ast_node *redir_node = malloc(sizeof(t_ast_node));
+            redir_node->type = NODE_REDIRECTION;
+            redir_node->value = ft_strdup(current->next->token_node);
+            redir_node->left = root;
+            redir_node->right = NULL;
+            root = redir_node;
+            current_node = redir_node;
+            current = current->next; // Pula o token do nome do arquivo
+        }
+        current = current->next;
+    }
+
+    return root;
 }
 
 
@@ -149,69 +164,106 @@ void	execute(t_pipex *pipex, char *command)
 	execve("/usr/bin/wc", pipex->argv_childs, pipex->parent_env);
 }
 
-void ft_execute_ast(t_ast_node *root, t_pipex *pipex, char **env)
+void ft_execute_ast(t_ast_node *root, t_pipex *pipex)
 {
-	if (!root)
-		return ;
-	if (root->type == NODE_COMMAND)
-		ft_echo_command_with_ast(root);
-	else if (root->type == REDIR_OUT || root->type == REDIR_OUTAPP) 
-	{
-		int fd;
-		if (root->type == REDIR_OUT)
-			fd = open(root->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		else
-			fd = open(root->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (fd < 0) {
-			perror("open");
-			return;
-		}
+    if (!root)
+        return;
 
-		int saved_stdout = dup(STDOUT_FILENO);
-		dup2(fd, STDOUT_FILENO);
-		close(fd);
-		ft_execute_ast(root->left, pipex, env);
-		dup2(saved_stdout, STDOUT_FILENO);
-		close(saved_stdout);
-	}
-	else if (root->type == PIPE)
-	{
-		init_pipe(pipex, env);
-		if (pipe(pipex->channel) == -1) 
-		{
-			perror("pipe");
-			exit(EXIT_FAILURE);
-		}
-		first_child(pipex, NULL);
-		second_child(pipex);
-		close(pipex->channel[0]);
+    if (root->type == NODE_PIPE)
+    {
+        init_pipe(pipex);
+        if (pipe(pipex->channel) == -1) 
+        {
+            perror("pipe");
+            exit(EXIT_FAILURE);
+        }
+        first_child(pipex, root->left);  // Executa o comando à esquerda do pipe
+        second_child(pipex);             // Executa o comando à direita do pipe
+        close(pipex->channel[0]);
         close(pipex->channel[1]);
-		waitpid(pipex->first_child, NULL, 0);
-		waitpid(pipex->second_child, NULL, 0);
-	}
+        waitpid(pipex->first_child, NULL, 0);
+        waitpid(pipex->second_child, NULL, 0);
+		//ft_execute_ast(root->left, pipex, env);
+    }
+    else if (root->type == NODE_REDIRECTION) 
+    {
+        int fd;
+        if (root->type == NODE_REDIRECTION)
+            fd = open(root->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        else
+            fd = open(root->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
+        if (fd < 0) {
+            perror("open");
+            return;
+        }
+
+        int saved_stdout = dup(STDOUT_FILENO);
+        dup2(fd, STDOUT_FILENO);
+        close(fd);
+        ft_execute_ast(root->left, pipex); // Executa o comando redirecionado
+        dup2(saved_stdout, STDOUT_FILENO);
+        close(saved_stdout);
+    }
+    else if (root->type == NODE_COMMAND)
+    {
+        ft_echo_command_with_ast(root); // Executa o comando
+    }
 }
 
 void	first_child(t_pipex *pipex, t_ast_node	*root)
 {
     pipex->first_child = fork();
+	if (pipex->first_child == -1)  // Verifique se fork() falhou
+    {
+        perror("fork second child");
+        exit(EXIT_FAILURE);  // Saia com erro se fork() falhar
+    }
     if (pipex->first_child == 0)
     {
+        printf("Entrou no processo filho, PID: %d\n", getpid());
         close(pipex->channel[0]); // Fecha o lado de leitura do pipe
 
+        printf ("ainda estou aqui");
         // Redireciona stdout para o descritor de escrita do pipe
         dup2(pipex->channel[1], STDOUT_FILENO);
         close(pipex->channel[1]); // Fecha o descritor de escrita do pipe após redirecionamento
 
         //execute(pipex, "echo abc"); // Executa o comando
-        if (root->left->type == NODE_COMMAND)
+        if (root->right->type == NODE_COMMAND)
+        {
+            printf ("vou entrar no eco");
             ft_echo_command_with_ast(root);
+        }
         exit(EXIT_SUCCESS); // Certifique-se de que o processo filho termine corretamente
     }
 }
-void	init_pipe(t_pipex *pipex, char **env)
+void	init_pipe(t_pipex *pipex)
 {
-	pipex->parent_env = env;
-	//printf("pipex->parent_env é: %s\n", *pipex->parent_env);
+    pipex->parent_env = malloc(sizeof(char*) * 2); // Aloca memória para 2 ponteiros de char
+    if (pipex->parent_env == NULL) {
+        perror("Failed to allocate memory");
+        exit(EXIT_FAILURE);
+    }
+
+    pipex->parent_argv = malloc(sizeof(char*) * 2); // Aloca memória para 2 ponteiros de char
+    if (pipex->parent_env == NULL) {
+        perror("Failed to allocate memory");
+        exit(EXIT_FAILURE);
+    }
+    pipex->path = malloc(sizeof(char*) * 2); // Aloca memória para 2 ponteiros de char
+    if (pipex->parent_env == NULL) {
+        perror("Failed to allocate memory");
+        exit(EXIT_FAILURE);
+    }
+
+    pipex->parent_env[0] = strdup("SHELL=/bin/bash"); // Aloca e copia a string
+    pipex->parent_env[1] = NULL; // Termina a lista de strings com NULL
+    pipex->parent_argv[0] = strdup("./minishell"); // Aloca e copia a string
+    pipex->parent_argv[1] = NULL; // Termina a lista de strings com NULL
+    pipex->path[0] = strdup("/home/bruno/.local/bin"); // Aloca e copia a string
+    pipex->path[1] = NULL; // Termina a lista de strings com NULL
+
+   
 }
 
 void	second_child(t_pipex *pipex)
@@ -219,6 +271,11 @@ void	second_child(t_pipex *pipex)
     int outfile;
 
     pipex->second_child = fork();
+	if (pipex->second_child == -1)  // Verifique se fork() falhou
+    {
+        perror("fork second child");
+        exit(EXIT_FAILURE);  // Saia com erro se fork() falhar
+    }
     if (pipex->second_child == 0)
     {
         close(pipex->channel[1]); // Fecha o lado de escrita do pipe

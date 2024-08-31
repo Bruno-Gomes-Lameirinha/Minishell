@@ -51,6 +51,7 @@ typedef enum {
   NODE_OPERATOR,
   NODE_REDIRECTION,
   NODE_ARGUMENT,
+  NODE_PIPE,
 } NodeType;
 
 typedef enum { 
@@ -93,7 +94,7 @@ void	    ft_handle_operators(char ***input, char ***i_token, int **type);
 //parser
 void	    ft_echo_command(t_token **cmd_tokens);
 void	    ft_cd_command(t_token **cmd_tokens);
-void ft_execute_ast(t_ast_node *root, t_pipex *pipex, char **env);
+void      ft_execute_ast(t_ast_node *root, t_pipex *pipex);
 void        ft_echo_command_with_ast(t_ast_node *node);
 
 //pipe
@@ -106,7 +107,7 @@ void		search_path(t_pipex *pipex);
 void		handle_error(t_pipex *pipex, int exit_status, char *msg);
 void		ft_free_split(char **split);
 void	ft_free_split(char **split);
-void	init_pipe(t_pipex *pipex, char **env);
+void	init_pipe(t_pipex *pipex);
 
 t_token		*ft_list_new_token(void);
 t_ast_node  *ft_build_ast(t_token **tokens);
