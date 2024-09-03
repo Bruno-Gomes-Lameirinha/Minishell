@@ -34,7 +34,7 @@ char *ft_get_prompt(void)
 
 	if (getcwd(cwd, sizeof(cwd)) != NULL) 
 	{
-		*relative_cwd = cwd;
+		relative_cwd = cwd;
 
 		if (home_dir && strncmp(cwd, home_dir, strlen(home_dir)) == 0) 
 		{
@@ -44,7 +44,7 @@ char *ft_get_prompt(void)
 		}
 		cwd_len = strlen(relative_cwd) + 1;
 		prompt_len = strlen("Minishell $ ");
-		*prompt = malloc(cwd_len + prompt_len + 3);
+		prompt = malloc(cwd_len + prompt_len + 3);
 		if (prompt == NULL) 
 		{
 			perror("Failed to allocate memory for prompt");
