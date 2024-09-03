@@ -48,6 +48,25 @@ void	ft_cd_command(t_token **cmd_tokens)
 		return;
 	}
 	pwd  = getcwd(NULL, 1024);
+	free(pwd);
+}
+void	ft_cd_command_with_ast(t_ast_node *node_ast)
+{
+	t_ast_node	*current_token;
+	char	*path;
+	char	*pwd;
+
+	current_token = node_ast;
+	if (current_token->right == NULL && !strcmp(current_token->value, "cd"))
+		path = getenv("HOME");
+	else if (current_token->right)
+		path = current_token->right->value;
+	if (chdir(path) != 0)
+	{
+		perror("cd");
+		return;
+	}
+	pwd  = getcwd(NULL, 1024);
 	printf("%s\n", pwd);
 	free(pwd);
 }

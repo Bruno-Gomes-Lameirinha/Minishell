@@ -208,7 +208,12 @@ void ft_execute_ast(t_ast_node *root, t_pipex *pipex)
     }
     else if (root->type == NODE_COMMAND)
     {
-        ft_echo_command_with_ast(root); // Executa o comando
+        if (!strcmp(root->value, "cd"))
+            ft_cd_command_with_ast(root);
+        else if (!strcmp(root->value, "echo"))
+            ft_echo_command_with_ast(root); // Executa o comando
+        //else
+            // aqui vamos chamar o execv para rodar os comandos que não precisamos implementar
     }
 }
 
@@ -263,8 +268,6 @@ void	init_pipe(t_pipex *pipex)
 
 void	second_child(t_pipex *pipex)
 {
-    //int outfile;
-
     pipex->second_child = fork();
 	if (pipex->second_child == -1)  // Verifique se fork() falhou
     {
@@ -278,16 +281,6 @@ void	second_child(t_pipex *pipex)
         // Redireciona stdin para o descritor de leitura do pipe
         dup2(pipex->channel[0], STDIN_FILENO);
         close(pipex->channel[0]); // Fecha o descritor de leitura do pipe após redirecionamento
-
-        // outfile = open("output.txt", O_RDWR | O_CREAT | O_TRUNC, 0644);
-        // if (outfile == -1) {
-        //     perror("open");
-        //     exit(EXIT_FAILURE);
-        // }
-        // // Redireciona stdout para o arquivo de saída
-        // dup2(outfile, STDOUT_FILENO);
-        // close(outfile); // Fecha o arquivo após redirecionamento
-
         execute(pipex, "wc"); // Executa o comando
         exit(EXIT_SUCCESS); // Certifique-se de que o processo filho termine corretamente
     }
