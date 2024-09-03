@@ -90,6 +90,7 @@ void		ft_handle_quotes(char ***input, char ***index_token, int **type);
 void		ft_last_token(char *current_token, t_token **lexeme, int *type);
 void		ft_clean_token_list(t_token **lst);
 void    ft_handle_operators(char ***input, char ***i_token, int **type);
+char    *ft_get_prompt(void);
 
 //parser
 void	    ft_echo_command(t_token **cmd_tokens);

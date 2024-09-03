@@ -67,6 +67,7 @@ void	ft_cd_command_with_ast(t_ast_node *node_ast)
 		return;
 	}
 	pwd  = getcwd(NULL, 1024);
-	printf("%s\n", pwd);
+	//printf("%s\n", pwd);
 	free(pwd);
 }
+
