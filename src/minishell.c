@@ -52,7 +52,7 @@ int	main(void)
 			ft_tokenize(input, lexeme);
 			//ft_print_linked_list(lexeme);
 			//ft_echo_command(lexeme);
-			ft_print_linked_list(lexeme);
+			//ft_print_linked_list(lexeme);
 			ast = ft_build_ast(lexeme);
 			ft_execute_ast(ast, pipex);
 
@@ -185,7 +185,7 @@ void ft_execute_ast(t_ast_node *root, t_pipex *pipex)
         close(pipex->channel[1]);
         waitpid(pipex->first_child, NULL, 0);
         waitpid(pipex->second_child, NULL, 0);
-		//ft_execute_ast(root->left, pipex, env);
+		//ft_execute_ast(root->left, pipex);
     }
     else if (root->type == NODE_REDIRECTION) 
     {
@@ -222,20 +222,13 @@ void	first_child(t_pipex *pipex, t_ast_node	*root)
     }
     if (pipex->first_child == 0)
     {
-        printf("Entrou no processo filho, PID: %d\n", getpid());
-        close(pipex->channel[0]); // Fecha o lado de leitura do pipe
-
-        printf ("ainda estou aqui");
-        // Redireciona stdout para o descritor de escrita do pipe
+        close(pipex->channel[0]); // Fecha o lado de leitura do pipe no filho
         dup2(pipex->channel[1], STDOUT_FILENO);
-        close(pipex->channel[1]); // Fecha o descritor de escrita do pipe após redirecionamento
+        close(pipex->channel[1]); // Fecha o lado de escrita do pipe após redirecionamento
 
         //execute(pipex, "echo abc"); // Executa o comando
-        if (root->right->type == NODE_COMMAND)
-        {
-            printf ("vou entrar no eco");
+        if (root->type == NODE_COMMAND)
             ft_echo_command_with_ast(root);
-        }
         exit(EXIT_SUCCESS); // Certifique-se de que o processo filho termine corretamente
     }
 }
@@ -270,7 +263,7 @@ void	init_pipe(t_pipex *pipex)
 
 void	second_child(t_pipex *pipex)
 {
-    int outfile;
+    //int outfile;
 
     pipex->second_child = fork();
 	if (pipex->second_child == -1)  // Verifique se fork() falhou
@@ -286,18 +279,19 @@ void	second_child(t_pipex *pipex)
         dup2(pipex->channel[0], STDIN_FILENO);
         close(pipex->channel[0]); // Fecha o descritor de leitura do pipe após redirecionamento
 
-        outfile = open("output.txt", O_RDWR | O_CREAT | O_TRUNC, 0644);
-        if (outfile == -1) {
-            perror("open");
-            exit(EXIT_FAILURE);
-        }
-        // Redireciona stdout para o arquivo de saída
-        dup2(outfile, STDOUT_FILENO);
-        close(outfile); // Fecha o arquivo após redirecionamento
+        // outfile = open("output.txt", O_RDWR | O_CREAT | O_TRUNC, 0644);
+        // if (outfile == -1) {
+        //     perror("open");
+        //     exit(EXIT_FAILURE);
+        // }
+        // // Redireciona stdout para o arquivo de saída
+        // dup2(outfile, STDOUT_FILENO);
+        // close(outfile); // Fecha o arquivo após redirecionamento
 
         execute(pipex, "wc"); // Executa o comando
         exit(EXIT_SUCCESS); // Certifique-se de que o processo filho termine corretamente
     }
+
 }
 
 void ft_echo_command_with_ast(t_ast_node *node) 
