@@ -39,7 +39,8 @@ typedef struct s_pipex
 }		t_pipex;
 
 typedef struct s_ast_node {
-    int type;                // Tipo do nó (comando, redirecionamento, etc.)
+    int type;
+    int	type_token;             // Tipo do nó (comando, redirecionamento, etc.)
     char *value;             // Valor do nó (nome do comando, arquivo, etc.)
     struct s_ast_node *left; // Nó esquerdo (por exemplo, comando antes do redirecionamento)
     struct s_ast_node *right;// Nó direito (por exemplo, arquivo de destino no redirecionamento)

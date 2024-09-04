@@ -91,7 +91,6 @@ int	main(void)
 	t_ast_node *ast;
 	t_pipex		*pipex;
 	char	*prompt;
-	int i = 0;
 	
 	pipex = NULL;
 	env = (t_env*)malloc(sizeof(t_env));
@@ -104,7 +103,7 @@ int	main(void)
 		exit(EXIT_FAILURE);
 	}
 	*lexeme = NULL;
-	while (i < 3)
+	while (1)
 	{
 		prompt = ft_get_prompt();
 		input = readline(prompt);
@@ -119,7 +118,6 @@ int	main(void)
 			free(input);
 			free(prompt);
 			free(ast);
-			i++;
 		}
 	}
 	free(lexeme);
@@ -198,6 +196,7 @@ t_ast_node *ft_build_ast(t_token **tokens)
 		{
 			t_ast_node *redir_node = malloc(sizeof(t_ast_node));
 			redir_node->type = NODE_REDIRECTION;
+			redir_node->type_token = current->type_token;
 			redir_node->value = ft_strdup(current->next->token_node);
 			redir_node->left = root;
 			redir_node->right = NULL;
@@ -250,11 +249,12 @@ void ft_execute_ast(t_ast_node *root, t_pipex *pipex)
 	else if (root->type == NODE_REDIRECTION) 
 	{
 		int fd;
-		if (root->type == NODE_REDIRECTION)
+		if (root->type_token == REDIR_OUT)
 			fd = open(root->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		else
 			fd = open(root->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (fd < 0) {
+		if (fd < 0) 
+		{
 			perror("open");
 			return;
 		}
@@ -390,7 +390,6 @@ void	handle_error(t_pipex *pipex, int exit_status, char *msg)
 	}
 	exit(exit_status);
 }
-
 
 void	open_channel(t_pipex *pipex)
 {
