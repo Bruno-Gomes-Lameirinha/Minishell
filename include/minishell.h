@@ -111,6 +111,9 @@ void		ft_free_split(char **split);
 void    ft_free_split(char **split);
 void    init_pipe(t_pipex *pipex);
 
+//builtin
+void	ft_pwd_command(t_token **cmd_tokens);
+
 t_token     *ft_list_new_token(void);
 t_ast_node  *ft_build_ast(t_token **tokens);
 
