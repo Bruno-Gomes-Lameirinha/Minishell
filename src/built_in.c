@@ -1,6 +1,8 @@
 
 #include "../include/minishell.h"
 
+//valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind-out.txt --suppressions=.suppress_readline_error.sup ./minishell
+
 void	ft_cd_command_with_ast(t_ast_node *node_ast)
 {
 	t_ast_node	*current_token;

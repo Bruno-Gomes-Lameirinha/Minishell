@@ -13,6 +13,19 @@
 
 #include "../include/minishell.h"
 
+void	ft_strcpy(char *dst, const char *src)
+{
+	int i;
+
+	i = 0;
+	while (src[i])
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = '\0';
+}
+
 void	ft_free_split(char **split)
 {
 	int	i;
@@ -50,16 +63,16 @@ char *ft_get_prompt(void)
 			perror("Failed to allocate memory for prompt");
 			exit(EXIT_FAILURE);
 		}
-		strcpy(prompt, "Minishell ");
-		if (relative_cwd == cwd) {
-			strcat(prompt, cwd);
-		} else 
+        ft_strcpy(prompt, "Minishell ");
+        if (relative_cwd == cwd) 
+            ft_strlcat(prompt, cwd, cwd_len + prompt_len + 3);
+        else 
 		{
-			strcat(prompt, "~");
-			strcat(prompt, "/");
-			strcat(prompt, relative_cwd);
-		}
-		strcat(prompt, "$");
+            ft_strlcat(prompt, "~", cwd_len + prompt_len + 3);
+            ft_strlcat(prompt, "/", cwd_len + prompt_len + 3);
+            ft_strlcat(prompt, relative_cwd, cwd_len + prompt_len + 3); 
+        }
+        ft_strlcat(prompt, "$ ", cwd_len + prompt_len + 3); 
 		return prompt;
 	} 
 	else 
@@ -77,6 +90,8 @@ int	main(void)
 	t_token	**lexeme;
 	t_ast_node *ast;
 	t_pipex		*pipex;
+	char	*prompt;
+	int i = 0;
 	
 	pipex = NULL;
 	env = (t_env*)malloc(sizeof(t_env));
@@ -89,23 +104,22 @@ int	main(void)
 		exit(EXIT_FAILURE);
 	}
 	*lexeme = NULL;
-	while (1)
+	while (i < 3)
 	{
-		input = readline(ft_get_prompt());
+		prompt = ft_get_prompt();
+		input = readline(prompt);
 		add_history(input);
 		if (input)
 		{
-			//printf("Você digitou: %s\n", input);
 			ft_tokenize(input, lexeme);
-			//ft_print_linked_list(lexeme);
-			//ft_echo_command(lexeme);
 			//ft_print_linked_list(lexeme);
 			ast = ft_build_ast(lexeme);
 			ft_execute_ast(ast, pipex);
-
-			//ft_cd_command(lexeme);
 			ft_clean_token_list(lexeme);
 			free(input);
+			free(prompt);
+			free(ast);
+			i++;
 		}
 	}
 	free(lexeme);
@@ -130,7 +144,6 @@ t_ast_node *ft_build_ast(t_token **tokens)
 		{
 			if (!current_node || current_node->type != NODE_COMMAND)
 			{
-				// Criando um novo nó de comando
 				t_ast_node *cmd_node = malloc(sizeof(t_ast_node));
 				cmd_node->type = NODE_COMMAND;
 				cmd_node->value = ft_strdup(current->token_node);
@@ -175,7 +188,7 @@ t_ast_node *ft_build_ast(t_token **tokens)
 		{
 			t_ast_node *pipe_node = malloc(sizeof(t_ast_node));
 			pipe_node->type = NODE_PIPE;
-			pipe_node->value = NULL; // Sem valor para o pipe em si
+			pipe_node->value = NULL;
 			pipe_node->left = root;
 			pipe_node->right = NULL;
 			root = pipe_node;
@@ -226,8 +239,8 @@ void ft_execute_ast(t_ast_node *root, t_pipex *pipex)
 			perror("pipe");
 			exit(EXIT_FAILURE);
 		}
-		first_child(pipex, root->left);  // Executa o comando à esquerda do pipe
-		second_child(pipex);             // Executa o comando à direita do pipe
+		first_child(pipex, root->left); 
+		second_child(pipex);
 		close(pipex->channel[0]);
 		close(pipex->channel[1]);
 		waitpid(pipex->first_child, NULL, 0);
@@ -249,7 +262,7 @@ void ft_execute_ast(t_ast_node *root, t_pipex *pipex)
 		int saved_stdout = dup(STDOUT_FILENO);
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
-		ft_execute_ast(root->left, pipex); // Executa o comando redirecionado
+		ft_execute_ast(root->left, pipex); 
 		dup2(saved_stdout, STDOUT_FILENO);
 		close(saved_stdout);
 	}
@@ -269,48 +282,46 @@ void ft_execute_ast(t_ast_node *root, t_pipex *pipex)
 void	first_child(t_pipex *pipex, t_ast_node	*root)
 {
 	pipex->first_child = fork();
-	if (pipex->first_child == -1)  // Verifique se fork() falhou
+	if (pipex->first_child == -1)
 	{
 		perror("fork second child");
-		exit(EXIT_FAILURE);  // Saia com erro se fork() falhar
+		exit(EXIT_FAILURE);
 	}
 	if (pipex->first_child == 0)
 	{
-		close(pipex->channel[0]); // Fecha o lado de leitura do pipe no filho
+		close(pipex->channel[0]); 
 		dup2(pipex->channel[1], STDOUT_FILENO);
-		close(pipex->channel[1]); // Fecha o lado de escrita do pipe após redirecionamento
-
-		//execute(pipex, "echo abc"); // Executa o comando
+		close(pipex->channel[1]);
 		if (root->type == NODE_COMMAND)
 			ft_echo_command_with_ast(root);
-		exit(EXIT_SUCCESS); // Certifique-se de que o processo filho termine corretamente
+		exit(EXIT_SUCCESS); 
 	}
 }
 void	init_pipe(t_pipex *pipex)
 {
-	pipex->parent_env = malloc(sizeof(char*) * 2); // Aloca memória para 2 ponteiros de char
+	pipex->parent_env = malloc(sizeof(char*) * 2); 
 	if (pipex->parent_env == NULL) {
 		perror("Failed to allocate memory");
 		exit(EXIT_FAILURE);
 	}
 
-	pipex->parent_argv = malloc(sizeof(char*) * 2); // Aloca memória para 2 ponteiros de char
+	pipex->parent_argv = malloc(sizeof(char*) * 2); 
 	if (pipex->parent_env == NULL) {
 		perror("Failed to allocate memory");
 		exit(EXIT_FAILURE);
 	}
-	pipex->path = malloc(sizeof(char*) * 2); // Aloca memória para 2 ponteiros de char
+	pipex->path = malloc(sizeof(char*) * 2);
 	if (pipex->parent_env == NULL) {
 		perror("Failed to allocate memory");
 		exit(EXIT_FAILURE);
 	}
 
-	pipex->parent_env[0] = strdup("SHELL=/bin/bash"); // Aloca e copia a string
-	pipex->parent_env[1] = NULL; // Termina a lista de strings com NULL
-	pipex->parent_argv[0] = strdup("./minishell"); // Aloca e copia a string
-	pipex->parent_argv[1] = NULL; // Termina a lista de strings com NULL
-	pipex->path[0] = strdup("/home/bruno/.local/bin"); // Aloca e copia a string
-	pipex->path[1] = NULL; // Termina a lista de strings com NULL
+	pipex->parent_env[0] = strdup("SHELL=/bin/bash");
+	pipex->parent_env[1] = NULL; 
+	pipex->parent_argv[0] = strdup("./minishell"); 
+	pipex->parent_argv[1] = NULL; 
+	pipex->path[0] = strdup("/home/bruno/.local/bin");
+	pipex->path[1] = NULL; 
 
    
 }
@@ -318,20 +329,18 @@ void	init_pipe(t_pipex *pipex)
 void	second_child(t_pipex *pipex)
 {
 	pipex->second_child = fork();
-	if (pipex->second_child == -1)  // Verifique se fork() falhou
+	if (pipex->second_child == -1)
 	{
 		perror("fork second child");
-		exit(EXIT_FAILURE);  // Saia com erro se fork() falhar
+		exit(EXIT_FAILURE);
 	}
 	if (pipex->second_child == 0)
 	{
-		close(pipex->channel[1]); // Fecha o lado de escrita do pipe
-
-		// Redireciona stdin para o descritor de leitura do pipe
+		close(pipex->channel[1]);
 		dup2(pipex->channel[0], STDIN_FILENO);
-		close(pipex->channel[0]); // Fecha o descritor de leitura do pipe após redirecionamento
-		execute(pipex, "wc"); // Executa o comando
-		exit(EXIT_SUCCESS); // Certifique-se de que o processo filho termine corretamente
+		close(pipex->channel[0]);
+		execute(pipex, "wc");
+		exit(EXIT_SUCCESS);
 	}
 
 }
