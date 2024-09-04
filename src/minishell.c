@@ -334,31 +334,6 @@ void	second_child(t_pipex *pipex)
 
 }
 
-void ft_echo_command_with_ast(t_ast_node *node) 
-{
-	if (!node) return;
-
-	int new_line = 1;
-	t_ast_node *current = node->right;
-
-	if (current && !strcmp(current->value, "-n")) 
-	{
-		new_line = 0;
-		current = current->next;
-	}
-
-	while (current)
-	{
-		write(1, current->value, strlen(current->value));
-		if (current->next)
-			write(1, " ", 1);
-		current = current->next;
-	}
-
-	if (new_line)
-		write(1, "\n", 1);
-}
-
 void	*search_executable(t_pipex *pipex)
 {
 	char	*executable;
