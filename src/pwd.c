@@ -12,14 +12,14 @@
 
 #include "../include/minishell.h"
 
-void	ft_pwd_command(t_token **cmd_tokens)
+void	ft_pwd_command(t_ast_node *cmd_tokens)
 {
-    t_token *current_token;
+    t_ast_node *current_token;
     char    *path;
 
-    current_token = *cmd_tokens;
+    current_token = cmd_tokens;
     path = NULL;
-    if (strcmp(current_token->token_node, "pwd") == 0)
+    if (strcmp(current_token->value, "pwd") == 0)
     {
         path = getcwd(NULL, 1024);
         if (path == NULL)

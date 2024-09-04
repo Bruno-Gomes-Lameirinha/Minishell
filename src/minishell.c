@@ -258,7 +258,9 @@ void ft_execute_ast(t_ast_node *root, t_pipex *pipex)
 		if (!strcmp(root->value, "cd"))
 			ft_cd_command_with_ast(root);
 		else if (!strcmp(root->value, "echo"))
-			ft_echo_command_with_ast(root); // Executa o comando
+			ft_echo_command_with_ast(root);
+		else if (!strcmp(root->value, "pwd"))
+			ft_pwd_command(root);
 		//else
 			// aqui vamos chamar o execv para rodar os comandos que não precisamos implementar
 	}
