@@ -39,12 +39,13 @@ typedef struct s_pipex
 }		t_pipex;
 
 typedef struct s_ast_node {
-    int type;
-    int	type_token;             // Tipo do nó (comando, redirecionamento, etc.)
-    char *value;             // Valor do nó (nome do comando, arquivo, etc.)
-    struct s_ast_node *left; // Nó esquerdo (por exemplo, comando antes do redirecionamento)
-    struct s_ast_node *right;// Nó direito (por exemplo, arquivo de destino no redirecionamento)
-    struct s_ast_node *next; // Próximo argumento ou próximo item da lista
+	int type;
+	int	type_token;             // Tipo do nó (comando, redirecionamento, etc.)
+	char *value;             // Valor do nó (nome do comando, arquivo, etc.)
+	struct s_ast_node *left; // Nó esquerdo (por exemplo, comando antes do redirecionamento)
+	struct s_ast_node *right;// Nó direito (por exemplo, arquivo de destino no redirecionamento)
+	struct s_ast_node *next; // Próximo argumento ou próximo item da lista
+	pid_t	execve_child;
 } t_ast_node;
 
 typedef enum {
@@ -64,19 +65,19 @@ typedef enum {
 
 enum e_token
 {
-    WORD,
-    PIPE,// |
-    REDIR_IN, // <
-    REDIR_HDOC, // <<
-    REDIR_OUT, // >
-    REDIR_OUTAPP, //>>
-    OR,// ||
-    AND,// &&
-    SUBSHELL, // ()
-    ARCHIVE, 
-    DOUBLE_QUOTES, // ""
-    SINGLE_QUOTES // ''
-    //$?
+	WORD,
+	PIPE,// |
+	REDIR_IN, // <
+	REDIR_HDOC, // <<
+	REDIR_OUT, // >
+	REDIR_OUTAPP, //>>
+	OR,// ||
+	AND,// &&
+	SUBSHELL, // ()
+	ARCHIVE, 
+	DOUBLE_QUOTES, // ""
+	SINGLE_QUOTES // ''
+	//$?
 }; 
 
 void	ft_strcpy(char *dst, const char *src);
@@ -108,10 +109,10 @@ void		close_channel(t_pipex *pipex);
 void		search_path(t_pipex *pipex);
 void		handle_error(t_pipex *pipex, int exit_status, char *msg);
 void		ft_free_split(char **split);
-void    ft_free_split(char **split);
-void    init_pipe(t_pipex *pipex);
-
-
+void		ft_free_split(char **split);
+void		init_pipe(t_pipex *pipex);
+void		ft_execute_command_ast(t_ast_node *root);
+char		*ft_search_executable_ast(char *command);
 
 
 
