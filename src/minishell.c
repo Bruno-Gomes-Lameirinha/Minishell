@@ -371,7 +371,17 @@ void	first_child(t_pipex *pipex, t_ast_node	*root)
 		dup2(pipex->channel[1], STDOUT_FILENO);
 		close(pipex->channel[1]);
 		if (root->type == NODE_COMMAND)
-			ft_echo_command_with_ast(root);
+		{
+			if (!strcmp(root->value, "cd"))
+				ft_cd_command_with_ast(root);
+			else if (!strcmp(root->value, "echo"))
+				ft_echo_command_with_ast(root);
+			else if (!strcmp(root->value, "pwd"))
+				ft_pwd_command(root);
+			else
+				ft_execute_command_ast(root);
+				//ft_echo_command_with_ast(root);
+		}
 		exit(EXIT_SUCCESS); 
 	}
 }
