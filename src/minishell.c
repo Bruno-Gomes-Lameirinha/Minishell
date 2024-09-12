@@ -13,6 +13,8 @@
 
 #include "../include/minishell.h"
 
+#include "../include/minishell.h"
+
 void	ft_strcpy(char *dst, const char *src)
 {
 	int i;
@@ -153,7 +155,7 @@ t_ast_node *ft_build_ast(t_token **tokens)
 				{
 					root = cmd_node;
 				}
-				else if (current_node && (current_node->type == NODE_PIPE || current_node->type == REDIR_OUT || current_node->type == REDIR_OUTAPP))
+				else if (current_node && (current_node->type == NODE_PIPE || current_node->type == REDIR_OUT || current_node->type == REDIR_OUTAPP || current->type_token == REDIR_IN))
 				{
 					current_node->right = cmd_node;
 				}
@@ -192,7 +194,7 @@ t_ast_node *ft_build_ast(t_token **tokens)
 			root = pipe_node;
 			current_node = pipe_node;
 		}
-		else if (current->type_token == REDIR_OUT || current->type_token == REDIR_OUTAPP)
+		else if (current->type_token == REDIR_OUT || current->type_token == REDIR_OUTAPP || current->type_token == REDIR_IN)
 		{
 			t_ast_node *redir_node = malloc(sizeof(t_ast_node));
 			redir_node->type = NODE_REDIRECTION;
@@ -245,19 +247,8 @@ char	*ft_search_executable_ast(char *command)
 	ft_free_split(paths);
 	return (NULL);
 }
-void	execute(t_pipex *pipex, char *command)
-{
-	//char	*executable;
 
-	pipex->argv_childs = ft_split(command, ' ');
-	if (pipex->argv_childs == NULL)
-		handle_error(pipex, 2, NULL);
-	//executable = search_executable(pipex);
-	// if (executable == NULL)
-	// 	handle_error(pipex, 127, NULL);
 
-	execve("/usr/bin/wc", pipex->argv_childs, pipex->parent_env);
-}
 void ft_execute_command_ast(t_ast_node *command_node)
 {
 	t_ast_node *current;
@@ -300,11 +291,45 @@ void ft_execute_command_ast(t_ast_node *command_node)
 	else
 		waitpid(command_node->execve_child, NULL, 0);
 }
+void ft_execute_command_ast_pipe(t_ast_node *command_node, t_pipex *pipex)
+{
+	t_ast_node *current;
+	char	*executable;
+	int		n_args;
+	int i;
 
-
+	i = 0;
+	n_args = 0;
+	current = command_node;
+	while(current)
+	{
+		n_args++;
+		current = current->right;
+	}
+	pipex->argv_childs = malloc(sizeof(char *) * (n_args + 1));
+	if (!pipex->argv_childs)
+	{
+		perror("malloc");
+		exit(EXIT_FAILURE);
+	}
+	current = command_node;
+	while (current)
+	{
+		pipex->argv_childs[i] = ft_strdup(current->value);
+		i++;
+		current = current->right;
+	}
+	pipex->argv_childs[i] = NULL;
+	executable = ft_search_executable_ast(pipex->argv_childs[0]);
+	execve(executable, pipex->argv_childs, pipex->parent_env);
+	exit(EXIT_SUCCESS);
+}
 
 void ft_execute_ast(t_ast_node *root, t_pipex *pipex)
 {
+	int saved_stdout;
+	int saved_stdin;
+
 	if (!root)
 		return;
 
@@ -317,7 +342,7 @@ void ft_execute_ast(t_ast_node *root, t_pipex *pipex)
 			exit(EXIT_FAILURE);
 		}
 		first_child(pipex, root->left); 
-		second_child(pipex);
+		second_child(pipex, root);
 		close(pipex->channel[0]);
 		close(pipex->channel[1]);
 		waitpid(pipex->first_child, NULL, 0);
@@ -329,6 +354,8 @@ void ft_execute_ast(t_ast_node *root, t_pipex *pipex)
 		int fd;
 		if (root->type_token == REDIR_OUT)
 			fd = open(root->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		else if (root->type_token == REDIR_IN)
+			fd = open(root->value, O_RDONLY);
 		else
 			fd = open(root->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (fd < 0) 
@@ -337,12 +364,25 @@ void ft_execute_ast(t_ast_node *root, t_pipex *pipex)
 			return;
 		}
 
-		int saved_stdout = dup(STDOUT_FILENO);
-		dup2(fd, STDOUT_FILENO);
-		close(fd);
-		ft_execute_ast(root->left, pipex); 
-		dup2(saved_stdout, STDOUT_FILENO);
-		close(saved_stdout);
+		if (root->type_token == REDIR_IN)
+		{
+			saved_stdin = dup(STDIN_FILENO);
+			dup2(fd, STDIN_FILENO);
+			close(fd);
+			//root->left->right->value = ft_strdup(root->value);
+			ft_execute_ast(root->left, pipex);
+			dup2(saved_stdin, STDIN_FILENO);
+			close(saved_stdin);
+		}
+		else
+		{
+			saved_stdout = dup(STDOUT_FILENO);
+			dup2(fd, STDOUT_FILENO);
+			close(fd);
+			ft_execute_ast(root->left, pipex); 
+			dup2(saved_stdout, STDOUT_FILENO);
+			close(saved_stdout);
+		}
 	}
 	else if (root->type == NODE_COMMAND)
 	{
@@ -379,42 +419,68 @@ void	first_child(t_pipex *pipex, t_ast_node	*root)
 			else if (!strcmp(root->value, "pwd"))
 				ft_pwd_command(root);
 			else
-				ft_execute_command_ast(root);
+				ft_execute_command_ast_pipe(root, pipex);
 				//ft_echo_command_with_ast(root);
+		}
+		else
+		{
+			if (!strcmp(root->left->value, "cd"))
+				ft_cd_command_with_ast(root->left);
+			else if (!strcmp(root->left->value, "echo"))
+				ft_echo_command_with_ast(root->left);
+			else if (!strcmp(root->left->value, "pwd"))
+				ft_pwd_command(root->left);
+			else
+				ft_execute_command_ast(root->left);
 		}
 		exit(EXIT_SUCCESS); 
 	}
 }
-void	init_pipe(t_pipex *pipex)
-{
-	pipex->parent_env = malloc(sizeof(char*) * 2); 
-	if (pipex->parent_env == NULL) {
-		perror("Failed to allocate memory");
-		exit(EXIT_FAILURE);
-	}
 
-	pipex->parent_argv = malloc(sizeof(char*) * 2); 
-	if (pipex->parent_env == NULL) {
-		perror("Failed to allocate memory");
-		exit(EXIT_FAILURE);
-	}
-	pipex->path = malloc(sizeof(char*) * 2);
-	if (pipex->parent_env == NULL) {
-		perror("Failed to allocate memory");
-		exit(EXIT_FAILURE);
-	}
+// void	init_pipe(t_pipex *pipex)
+// {
+// 	// Inicializando ambiente manualmente com as variáveis necessárias
+// 	pipex->parent_env = malloc(sizeof(char*) * 3); // Supondo que usaremos 2 variáveis de ambiente (SHELL, PATH)
+// 	if (pipex->parent_env == NULL)
+// 	{
+// 		perror("Failed to allocate memory");
+// 		exit(EXIT_FAILURE);
+// 	}
 
-	pipex->parent_env[0] = strdup("SHELL=/bin/bash");
-	pipex->parent_env[1] = NULL; 
-	pipex->parent_argv[0] = strdup("./minishell"); 
-	pipex->parent_argv[1] = NULL; 
-	pipex->path[0] = strdup("/home/bruno/.local/bin");
-	pipex->path[1] = NULL; 
+// 	// Adicionando variável SHELL
+// 	char *shell_var = getenv("SHELL");
+// 	if (shell_var == NULL)
+// 		shell_var = "/bin/bash"; // Valor padrão caso SHELL não esteja definido
+// 	pipex->parent_env[0] = ft_strjoin("SHELL=", shell_var);
 
-   
-}
+// 	// Adicionando variável PATH
+// 	char *path_var = getenv("PATH");
+// 	if (path_var == NULL)
+// 		path_var = "/usr/local/bin:/usr/bin:/bin"; // Caminho padrão caso PATH não esteja definido
+// 	pipex->parent_env[1] = ft_strjoin("PATH=", path_var);
 
-void	second_child(t_pipex *pipex)
+// 	pipex->parent_env[2] = NULL; // Finalizando a lista com NULL
+
+// 	// Argumentos do processo (nome do shell ou do comando)
+// 	pipex->parent_argv = malloc(sizeof(char*) * 2);
+// 	if (pipex->parent_argv == NULL)
+// 	{
+// 		perror("Failed to allocate memory");
+// 		exit(EXIT_FAILURE);
+// 	}
+// 	pipex->parent_argv[0] = strdup("./minishell"); // Nome do shell ou comando executado
+// 	pipex->parent_argv[1] = NULL;
+
+// 	// Caminho para os executáveis
+// 	pipex->path = ft_split(path_var, ':'); // Divide o PATH em múltiplos diretórios
+// 	if (pipex->path == NULL)
+// 	{
+// 		perror("Failed to allocate memory for path");
+// 		exit(EXIT_FAILURE);
+// 	}
+// }
+
+void	second_child(t_pipex *pipex, t_ast_node	*root)
 {
 	pipex->second_child = fork();
 	if (pipex->second_child == -1)
@@ -427,7 +493,7 @@ void	second_child(t_pipex *pipex)
 		close(pipex->channel[1]);
 		dup2(pipex->channel[0], STDIN_FILENO);
 		close(pipex->channel[0]);
-		execute(pipex, "wc");
+		ft_execute_command_ast_pipe(root->right, pipex);
 		exit(EXIT_SUCCESS);
 	}
 

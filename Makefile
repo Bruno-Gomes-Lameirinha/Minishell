@@ -11,7 +11,7 @@ LDFLAGS     := -lreadline
 
 SRC_MINISHELL = 
             
-SRC_MINISHELL_MAIN = $(SRC_PATH)/minishell.c built_in.c tokenize.c pwd.c
+SRC_MINISHELL_MAIN = $(SRC_PATH)/minishell.c built_in.c tokenize.c pwd.c pipe.c
 
 SRC_MINISHELL_BONUS = $(BONUS_PATH)/minishell_bonus.c 
 
