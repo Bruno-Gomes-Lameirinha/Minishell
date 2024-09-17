@@ -291,9 +291,11 @@ void ft_execute_command_ast(t_ast_node *command_node)
 	else
 		waitpid(command_node->execve_child, NULL, 0);
 }
-void ft_execute_command_ast_pipe(t_ast_node *command_node, t_pipex *pipex)
+
+void	ft_execute_command_ast_pipe(t_ast_node *command_node)
 {
 	t_ast_node *current;
+	char	**args;
 	char	*executable;
 	int		n_args;
 	int i;
@@ -306,8 +308,8 @@ void ft_execute_command_ast_pipe(t_ast_node *command_node, t_pipex *pipex)
 		n_args++;
 		current = current->right;
 	}
-	pipex->argv_childs = malloc(sizeof(char *) * (n_args + 1));
-	if (!pipex->argv_childs)
+	args = malloc(sizeof(char *) * (n_args + 1));
+	if (!args)
 	{
 		perror("malloc");
 		exit(EXIT_FAILURE);
@@ -315,39 +317,97 @@ void ft_execute_command_ast_pipe(t_ast_node *command_node, t_pipex *pipex)
 	current = command_node;
 	while (current)
 	{
-		pipex->argv_childs[i] = ft_strdup(current->value);
+		args[i] = ft_strdup(current->value);
 		i++;
 		current = current->right;
 	}
-	pipex->argv_childs[i] = NULL;
-	executable = ft_search_executable_ast(pipex->argv_childs[0]);
-	execve(executable, pipex->argv_childs, pipex->parent_env);
-	exit(EXIT_SUCCESS);
+	args[i] = NULL;
+	executable = ft_search_executable_ast(args[0]);
+	execve(executable, args, NULL);
 }
+
+void	ft_handle_pipe(t_ast_node *root, int index)
+{
+	int	channel[2];
+	pid_t f_child, s_child;
+
+	if (pipe(channel) == -1)
+	{
+		perror("pipe");
+		exit(EXIT_FAILURE);
+	}
+	if (root->left->type == NODE_PIPE && index == 0)
+	{
+		first_pipeline(channel, root, index);
+		close(channel[0]);
+		close(channel[1]);
+		//waitpid(first_c, NULL, 0);
+	}
+	if (root->right->type == NODE_COMMAND && root->left->type == NODE_COMMAND)
+	{
+		f_child = first_child(channel, root->left); 
+		s_child = second_child (channel, root->right, index);
+		close(channel[0]);
+		close(channel[1]);
+
+
+	}
+	waitpid(f_child, NULL, 0);
+	waitpid(s_child, NULL, 0);
+}
+
+pid_t	first_pipeline(int *channel, t_ast_node *root, int index)
+{
+	pid_t process_id;
+
+	process_id = fork();
+	if (process_id == -1)
+	{
+		perror("fork second child");
+		exit(EXIT_FAILURE);
+	}
+	if (process_id == 0)
+	{
+		index = index + 1;
+		dup2(channel[0], STDIN_FILENO);
+		close(channel[0]);
+		close(channel[1]);
+		ft_handle_pipe(root->left, index);
+		while (wait(NULL) > 0);
+		ft_execute_command_ast_pipe(root->right);
+		exit(EXIT_SUCCESS);
+	}
+	return(process_id);
+}	
+
 
 void ft_execute_ast(t_ast_node *root, t_pipex *pipex)
 {
 	int saved_stdout;
 	int saved_stdin;
+	int index;
 
 	if (!root)
-		return;
+		return;	
 
+	index = 0; 
 	if (root->type == NODE_PIPE)
 	{
-		init_pipe(pipex);
-		if (pipe(pipex->channel) == -1) 
-		{
-			perror("pipe");
-			exit(EXIT_FAILURE);
-		}
-		first_child(pipex, root->left); 
-		second_child(pipex, root);
-		close(pipex->channel[0]);
-		close(pipex->channel[1]);
-		waitpid(pipex->first_child, NULL, 0);
-		waitpid(pipex->second_child, NULL, 0);
-		//ft_execute_ast(root->left, pipex);
+		ft_handle_pipe(root, index);
+		printf("voltei par execute\n");
+		while (wait(NULL) > 0);
+		// if (pipe(pipex->channel) == -1) 
+		// {
+		// 	perror("pipe");
+		// 	exit(EXIT_FAILURE);
+		// }
+		// first_child(pipex, root->left); 
+		// second_child(pipex, root);
+		// close(pipex->channel[0]);
+		// close(pipex->channel[1]);
+		// waitpid(pipex->first_child, NULL, 0);
+		// waitpid(pipex->second_child, NULL, 0);
+		// //ft_execute_ast(root->left, pipex);
 	}
 	else if (root->type == NODE_REDIRECTION) 
 	{
@@ -397,19 +457,21 @@ void ft_execute_ast(t_ast_node *root, t_pipex *pipex)
 	}
 }
 
-void	first_child(t_pipex *pipex, t_ast_node	*root)
+pid_t	first_child(int *channel, t_ast_node	*root)
 {
-	pipex->first_child = fork();
-	if (pipex->first_child == -1)
+	pid_t process_id;
+
+	process_id = fork();
+	if (process_id == -1)
 	{
 		perror("fork second child");
 		exit(EXIT_FAILURE);
 	}
-	if (pipex->first_child == 0)
+	if (process_id == 0)
 	{
-		close(pipex->channel[0]); 
-		dup2(pipex->channel[1], STDOUT_FILENO);
-		close(pipex->channel[1]);
+		close(channel[0]); 
+		dup2(channel[1], STDOUT_FILENO);
+		close(channel[1]);
 		if (root->type == NODE_COMMAND)
 		{
 			if (!strcmp(root->value, "cd"))
@@ -419,7 +481,7 @@ void	first_child(t_pipex *pipex, t_ast_node	*root)
 			else if (!strcmp(root->value, "pwd"))
 				ft_pwd_command(root);
 			else
-				ft_execute_command_ast_pipe(root, pipex);
+				ft_execute_command_ast_pipe(root);
 				//ft_echo_command_with_ast(root);
 		}
 		else
@@ -431,73 +493,48 @@ void	first_child(t_pipex *pipex, t_ast_node	*root)
 			else if (!strcmp(root->left->value, "pwd"))
 				ft_pwd_command(root->left);
 			else
-				ft_execute_command_ast(root->left);
+				ft_execute_command_ast_pipe(root);
 		}
 		exit(EXIT_SUCCESS); 
 	}
+	return(process_id);
 }
 
-// void	init_pipe(t_pipex *pipex)
-// {
-// 	// Inicializando ambiente manualmente com as variáveis necessárias
-// 	pipex->parent_env = malloc(sizeof(char*) * 3); // Supondo que usaremos 2 variáveis de ambiente (SHELL, PATH)
-// 	if (pipex->parent_env == NULL)
-// 	{
-// 		perror("Failed to allocate memory");
-// 		exit(EXIT_FAILURE);
-// 	}
 
-// 	// Adicionando variável SHELL
-// 	char *shell_var = getenv("SHELL");
-// 	if (shell_var == NULL)
-// 		shell_var = "/bin/bash"; // Valor padrão caso SHELL não esteja definido
-// 	pipex->parent_env[0] = ft_strjoin("SHELL=", shell_var);
-
-// 	// Adicionando variável PATH
-// 	char *path_var = getenv("PATH");
-// 	if (path_var == NULL)
-// 		path_var = "/usr/local/bin:/usr/bin:/bin"; // Caminho padrão caso PATH não esteja definido
-// 	pipex->parent_env[1] = ft_strjoin("PATH=", path_var);
-
-// 	pipex->parent_env[2] = NULL; // Finalizando a lista com NULL
-
-// 	// Argumentos do processo (nome do shell ou do comando)
-// 	pipex->parent_argv = malloc(sizeof(char*) * 2);
-// 	if (pipex->parent_argv == NULL)
-// 	{
-// 		perror("Failed to allocate memory");
-// 		exit(EXIT_FAILURE);
-// 	}
-// 	pipex->parent_argv[0] = strdup("./minishell"); // Nome do shell ou comando executado
-// 	pipex->parent_argv[1] = NULL;
-
-// 	// Caminho para os executáveis
-// 	pipex->path = ft_split(path_var, ':'); // Divide o PATH em múltiplos diretórios
-// 	if (pipex->path == NULL)
-// 	{
-// 		perror("Failed to allocate memory for path");
-// 		exit(EXIT_FAILURE);
-// 	}
-// }
-
-void	second_child(t_pipex *pipex, t_ast_node	*root)
+pid_t	second_child(int *channel, t_ast_node	*root, int index)
 {
-	pipex->second_child = fork();
-	if (pipex->second_child == -1)
+	pid_t process_id;
+
+	process_id = fork();
+	if (process_id == -1)
 	{
 		perror("fork second child");
 		exit(EXIT_FAILURE);
 	}
-	if (pipex->second_child == 0)
+	if (process_id == 0)
 	{
-		close(pipex->channel[1]);
-		dup2(pipex->channel[0], STDIN_FILENO);
-		close(pipex->channel[0]);
-		ft_execute_command_ast_pipe(root->right, pipex);
-		exit(EXIT_SUCCESS);
+		if (index == 0)
+		{
+			close(channel[1]);
+			dup2(channel[0], STDIN_FILENO);
+			close(channel[0]);
+			ft_execute_command_ast_pipe(root);
+			exit(EXIT_SUCCESS);
+		}
+		else
+		{
+			dup2(channel[0], STDIN_FILENO);
+			close(channel[0]);
+			dup2(channel[0], STDOUT_FILENO);
+			close(channel[1]);
+			ft_execute_command_ast_pipe(root);
+			exit(EXIT_SUCCESS);
+		}
 	}
 
+	return(process_id);
 }
+
 
 void	*search_executable(t_pipex *pipex)
 {

@@ -32,6 +32,7 @@ typedef struct s_pipex
 	int		channel[2];
 	pid_t	first_child;
 	pid_t	second_child;
+	pid_t	third_child;
 	char	**parent_argv;
 	char	**parent_env;
 	char	**argv_childs;
@@ -102,8 +103,8 @@ void	    ft_cd_command_with_ast(t_ast_node *node_ast);
 
 
 //pipe
-void		first_child(t_pipex *pipex, t_ast_node	*root);
-void		second_child(t_pipex *pipex, t_ast_node	*root);
+pid_t	first_child(int *channel, t_ast_node	*root);
+pid_t	second_child(int *channel, t_ast_node *root, int index);
 
 void		open_channel(t_pipex *pipex);
 void		close_channel(t_pipex *pipex);
@@ -114,9 +115,9 @@ void		ft_free_split(char **split);
 void		init_pipe(t_pipex *pipex);
 void		ft_execute_command_ast(t_ast_node *root);
 char		*ft_search_executable_ast(char *command);
-void 		ft_execute_command_ast_pipe(t_ast_node *command_node, t_pipex *pipex);
-
-
+void 		ft_execute_command_ast_pipe(t_ast_node *command_node);
+void	ft_handle_pipe(t_ast_node *root, int index);
+pid_t	first_pipeline(int *channel, t_ast_node *root, int index);
 
 
 
