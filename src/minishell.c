@@ -65,16 +65,16 @@ char *ft_get_prompt(void)
 			perror("Failed to allocate memory for prompt");
 			exit(EXIT_FAILURE);
 		}
-        ft_strcpy(prompt, "Minishell ");
-        if (relative_cwd == cwd) 
-            ft_strlcat(prompt, cwd, cwd_len + prompt_len + 3);
-        else 
+		ft_strcpy(prompt, "Minishell ");
+		if (relative_cwd == cwd) 
+			ft_strlcat(prompt, cwd, cwd_len + prompt_len + 3);
+		else 
 		{
-            ft_strlcat(prompt, "~", cwd_len + prompt_len + 3);
-            ft_strlcat(prompt, "/", cwd_len + prompt_len + 3);
-            ft_strlcat(prompt, relative_cwd, cwd_len + prompt_len + 3); 
-        }
-        ft_strlcat(prompt, "$ ", cwd_len + prompt_len + 3); 
+			ft_strlcat(prompt, "~", cwd_len + prompt_len + 3);
+			ft_strlcat(prompt, "/", cwd_len + prompt_len + 3);
+			ft_strlcat(prompt, relative_cwd, cwd_len + prompt_len + 3); 
+		}
+		ft_strlcat(prompt, "$ ", cwd_len + prompt_len + 3); 
 		return prompt;
 	} 
 	else 
@@ -326,88 +326,76 @@ void	ft_execute_command_ast_pipe(t_ast_node *command_node)
 	execve(executable, args, NULL);
 }
 
-void	ft_handle_pipe(t_ast_node *root, int index)
+void ft_handle_pipe(t_ast_node *root)
 {
-	int	channel[2];
-	pid_t f_child, s_child;
+	int fd[2];
+	pid_t left_pid;
+	pid_t right_pid;
 
-	if (pipe(channel) == -1)
+	if (root->type == NODE_PIPE)
 	{
-		perror("pipe");
-		exit(EXIT_FAILURE);
-	}
-	if (root->left->type == NODE_PIPE && index == 0)
-	{
-		first_pipeline(channel, root, index);
-		close(channel[0]);
-		close(channel[1]);
-		//waitpid(first_c, NULL, 0);
-	}
-	if (root->right->type == NODE_COMMAND && root->left->type == NODE_COMMAND)
-	{
-		f_child = first_child(channel, root->left); 
-		s_child = second_child (channel, root->right, index);
-		close(channel[0]);
-		close(channel[1]);
-
-
-	}
-	waitpid(f_child, NULL, 0);
-	waitpid(s_child, NULL, 0);
+		if (pipe(fd) == -1)
+		{
+			perror("pipe");
+			exit(EXIT_FAILURE);
+		}
+		left_pid = fork();
+		if (left_pid == -1) 
+		{
+			perror("fork");
+			exit(EXIT_FAILURE);
+		}
+		if (left_pid == 0)
+		{
+			if (dup2(fd[1], STDOUT_FILENO) == -1) 
+			{
+				perror("dup2");
+				exit(EXIT_FAILURE);
+			}
+			close(fd[0]); // Close read end
+			close(fd[1]); // Close write end (duplicated)
+			ft_handle_pipe(root->left);
+			exit(EXIT_SUCCESS);
+		}
+		right_pid = fork();
+		if (right_pid == -1) 
+		{
+			perror("fork");
+			exit(EXIT_FAILURE);
+		}
+		if (right_pid == 0)
+		{
+			if (dup2(fd[0], STDIN_FILENO) == -1)
+			{
+				perror("dup2");
+				exit(EXIT_FAILURE);
+			}
+			close(fd[0]); // Close read end (duplicated)
+			close(fd[1]); // Close write end
+			ft_handle_pipe(root->right);
+			exit(EXIT_SUCCESS);
+		}
+		close(fd[0]);
+		close(fd[1]);
+		waitpid(left_pid, NULL, 0);
+		waitpid(right_pid, NULL, 0);
+	} else if (root->type == NODE_COMMAND)
+		ft_execute_command_ast(root);
 }
-
-pid_t	first_pipeline(int *channel, t_ast_node *root, int index)
-{
-	pid_t process_id;
-
-	process_id = fork();
-	if (process_id == -1)
-	{
-		perror("fork second child");
-		exit(EXIT_FAILURE);
-	}
-	if (process_id == 0)
-	{
-		index = index + 1;
-		dup2(channel[0], STDIN_FILENO);
-		close(channel[0]);
-		close(channel[1]);
-		ft_handle_pipe(root->left, index);
-		while (wait(NULL) > 0);
-		ft_execute_command_ast_pipe(root->right);
-		exit(EXIT_SUCCESS);
-	}
-	return(process_id);
-}	
 
 
 void ft_execute_ast(t_ast_node *root, t_pipex *pipex)
 {
 	int saved_stdout;
 	int saved_stdin;
-	int index;
-
+	
 	if (!root)
 		return;	
 
-	index = 0; 
 	if (root->type == NODE_PIPE)
 	{
-		ft_handle_pipe(root, index);
-		printf("voltei par execute\n");
+		ft_handle_pipe(root);
 		while (wait(NULL) > 0);
-		// if (pipe(pipex->channel) == -1) 
-		// {
-		// 	perror("pipe");
-		// 	exit(EXIT_FAILURE);
-		// }
-		// first_child(pipex, root->left); 
-		// second_child(pipex, root);
-		// close(pipex->channel[0]);
-		// close(pipex->channel[1]);
-		// waitpid(pipex->first_child, NULL, 0);
-		// waitpid(pipex->second_child, NULL, 0);
-		// //ft_execute_ast(root->left, pipex);
 	}
 	else if (root->type == NODE_REDIRECTION) 
 	{
@@ -429,7 +417,6 @@ void ft_execute_ast(t_ast_node *root, t_pipex *pipex)
 			saved_stdin = dup(STDIN_FILENO);
 			dup2(fd, STDIN_FILENO);
 			close(fd);
-			//root->left->right->value = ft_strdup(root->value);
 			ft_execute_ast(root->left, pipex);
 			dup2(saved_stdin, STDIN_FILENO);
 			close(saved_stdin);

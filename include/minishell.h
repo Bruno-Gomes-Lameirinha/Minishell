@@ -116,8 +116,8 @@ void		init_pipe(t_pipex *pipex);
 void		ft_execute_command_ast(t_ast_node *root);
 char		*ft_search_executable_ast(char *command);
 void 		ft_execute_command_ast_pipe(t_ast_node *command_node);
-void	ft_handle_pipe(t_ast_node *root, int index);
-pid_t	first_pipeline(int *channel, t_ast_node *root, int index);
+void		ft_handle_pipe(t_ast_node *root);
+pid_t		first_pipeline(int *channel, t_ast_node *root, int index);
 
 
 
