@@ -91,14 +91,10 @@ int	main(void)
 	t_env	*env;
 	t_token	**lexeme;
 	t_ast_node *ast;
-	t_pipex		*pipex;
 	char	*prompt;
 	
-	pipex = NULL;
 	env = (t_env*)malloc(sizeof(t_env));
 	lexeme = (t_token**)malloc(sizeof(t_token*));
-	pipex = (t_pipex*)malloc(sizeof(t_pipex));
-	
 	if (!lexeme)
 	{
 		perror("Failed to allocate memory for lexeme");
@@ -115,7 +111,7 @@ int	main(void)
 			ft_tokenize(input, lexeme);
 			//ft_print_linked_list(lexeme);
 			ast = ft_build_ast(lexeme);
-			ft_execute_ast(ast, pipex);
+			ft_execute_ast(ast);
 			ft_clean_token_list(lexeme);
 			free(input);
 			free(prompt);
@@ -352,9 +348,9 @@ void ft_handle_pipe(t_ast_node *root)
 				perror("dup2");
 				exit(EXIT_FAILURE);
 			}
-			close(fd[0]); // Close read end
-			close(fd[1]); // Close write end (duplicated)
-			ft_handle_pipe(root->left);
+			close(fd[0]);
+			close(fd[1]);
+			ft_execute_ast(root->left);
 			exit(EXIT_SUCCESS);
 		}
 		right_pid = fork();
@@ -370,9 +366,9 @@ void ft_handle_pipe(t_ast_node *root)
 				perror("dup2");
 				exit(EXIT_FAILURE);
 			}
-			close(fd[0]); // Close read end (duplicated)
-			close(fd[1]); // Close write end
-			ft_handle_pipe(root->right);
+			close(fd[0]);
+			close(fd[1]);
+			ft_execute_ast(root->right);
 			exit(EXIT_SUCCESS);
 		}
 		close(fd[0]);
@@ -384,7 +380,7 @@ void ft_handle_pipe(t_ast_node *root)
 }
 
 
-void ft_execute_ast(t_ast_node *root, t_pipex *pipex)
+void ft_execute_ast(t_ast_node *root)
 {
 	int saved_stdout;
 	int saved_stdin;
@@ -417,7 +413,7 @@ void ft_execute_ast(t_ast_node *root, t_pipex *pipex)
 			saved_stdin = dup(STDIN_FILENO);
 			dup2(fd, STDIN_FILENO);
 			close(fd);
-			ft_execute_ast(root->left, pipex);
+			ft_execute_ast(root->left);
 			dup2(saved_stdin, STDIN_FILENO);
 			close(saved_stdin);
 		}
@@ -426,7 +422,7 @@ void ft_execute_ast(t_ast_node *root, t_pipex *pipex)
 			saved_stdout = dup(STDOUT_FILENO);
 			dup2(fd, STDOUT_FILENO);
 			close(fd);
-			ft_execute_ast(root->left, pipex); 
+			ft_execute_ast(root->left); 
 			dup2(saved_stdout, STDOUT_FILENO);
 			close(saved_stdout);
 		}

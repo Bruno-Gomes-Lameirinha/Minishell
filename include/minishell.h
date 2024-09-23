@@ -97,7 +97,7 @@ void    ft_handle_operators(char ***input, char ***i_token, int **type);
 char    *ft_get_prompt(void);
 
 //parser
-void      ft_execute_ast(t_ast_node *root, t_pipex *pipex);
+void      ft_execute_ast(t_ast_node *root);
 void      ft_echo_command_with_ast(t_ast_node *node);
 void	    ft_cd_command_with_ast(t_ast_node *node_ast);
 
