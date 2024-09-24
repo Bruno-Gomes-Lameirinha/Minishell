@@ -109,7 +109,7 @@ int	main(void)
 		if (input)
 		{
 			ft_tokenize(input, lexeme);
-			ft_print_linked_list(lexeme);
+			//ft_print_linked_list(lexeme);
 			ast = ft_build_ast(lexeme);
 			ft_execute_ast(ast);
 			ft_clean_token_list(lexeme);
@@ -136,7 +136,7 @@ t_ast_node *ft_build_ast(t_token **tokens)
 	root = NULL;
 	while (current)
 	{
-		if (current->type_token == WORD)
+		if (current->type_token == WORD || current->type_token == SINGLE_QUOTES || current->type_token == DOUBLE_QUOTES )
 		{
 			if (!current_node || current_node->type != NODE_COMMAND)
 			{
@@ -175,7 +175,7 @@ t_ast_node *ft_build_ast(t_token **tokens)
 				}
 				else
 				{
-					last_arg_node->next = arg_node;
+					last_arg_node->right = arg_node;
 				}
 				last_arg_node = arg_node;
 			}
