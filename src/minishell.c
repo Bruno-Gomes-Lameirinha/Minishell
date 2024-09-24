@@ -109,7 +109,7 @@ int	main(void)
 		if (input)
 		{
 			ft_tokenize(input, lexeme);
-			//ft_print_linked_list(lexeme);
+			ft_print_linked_list(lexeme);
 			ast = ft_build_ast(lexeme);
 			ft_execute_ast(ast);
 			ft_clean_token_list(lexeme);
@@ -288,40 +288,6 @@ void ft_execute_command_ast(t_ast_node *command_node)
 		waitpid(command_node->execve_child, NULL, 0);
 }
 
-void	ft_execute_command_ast_pipe(t_ast_node *command_node)
-{
-	t_ast_node *current;
-	char	**args;
-	char	*executable;
-	int		n_args;
-	int i;
-
-	i = 0;
-	n_args = 0;
-	current = command_node;
-	while(current)
-	{
-		n_args++;
-		current = current->right;
-	}
-	args = malloc(sizeof(char *) * (n_args + 1));
-	if (!args)
-	{
-		perror("malloc");
-		exit(EXIT_FAILURE);
-	}
-	current = command_node;
-	while (current)
-	{
-		args[i] = ft_strdup(current->value);
-		i++;
-		current = current->right;
-	}
-	args[i] = NULL;
-	executable = ft_search_executable_ast(args[0]);
-	execve(executable, args, NULL);
-}
-
 void ft_handle_pipe(t_ast_node *root)
 {
 	int fd[2];
@@ -376,7 +342,7 @@ void ft_handle_pipe(t_ast_node *root)
 		waitpid(left_pid, NULL, 0);
 		waitpid(right_pid, NULL, 0);
 	} else if (root->type == NODE_COMMAND)
-		ft_execute_command_ast(root);
+		ft_execute_ast(root);
 }
 
 
@@ -439,110 +405,6 @@ void ft_execute_ast(t_ast_node *root)
 			ft_execute_command_ast(root);
 	}
 }
-
-pid_t	first_child(int *channel, t_ast_node	*root)
-{
-	pid_t process_id;
-
-	process_id = fork();
-	if (process_id == -1)
-	{
-		perror("fork second child");
-		exit(EXIT_FAILURE);
-	}
-	if (process_id == 0)
-	{
-		close(channel[0]); 
-		dup2(channel[1], STDOUT_FILENO);
-		close(channel[1]);
-		if (root->type == NODE_COMMAND)
-		{
-			if (!strcmp(root->value, "cd"))
-				ft_cd_command_with_ast(root);
-			else if (!strcmp(root->value, "echo"))
-				ft_echo_command_with_ast(root);
-			else if (!strcmp(root->value, "pwd"))
-				ft_pwd_command(root);
-			else
-				ft_execute_command_ast_pipe(root);
-				//ft_echo_command_with_ast(root);
-		}
-		else
-		{
-			if (!strcmp(root->left->value, "cd"))
-				ft_cd_command_with_ast(root->left);
-			else if (!strcmp(root->left->value, "echo"))
-				ft_echo_command_with_ast(root->left);
-			else if (!strcmp(root->left->value, "pwd"))
-				ft_pwd_command(root->left);
-			else
-				ft_execute_command_ast_pipe(root);
-		}
-		exit(EXIT_SUCCESS); 
-	}
-	return(process_id);
-}
-
-
-pid_t	second_child(int *channel, t_ast_node	*root, int index)
-{
-	pid_t process_id;
-
-	process_id = fork();
-	if (process_id == -1)
-	{
-		perror("fork second child");
-		exit(EXIT_FAILURE);
-	}
-	if (process_id == 0)
-	{
-		if (index == 0)
-		{
-			close(channel[1]);
-			dup2(channel[0], STDIN_FILENO);
-			close(channel[0]);
-			ft_execute_command_ast_pipe(root);
-			exit(EXIT_SUCCESS);
-		}
-		else
-		{
-			dup2(channel[0], STDIN_FILENO);
-			close(channel[0]);
-			dup2(channel[0], STDOUT_FILENO);
-			close(channel[1]);
-			ft_execute_command_ast_pipe(root);
-			exit(EXIT_SUCCESS);
-		}
-	}
-
-	return(process_id);
-}
-
-
-void	*search_executable(t_pipex *pipex)
-{
-	char	*executable;
-	char	*command;
-	char	*temp;
-	int		i;
-
-	i = 0;
-	command = pipex->argv_childs[0];
-	// if (access(command, X_OK) == 0)
-	// 	return (command);
-	while (pipex->path[i])
-	{
-		temp = ft_strjoin(pipex->path[i], "/");
-		executable = ft_strjoin(temp, command);
-		// if (access(executable, X_OK) == 0)
-		// 	return (executable);
-		free(temp);
-		free(executable);
-		i++;
-	}
-	return (NULL);
-}
-
 void	handle_error(t_pipex *pipex, int exit_status, char *msg)
 {
 	if (exit_status == 1)
@@ -563,33 +425,6 @@ void	handle_error(t_pipex *pipex, int exit_status, char *msg)
 		ft_free_split(pipex->path);
 	}
 	exit(exit_status);
-}
-
-void	open_channel(t_pipex *pipex)
-{
-	if (pipe(pipex->channel) == -1)
-		handle_error(pipex, 1, NULL);
-}
-
-void	close_channel(t_pipex *pipex)
-{
-	close(pipex->channel[0]);
-	close(pipex->channel[1]);
-}
-
-void	search_path(t_pipex *pipex)
-{
-	char	**path;
-	char	**env;
-
-	env = pipex->parent_env;
-	while (ft_strncmp(*env, "PATH=", 5) != 0)
-		env++;
-	*env += 5;
-	path = ft_split(*env, ':');
-	if (path == NULL)
-		handle_error(pipex, 2, NULL);
-	pipex->path = path;
 }
 
 int	get_exit_status(int exit_status)
