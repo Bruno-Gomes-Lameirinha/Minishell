@@ -6,12 +6,9 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/09/24 15:32:50 by livieira         ###   ########.fr       */
+/*   Updated: 2024/09/24 15:35:58 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-
-#include "../include/minishell.h"
 
 #include "../include/minishell.h"
 
