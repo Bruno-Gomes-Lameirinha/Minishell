@@ -142,6 +142,12 @@ char	*ft_mem_token(char *input)
 
 void	ft_last_token(char *current_token, t_token **lexeme, int *type)
 {
+	char *last_char;
+
+	last_char = NULL;
+	last_char = ft_strchr(current_token, '\n');
+	if (*last_char == '\n' && *(last_char + 1) == '\0')
+		*last_char = '\0';
 	ft_add_token(lexeme, ft_strdup(current_token), *type);
 	free(current_token);
 	free(type);

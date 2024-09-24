@@ -157,11 +157,10 @@ t_ast_node *ft_build_ast(t_token **tokens)
 				}
 
 				current_node = cmd_node;
-				last_arg_node = NULL; // Reinicia o último argumento, pois é um novo comando
+				last_arg_node = NULL;
 			}
 			else
 			{
-				// Adicionando argumentos ao comando
 				t_ast_node *arg_node = malloc(sizeof(t_ast_node));
 				arg_node->type = NODE_ARGUMENT;
 				arg_node->value = ft_strdup(current->token_node);
@@ -200,11 +199,10 @@ t_ast_node *ft_build_ast(t_token **tokens)
 			redir_node->right = NULL;
 			root = redir_node;
 			current_node = redir_node;
-			current = current->next; // Pula o token do nome do arquivo
+			current = current->next; 
 		}
 		current = current->next;
 	}
-
 	return root;
 }
 
