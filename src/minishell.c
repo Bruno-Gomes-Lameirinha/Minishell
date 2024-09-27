@@ -108,11 +108,12 @@ int	main(void)
 			ft_tokenize(input, lexeme);
 			//ft_print_linked_list(lexeme);
 			ast = ft_build_ast(lexeme);
+			ft_collect_heredocs(ast);
 			ft_execute_ast(ast);
 			ft_clean_token_list(lexeme);
 			free(input);
 			free(prompt);
-			free(ast);
+			ft_free_ast(ast);
 		}
 	}
 	free(lexeme);
@@ -143,6 +144,7 @@ t_ast_node *ft_build_ast(t_token **tokens)
 				cmd_node->left = NULL;
 				cmd_node->right = NULL;
 				cmd_node->next = NULL;
+				cmd_node->heredoc_fd = -1;
 
 				if (root == NULL)
 				{
@@ -197,6 +199,7 @@ t_ast_node *ft_build_ast(t_token **tokens)
 			root = redir_node;
 			current_node = redir_node;
 			current = current->next; 
+			redir_node->heredoc_fd = -1;
 		}
 		current = current->next;
 	}
@@ -283,68 +286,11 @@ void ft_execute_command_ast(t_ast_node *command_node)
 		waitpid(command_node->execve_child, NULL, 0);
 }
 
-void ft_handle_pipe(t_ast_node *root)
-{
-	int fd[2];
-	pid_t left_pid;
-	pid_t right_pid;
-
-	if (root->type == NODE_PIPE)
-	{
-		if (pipe(fd) == -1)
-		{
-			perror("pipe");
-			exit(EXIT_FAILURE);
-		}
-		left_pid = fork();
-		if (left_pid == -1) 
-		{
-			perror("fork");
-			exit(EXIT_FAILURE);
-		}
-		if (left_pid == 0)
-		{
-			if (dup2(fd[1], STDOUT_FILENO) == -1) 
-			{
-				perror("dup2");
-				exit(EXIT_FAILURE);
-			}
-			close(fd[0]);
-			close(fd[1]);
-			ft_execute_ast(root->left);
-			exit(EXIT_SUCCESS);
-		}
-		right_pid = fork();
-		if (right_pid == -1) 
-		{
-			perror("fork");
-			exit(EXIT_FAILURE);
-		}
-		if (right_pid == 0)
-		{
-			if (dup2(fd[0], STDIN_FILENO) == -1)
-			{
-				perror("dup2");
-				exit(EXIT_FAILURE);
-			}
-			close(fd[0]);
-			close(fd[1]);
-			ft_execute_ast(root->right);
-			exit(EXIT_SUCCESS);
-		}
-		close(fd[0]);
-		close(fd[1]);
-		waitpid(left_pid, NULL, 0);
-		waitpid(right_pid, NULL, 0);
-	} else if (root->type == NODE_COMMAND)
-		ft_execute_ast(root);
-}
-
-
 void ft_execute_ast(t_ast_node *root)
 {
 	int saved_stdout;
 	int saved_stdin;
+	int heredoc_fd;
 	
 	if (!root)
 		return;	
@@ -356,7 +302,16 @@ void ft_execute_ast(t_ast_node *root)
 	}
 	else if (root->type == NODE_REDIRECTION && root->type_token == REDIR_HDOC)
 	{
-		printf("entrei no heredoc");
+		heredoc_fd = root->heredoc_fd;
+		if (heredoc_fd == -1)
+			return;
+		saved_stdin = dup(STDIN_FILENO);
+		dup2(heredoc_fd, STDIN_FILENO);
+		close(heredoc_fd);
+		root->heredoc_fd = -1;
+		ft_execute_ast(root->left);
+		dup2(saved_stdin, STDIN_FILENO);
+		close(saved_stdin);
 	}
 	else if (root->type == NODE_REDIRECTION && root->type_token != REDIR_HDOC) 
 	{
