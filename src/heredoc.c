@@ -27,29 +27,57 @@ int ft_handle_heredoc(const char *delimiter)
 	return pipe_fd[0];
 }
 
-void ft_collect_heredocs(t_ast_node *root)
+int ft_collect_heredocs(t_ast_node *root)
 {
-	int heredoc_fd;
-
 	if (!root)
-		return;
-	if (root->type == NODE_REDIRECTION && root->type_token == REDIR_HDOC) 
+		return 0;
+
+	if (root->type == NODE_COMMAND)
 	{
-		heredoc_fd = ft_handle_heredoc(root->value);
-		if (heredoc_fd == -1)
-			return;
-		root->heredoc_fd = heredoc_fd;
+		t_redirection *redir = root->redirections;
+		while (redir)
+		{
+			if (redir->type_token == REDIR_HDOC)
+			{
+				int heredoc_fd = ft_handle_heredoc(redir->filename);
+				if (heredoc_fd == -1)
+					return -1;
+				redir->heredoc_fd = heredoc_fd;
+			}
+			redir = redir->next;
+		}
 	}
-	ft_collect_heredocs(root->left);
-	ft_collect_heredocs(root->right);
+	if (ft_collect_heredocs(root->left) == -1)
+		return -1;
+	if (ft_collect_heredocs(root->right) == -1)
+		return -1;
+
+	return 0;
 }
 
 void ft_free_ast(t_ast_node *root)
 {
 	if (!root)
 		return;
+
 	ft_free_ast(root->left);
 	ft_free_ast(root->right);
-	free(root->value);
+
+	if (root->type == NODE_COMMAND)
+	{
+		t_redirection *redir = root->redirections;
+		while (redir)
+		{
+			t_redirection *tmp = redir;
+			redir = redir->next;
+			if (tmp->filename)
+				free(tmp->filename);
+			if (tmp->heredoc_fd != -1)
+				close(tmp->heredoc_fd);
+			free(tmp);
+		}
+	}
+	if (root->value)
+		free(root->value);
 	free(root);
 }

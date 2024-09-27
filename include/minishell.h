@@ -39,15 +39,22 @@ typedef struct s_pipex
 	char	**path;
 }		t_pipex;
 
+typedef struct s_redirection {
+	int type_token;
+	char *filename;
+	int heredoc_fd;
+	struct s_redirection *next;
+} t_redirection;
+
 typedef struct s_ast_node {
 	int 	type;
-	int		type_token;             // Tipo do nó (comando, redirecionamento, etc.)
-	char 	*value;             // Valor do nó (nome do comando, arquivo, etc.)
-	struct 	s_ast_node *left; // Nó esquerdo (por exemplo, comando antes do redirecionamento)
-	struct 	s_ast_node *right;// Nó direito (por exemplo, arquivo de destino no redirecionamento)
-	struct 	s_ast_node *next; // Próximo argumento ou próximo item da lista
+	int		type_token;
+	char 	*value;
+	struct 	s_ast_node *left;
+	struct 	s_ast_node *right;
+	struct 	s_ast_node *next;
 	pid_t	execve_child;
-	int 	heredoc_fd;
+	t_redirection *redirections;
 } t_ast_node;
 
 typedef enum {
@@ -121,7 +128,7 @@ void		ft_handle_pipe(t_ast_node *root);
 pid_t		first_pipeline(int *channel, t_ast_node *root, int index);
 int 		ft_handle_heredoc(const char *delimiter);
 void 		ft_free_ast(t_ast_node *root);
-void 		ft_collect_heredocs(t_ast_node *root);
+int 		ft_collect_heredocs(t_ast_node *root);
 
 
 

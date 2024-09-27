@@ -144,7 +144,7 @@ t_ast_node *ft_build_ast(t_token **tokens)
 				cmd_node->left = NULL;
 				cmd_node->right = NULL;
 				cmd_node->next = NULL;
-				cmd_node->heredoc_fd = -1;
+				cmd_node->redirections = NULL;
 
 				if (root == NULL)
 				{
@@ -190,16 +190,13 @@ t_ast_node *ft_build_ast(t_token **tokens)
 		}
 		else if (current->type_token == REDIR_OUT || current->type_token == REDIR_OUTAPP || current->type_token == REDIR_IN ||  current->type_token == REDIR_HDOC)
 		{
-			t_ast_node *redir_node = malloc(sizeof(t_ast_node));
-			redir_node->type = NODE_REDIRECTION;
-			redir_node->type_token = current->type_token;
-			redir_node->value = ft_strdup(current->next->token_node);
-			redir_node->left = root;
-			redir_node->right = NULL;
-			root = redir_node;
-			current_node = redir_node;
-			current = current->next; 
-			redir_node->heredoc_fd = -1;
+            t_redirection *redir = malloc(sizeof(t_redirection));
+            redir->type_token = current->type_token;
+            redir->filename = ft_strdup(current->next->token_node);
+            redir->heredoc_fd = -1;
+            redir->next = current_node->redirections;
+            current_node->redirections = redir;
+            current = current->next; 
 		}
 		current = current->next;
 	}
@@ -288,77 +285,97 @@ void ft_execute_command_ast(t_ast_node *command_node)
 
 void ft_execute_ast(t_ast_node *root)
 {
-	int saved_stdout;
 	int saved_stdin;
-	int heredoc_fd;
-	
-	if (!root)
-		return;	
+	int saved_stdout;
+	t_redirection *redir;
 
-	if (root->type == NODE_PIPE)
-	{
-		ft_handle_pipe(root);
-		while (wait(NULL) > 0);
-	}
-	else if (root->type == NODE_REDIRECTION && root->type_token == REDIR_HDOC)
-	{
-		heredoc_fd = root->heredoc_fd;
-		if (heredoc_fd == -1)
-			return;
-		saved_stdin = dup(STDIN_FILENO);
-		dup2(heredoc_fd, STDIN_FILENO);
-		close(heredoc_fd);
-		root->heredoc_fd = -1;
-		ft_execute_ast(root->left);
-		dup2(saved_stdin, STDIN_FILENO);
-		close(saved_stdin);
-	}
-	else if (root->type == NODE_REDIRECTION && root->type_token != REDIR_HDOC) 
-	{
-		int fd;
-		if (root->type_token == REDIR_OUT)
-			fd = open(root->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		else if (root->type_token == REDIR_IN)
-			fd = open(root->value, O_RDONLY);
-		else
-			fd = open(root->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (fd < 0) 
-		{
-			perror("open");
-			return;
-		}
+    if (!root)
+        return;    
 
-		if (root->type_token == REDIR_IN)
-		{
-			saved_stdin = dup(STDIN_FILENO);
-			dup2(fd, STDIN_FILENO);
-			close(fd);
-			ft_execute_ast(root->left);
-			dup2(saved_stdin, STDIN_FILENO);
-			close(saved_stdin);
-		}
-		else
-		{
-			saved_stdout = dup(STDOUT_FILENO);
-			dup2(fd, STDOUT_FILENO);
-			close(fd);
-			ft_execute_ast(root->left); 
-			dup2(saved_stdout, STDOUT_FILENO);
-			close(saved_stdout);
-		}
-	}
-	else if (root->type == NODE_COMMAND)
-	{
-		if (!strcmp(root->value, "cd"))
-			ft_cd_command_with_ast(root);
-		else if (!strcmp(root->value, "echo"))
-			ft_echo_command_with_ast(root);
-		else if (!strcmp(root->value, "pwd"))
-			ft_pwd_command(root);
-		else
-			ft_execute_command_ast(root);
-	}
+    if (root->type == NODE_PIPE)
+    {
+        ft_handle_pipe(root);
+        while (wait(NULL) > 0);
+    }
+    else if (root->type == NODE_COMMAND)
+    {
+        saved_stdin = -1;
+        saved_stdout = -1;
+        redir = root->redirections;
+        while (redir)
+        {
+            if (redir->type_token == REDIR_IN)
+            {
+                int fd = open(redir->filename, O_RDONLY);
+                if (fd < 0)
+                {
+                    perror("open");
+                    return;
+                }
+                if (saved_stdin == -1)
+                    saved_stdin = dup(STDIN_FILENO);
+                dup2(fd, STDIN_FILENO);
+                close(fd);
+            }
+            else if (redir->type_token == REDIR_OUT)
+            {
+                int fd = open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+                if (fd < 0)
+                {
+                    perror("open");
+                    return;
+                }
+                if (saved_stdout == -1)
+                    saved_stdout = dup(STDOUT_FILENO);
+                dup2(fd, STDOUT_FILENO);
+                close(fd);
+            }
+            else if (redir->type_token == REDIR_OUTAPP)
+            {
+                int fd = open(redir->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+                if (fd < 0)
+                {
+                    perror("open");
+                    return;
+                }
+                if (saved_stdout == -1)
+                    saved_stdout = dup(STDOUT_FILENO);
+                dup2(fd, STDOUT_FILENO);
+                close(fd);
+            }
+            else if (redir->type_token == REDIR_HDOC)
+            {
+                if (redir->heredoc_fd == -1)
+                    return;
+                if (saved_stdin == -1)
+                    saved_stdin = dup(STDIN_FILENO);
+                dup2(redir->heredoc_fd, STDIN_FILENO);
+                close(redir->heredoc_fd);
+                redir->heredoc_fd = -1;
+            }
+            redir = redir->next;
+        }
+        if (!strcmp(root->value, "cd"))
+            ft_cd_command_with_ast(root);
+        else if (!strcmp(root->value, "echo"))
+            ft_echo_command_with_ast(root);
+        else if (!strcmp(root->value, "pwd"))
+            ft_pwd_command(root);
+        else
+            ft_execute_command_ast(root);
+        if (saved_stdin != -1)
+        {
+            dup2(saved_stdin, STDIN_FILENO);
+            close(saved_stdin);
+        }
+        if (saved_stdout != -1)
+        {
+            dup2(saved_stdout, STDOUT_FILENO);
+            close(saved_stdout);
+        }
+    }
 }
+
 void	handle_error(t_pipex *pipex, int exit_status, char *msg)
 {
 	if (exit_status == 1)
