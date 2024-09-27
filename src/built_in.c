@@ -32,15 +32,15 @@ void ft_echo_command_with_ast(t_ast_node *node)
 	if (current && !strcmp(current->value, "-n")) 
 	{
 		new_line = 0;
-		current = current->next;
+		current = current->right;
 	}
 
 	while (current)
 	{
 		write(1, current->value, strlen(current->value));
-		if (current->next)
+		if (current->right)
 			write(1, " ", 1);
-		current = current->next;
+		current = current->right;
 	}
 
 	if (new_line)

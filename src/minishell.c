@@ -186,7 +186,7 @@ t_ast_node *ft_build_ast(t_token **tokens)
 			root = pipe_node;
 			current_node = pipe_node;
 		}
-		else if (current->type_token == REDIR_OUT || current->type_token == REDIR_OUTAPP || current->type_token == REDIR_IN)
+		else if (current->type_token == REDIR_OUT || current->type_token == REDIR_OUTAPP || current->type_token == REDIR_IN ||  current->type_token == REDIR_HDOC)
 		{
 			t_ast_node *redir_node = malloc(sizeof(t_ast_node));
 			redir_node->type = NODE_REDIRECTION;
@@ -354,7 +354,11 @@ void ft_execute_ast(t_ast_node *root)
 		ft_handle_pipe(root);
 		while (wait(NULL) > 0);
 	}
-	else if (root->type == NODE_REDIRECTION) 
+	else if (root->type == NODE_REDIRECTION && root->type_token == REDIR_HDOC)
+	{
+		printf("entrei no heredoc");
+	}
+	else if (root->type == NODE_REDIRECTION && root->type_token != REDIR_HDOC) 
 	{
 		int fd;
 		if (root->type_token == REDIR_OUT)
