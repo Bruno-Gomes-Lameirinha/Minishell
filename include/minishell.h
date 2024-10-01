@@ -14,6 +14,12 @@
 # include <readline/history.h>
 # include <termios.h>
 
+# define SUCCESS 0
+# define FAILURE 1
+# define SYNTAX_ERROR 2
+
+# define INVALID_QUOTE "Invalid syntax,check for open quotes or brackets.\n"
+
 typedef struct s_env
 {
 	char	*key;
