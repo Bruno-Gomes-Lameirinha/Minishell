@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/09/24 15:35:58 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/01 19:30:32 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -398,7 +398,18 @@ void	handle_error(t_pipex *pipex, int exit_status, char *msg)
 	exit(exit_status);
 }
 
-int	get_exit_status(int exit_status)
+int	get_exit_status(void)
 {
+	static int	exit_status;
+	
 	return ((exit_status & 0xff00) >> 8);
+}
+
+int	set_exit_status(int status)
+{
+	int	*exit_status;
+
+	exit_status = get_exit_status();
+	*exit_status = status;
+	return (*exit_status);
 }

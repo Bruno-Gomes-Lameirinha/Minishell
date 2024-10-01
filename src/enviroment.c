@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 20:43:45 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/01 19:02:53 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/01 19:47:05 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,41 @@ void	ft_add_env(char *string)
 	new_var[i] = NULL;
 	*ft_get_env() = new_var;
 	__environ = new_var;
+}
+//atualiza as variáveis
+void	ft_update_env(char *new_str, char *key)
+{
+	int		i;
+	char	*env_key;
+	char	*aux;
+	char	**env;
+
+	env = *ft_get_env();
+	i = -1;
+	while (env[++i])
+	{
+		env_key = get_key(env[i]);
+		if (!ft_strcmp(key, env_key))
+		{
+			aux = env[i];
+			env[i] = ft_strdup_calloc(new_str);
+			free(aux);
+			break ;
+		}
+	}
+	*ft_get_env() = env;
+	__environ = env;
+}
+//define as variaveis
+void	ft_set_env(char *new_str, char *key, char *value)
+{
+	char	*env_var;
+
+	env_var = getenv(key);
+	if ((env_var || is_key_without_value(key)) && value != NULL)
+		ft_update_env(new_str, key);
+	else if (!is_env_key_present(key))
+		ft_add_to_env(new_str);
 }
 
 // implementa o comando env no minishell.
