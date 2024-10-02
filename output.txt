@@ -13,3 +13,9 @@ banana ouro
 banana nanica
 banana menta
 brasil
+silvio
+pato output.txt
+alo output.txt
+alo cristina
+alo claudio
+morango

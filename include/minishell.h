@@ -129,9 +129,11 @@ pid_t		first_pipeline(int *channel, t_ast_node *root, int index);
 int 		ft_handle_heredoc(const char *delimiter);
 void 		ft_free_ast(t_ast_node *root);
 int 		ft_collect_heredocs(t_ast_node *root);
-
-
-
+t_ast_node *ft_build_ast(t_token **tokens);
+void	ft_creat_cmd_node(t_token *current, t_ast_node **root, t_ast_node **current_node, t_ast_node **last_arg_node);
+void	ft_creat_arg_node(t_token *current, t_ast_node **current_node, t_ast_node **last_arg_node);
+void	ft_creat_pipe_node(t_ast_node **root, t_ast_node **current_node);
+void	ft_creat_redir_node(t_token **current, t_ast_node **current_node);
 
 
 
