@@ -67,10 +67,10 @@ void	ft_handle_operators(char ***input, char ***i_token, int **type)
 		if (***input == '>')
 		{
 			*(**i_token)++ = *(**input)++;
-			**type = REDIR_OUTAPP;
+			**type = R_OUTAPP;
 		}
 		else
-			**type = REDIR_OUT;
+			**type = R_OUT;
 	}
 	else if (***input == '<')
 	{
@@ -78,10 +78,10 @@ void	ft_handle_operators(char ***input, char ***i_token, int **type)
 		if (***input == '<')
 		{
 			*(**i_token)++ = *(**input)++;
-			**type = REDIR_HDOC;
+			**type = R_HDOC;
 		}
 		else
-			**type = REDIR_IN;
+			**type = R_IN;
 	}
 }
 

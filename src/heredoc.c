@@ -37,7 +37,7 @@ int ft_collect_heredocs(t_ast_node *root)
 		t_redirection *redir = root->redirections;
 		while (redir)
 		{
-			if (redir->type_token == REDIR_HDOC)
+			if (redir->type_token == R_HDOC)
 			{
 				int heredoc_fd = ft_handle_heredoc(redir->filename);
 				if (heredoc_fd == -1)

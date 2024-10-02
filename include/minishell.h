@@ -76,10 +76,10 @@ enum e_token
 {
 	WORD,
 	PIPE,// |
-	REDIR_IN, // <
-	REDIR_HDOC, // <<
-	REDIR_OUT, // >
-	REDIR_OUTAPP, //>>
+	R_IN, // <
+	R_HDOC, // <<
+	R_OUT, // >
+	R_OUTAPP, //>>
 	OR,// ||
 	AND,// &&
 	SUBSHELL, // ()

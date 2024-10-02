@@ -224,7 +224,7 @@ void ft_execute_ast(t_ast_node *root)
         redir = root->redirections;
         while (redir)
         {
-            if (redir->type_token == REDIR_IN)
+            if (redir->type_token == R_IN)
             {
                 int fd = open(redir->filename, O_RDONLY);
                 if (fd < 0)
@@ -237,7 +237,7 @@ void ft_execute_ast(t_ast_node *root)
                 dup2(fd, STDIN_FILENO);
                 close(fd);
             }
-            else if (redir->type_token == REDIR_OUT)
+            else if (redir->type_token == R_OUT)
             {
                 int fd = open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
                 if (fd < 0)
@@ -250,7 +250,7 @@ void ft_execute_ast(t_ast_node *root)
                 dup2(fd, STDOUT_FILENO);
                 close(fd);
             }
-            else if (redir->type_token == REDIR_OUTAPP)
+            else if (redir->type_token == R_OUTAPP)
             {
                 int fd = open(redir->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
                 if (fd < 0)
@@ -263,7 +263,7 @@ void ft_execute_ast(t_ast_node *root)
                 dup2(fd, STDOUT_FILENO);
                 close(fd);
             }
-            else if (redir->type_token == REDIR_HDOC)
+            else if (redir->type_token == R_HDOC)
             {
                 if (redir->heredoc_fd == -1)
                     return;

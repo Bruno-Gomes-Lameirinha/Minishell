@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/27 18:33:00 by bgomes-l          #+#    #+#             */
+/*   Updated: 2024/08/28 17:11:33 by bgomes-l         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/minishell.h"
 
 void	ft_creat_cmd_node(t_token *current, t_ast_node **root, \
@@ -17,8 +29,8 @@ t_ast_node **current_node, t_ast_node **last_arg_node)
 		*root = cmd_node;
 	}
 	else if ((*current_node) && ((*current_node)->type == NODE_PIPE || \
-	(*current_node)->type == REDIR_OUT || (*current_node)->type \
-	== REDIR_OUTAPP || current->type_token == REDIR_IN))
+	(*current_node)->type == R_OUT || (*current_node)->type \
+	== R_OUTAPP || current->type_token == R_IN))
 	{
 		(*current_node)->right = cmd_node;
 	}
@@ -77,28 +89,28 @@ void	ft_creat_redir_node(t_token **current, t_ast_node **current_node)
 t_ast_node	*ft_build_ast(t_token **tokens)
 {
 	t_ast_node	*root;
-	t_ast_node	*current_node;
-	t_ast_node	*last_arg_node;
-	t_token		*current;
+	t_ast_node	*cur_node;
+	t_ast_node	*last_arg;
+	t_token		*cur;
 
-	current = *tokens;
+	cur = *tokens;
 	root = NULL;
-	while (current)
+	while (cur)
 	{
-		if (current->type_token == WORD || current->type_token == SINGLE_QUOTES \
-		|| current->type_token == DOUBLE_QUOTES)
+		if (cur->type_token == WORD || cur->type_token == SINGLE_QUOTES \
+		|| cur->type_token == DOUBLE_QUOTES)
 		{
-			if (!current_node || current_node->type != NODE_COMMAND)
-				ft_creat_cmd_node(current, &root, &current_node, &last_arg_node);
+			if (!cur_node || cur_node->type != NODE_COMMAND)
+				ft_creat_cmd_node(cur, &root, &cur_node, &last_arg);
 			else
-				ft_creat_arg_node(current, &current_node, &last_arg_node);
+				ft_creat_arg_node(cur, &cur_node, &last_arg);
 		}
-		else if (current->type_token == PIPE)
-			ft_creat_pipe_node(&root, &current_node);
-		else if (current->type_token == REDIR_OUT || current->type_token == REDIR_OUTAPP || \
-		current->type_token == REDIR_IN ||  current->type_token == REDIR_HDOC)
-			ft_creat_redir_node(&current, &current_node);
-		current = current->next;
+		else if (cur->type_token == PIPE)
+			ft_creat_pipe_node(&root, &cur_node);
+		else if (cur->type_token == R_OUT || cur->type_token == R_OUTAPP || \
+		cur->type_token == R_IN || cur->type_token == R_HDOC)
+			ft_creat_redir_node(&cur, &cur_node);
+		cur = cur->next;
 	}
 	return (root);
 }
