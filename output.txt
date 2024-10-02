@@ -19,3 +19,4 @@ alo output.txt
 alo cristina
 alo claudio
 morango
+Appending new line

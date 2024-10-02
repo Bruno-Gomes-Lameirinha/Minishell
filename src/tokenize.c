@@ -19,7 +19,7 @@ t_token	*ft_list_new_token(void)
 	return (new_node);
 }
 
-void	ft_state_start(char **input, State *state, char **i_token, int *type)
+void	ft_state_start(char **input, t_state *state, char **i_token, int *type)
 {
 	if (ft_is_space(**input))
 			(*input)++;
@@ -107,7 +107,7 @@ void	ft_handle_quotes(char ***input, char ***i_token, int **type)
 	}
 }
 
-void	ft_state_command(char **input, State *state, char **i_token, int *type)
+void	ft_state_command(char **input, t_state *state, char **i_token, int *type)
 {
 	if (ft_is_space(**input))
 	{
@@ -156,7 +156,7 @@ void	ft_last_token(char *current_token, t_token **lexeme, int *type)
 
 void	ft_tokenize(char *input, t_token **lexeme)
 {
-	State	state;
+	t_state	state;
 	char	*current_token;
 	char	*i_token;
 	int		*type;
