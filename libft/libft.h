@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 18:16:08 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/08/29 14:51:38 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/03 00:17:03 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,5 +93,11 @@ int		ft_print_d(int fd, long n, int base, char *symbols);
 int		ft_print_pointer(int fd, unsigned long num);
 int		ft_print_str(int fd, char *str);
 int		ft_print_char(int fd, int c);
+char	*ft_strndup(char *s, int n);
+int		ft_strcmp(const char *s1, const char *s2);
+char	*ft_strdup_calloc(const char *s);
+long	ft_atol(char *str);
+
+
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 19:35:42 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/01 19:43:54 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/03 00:25:51 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,12 @@ int	check_limits(char *arg, char sign)
 		|| (ft_strcmp(arg, "9223372036854775808") > 0 && sign == '-'))
 		return (FAILURE);
 	return (SUCCESS);
+}
+//futuramente adicionar free
+void	ft_status(int status)
+{
+	if (status)
+		exit(status % 256);
 }
 
 //Verifica se uma string representa um número inteiro válido.
@@ -62,7 +68,7 @@ int	ft_exit_command(t_token *tokens)
 		if (validate_argument(tokens->next->token_node) || \
 				*(tokens->next->token_node) == '\0')
 		{
-			ft_fprintf(STDERR_FILENO, "exit:%s: numeric argument required\n", \
+			ft_printf(STDERR_FILENO, "exit:%s: numeric argument required\n", \
 			tokens->next->token_node);
 			exit(SYNTAX_ERROR);
 		}
@@ -72,5 +78,6 @@ int	ft_exit_command(t_token *tokens)
 			exit(FAILURE);
 		}
 	}
-	exit(get_exit_status(status));
+	ft_status(status);
+	exit(*get_exit_status_env());
 }

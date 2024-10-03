@@ -95,10 +95,11 @@ enum e_token
 	//$?
 }; 
 
-void	ft_strcpy(char *dst, const char *src);
 //tokenizer
+void		ft_strcpy(char *dst, const char *src);
 int			ft_is_space(char c);
 int			get_exit_status(int exit_status);
+int			*get_exit_status_env(void);
 void		ft_add_token(t_token **lexeme, char *node, int type);
 void		ft_print_linked_list(t_token **lexeme);
 void		ft_tokenize(char *input, t_token **lexeme);
@@ -107,8 +108,8 @@ void		ft_state_command(char **input, State *state, char **index_token, int *type
 void		ft_handle_quotes(char ***input, char ***index_token, int **type);
 void		ft_last_token(char *current_token, t_token **lexeme, int *type);
 void		ft_clean_token_list(t_token **lst);
-void    ft_handle_operators(char ***input, char ***i_token, int **type);
-char    *ft_get_prompt(void);
+void		ft_handle_operators(char ***input, char ***i_token, int **type);
+char    	*ft_get_prompt(void);
 
 //parser
 void      ft_execute_ast(t_ast_node *root);
@@ -136,18 +137,36 @@ int 		ft_handle_heredoc(const char *delimiter);
 void 		ft_free_ast(t_ast_node *root);
 int 		ft_collect_heredocs(t_ast_node *root);
 
-
-
-
-
-
-
-
 //builtin
-void	ft_pwd_command(t_ast_node *cmd_tokens);
-
+void		ft_pwd_command(t_ast_node *cmd_tokens);
 t_token     *ft_list_new_token(void);
 t_ast_node  *ft_build_ast(t_token **tokens);
+//exit
+int			check_limits(char *arg, char sign);
+void		ft_status(int status);
+int			validate_argument(char *arg);
+int			ft_exit_command(t_token *tokens);
+//export
+void		format_and_print(const char *env_var);
+int			print_smallest_unprinted(char **env, size_t env_size, char *printed);
+void		ft_print_env_sort(void);
+int			ft_export_command(t_token *tokens);
+
+//enviroment
+char		***ft_get_env(void);
+char		*get_key(char *arg);
+void		ft_copy_env(void);
+void		ft_add_env(char *string);
+void		ft_update_env(char *new_str, char *key);
+int			is_key_without_value(char *key);
+int			is_env_key_present(char *key);
+void		ft_set_env(char *new_str, char *key, char *value);
+void		ft_env_command(t_token **cmd_tokens);
+int			set_exit_status(int status);
+int			is_valid_identifier(char *str, char *cmd_name);
+char   		**convert_tokens_to_args(t_token *token_node);
+int 		count_tokens(t_token *token_node);
+
 
 
 #endif

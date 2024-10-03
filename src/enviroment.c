@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 20:43:45 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/01 19:47:05 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/03 00:51:24 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ char	***ft_get_env(void)
 	
 	return (&env);
 }
+
+
 
 //"clona" o ambiente atual para que o minishell possa fazer modificações sem afetar o processo pai.
 void	ft_copy_env(void)
@@ -87,6 +89,9 @@ void	ft_update_env(char *new_str, char *key)
 	*ft_get_env() = env;
 	__environ = env;
 }
+
+//Verifica se uma chave de variável de ambiente está presente no conjunto de variáveis.
+
 //define as variaveis
 void	ft_set_env(char *new_str, char *key, char *value)
 {
@@ -96,7 +101,7 @@ void	ft_set_env(char *new_str, char *key, char *value)
 	if ((env_var || is_key_without_value(key)) && value != NULL)
 		ft_update_env(new_str, key);
 	else if (!is_env_key_present(key))
-		ft_add_to_env(new_str);
+		ft_add_env(new_str);
 }
 
 // implementa o comando env no minishell.
@@ -106,10 +111,13 @@ void	ft_env_command(t_token **cmd_tokens)
     char    **env;
     t_token *current_token;
     
-    env = ft_get_env();
+    env = *ft_get_env();
     current_token = *cmd_tokens;
 	if (current_token->next)
-		return (write(STDERR_FILENO, "env: too many arguments\n", 24));
+	{
+		write(STDERR_FILENO, "env: too many arguments\n", 24);
+		return ;
+	}
     if (strcmp(current_token->token_node, "env") == 0)
 	{
 		i = 0;
@@ -119,7 +127,14 @@ void	ft_env_command(t_token **cmd_tokens)
 			ft_putstr_fd("\n", STDOUT_FILENO);
 			i++;
 		}
-		return (SUCCESS);
+		return ;
 	}
         
 }
+
+
+
+
+
+
+

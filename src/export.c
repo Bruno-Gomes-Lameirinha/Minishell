@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 12:02:24 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/01 19:42:46 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/03 00:45:11 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,44 @@ void	ft_print_env_sort(void)
 		;
 	free(printed);
 }
+
+int count_tokens(t_token *token_node)
+{
+    int count = 0;
+    t_token *current = token_node;
+
+    // Percorre a lista até o final (quando current == NULL)
+    while (current != NULL)
+    {
+        count++;
+        current = current->next;
+    }
+    return count;
+}
+char    **convert_tokens_to_args(t_token *token_node)
+{
+    char    **args;
+    int     i;
+    t_token *current;
+
+    // Supondo que você saiba o número de tokens ou possa contar eles
+    int num_tokens = count_tokens(token_node);
+    args = malloc(sizeof(char *) * (num_tokens + 1));
+    if (!args)
+        return NULL;
+    
+    current = token_node;
+    i = 0;
+    while (current)
+    {
+        args[i++] = current->token_node; // Ou o campo correto da estrutura de t_token
+        current = current->next;
+    }
+    args[i] = NULL; // Terminar a lista com NULL
+    return args;
+}
 //É a função principal que implementa o comando export
-int	ft_export_command(t_token *tokens)
+int	ft_export_command(t_token *token_node)
 {
 	int		i;
 	char	**args;
@@ -88,7 +124,7 @@ int	ft_export_command(t_token *tokens)
 
 	i = 0;
 	status = 0;
-	args = tokens;
+	args = convert_tokens_to_args(token_node);
 	if (!args[1])
 		ft_print_env_sort();
 	while (args[++i])
