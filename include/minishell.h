@@ -132,16 +132,16 @@ void		ft_creat_arg_node(t_token *current, t_ast_node **current_node, \
 t_ast_node	**last_arg_node);
 void		ft_creat_pipe_node(t_ast_node **root, t_ast_node **current_node);
 void		ft_creat_redir_node(t_token **current, t_ast_node **current_node);
-int			handle_redirection(t_redirection *redir, \
+int			ft_handle_redirection(t_redirection *redir, \
 int *saved_stdin, int *saved_stdout);
-void		restore_stdin_stdout(int saved_stdin, int saved_stdout);
-void		execute_command(t_ast_node *root);
-int			handle_redirection_in(t_redirection *redir, int *saved_stdin);
-int			handle_redirection_out(t_redirection *redir, \
+void		ft_restore_stdin_stdout(int saved_stdin, int saved_stdout);
+void		ft_execute_command(t_ast_node *root);
+int			ft_handle_redirection_in(t_redirection *redir, int *saved_stdin);
+int			ft_handle_redirection_out(t_redirection *redir, \
 int *saved_stdout);
-int			handle_redirection_out_append(t_redirection *redir, \
+int			ft_handle_redirection_out_append(t_redirection *redir, \
 int *saved_stdout);
-int			handle_heredoc_redirection(t_redirection *redir, int *saved_stdin);
+int			ft_handle_heredoc_redirection(t_redirection *redir, int *saved_stdin);
 void		ft_pwd_command(t_ast_node *cmd_tokens);
 t_token		*ft_list_new_token(void);
 t_ast_node	*ft_build_ast(t_token **tokens);

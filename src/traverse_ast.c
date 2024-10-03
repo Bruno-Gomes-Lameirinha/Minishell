@@ -28,18 +28,18 @@ void	ft_execute_ast(t_ast_node *root)
 	}
 	else if (root->type == NODE_COMMAND)
 	{
-		if (handle_redirection(root->redirections, &saved_stdin, \
+		if (ft_handle_redirection(root->redirections, &saved_stdin, \
 		&saved_stdout) == -1)
 		{
-			restore_stdin_stdout(saved_stdin, saved_stdout);
+			ft_restore_stdin_stdout(saved_stdin, saved_stdout);
 			return ;
 		}
-		execute_command(root);
-		restore_stdin_stdout(saved_stdin, saved_stdout);
+		ft_execute_command(root);
+		ft_restore_stdin_stdout(saved_stdin, saved_stdout);
 	}
 }
 
-void	execute_command(t_ast_node *root)
+void	ft_execute_command(t_ast_node *root)
 {
 	if (!strcmp(root->value, "cd"))
 		ft_cd_command_with_ast(root);
@@ -51,7 +51,7 @@ void	execute_command(t_ast_node *root)
 		ft_execute_command_ast(root);
 }
 
-void	restore_stdin_stdout(int saved_stdin, int saved_stdout)
+void	ft_restore_stdin_stdout(int saved_stdin, int saved_stdout)
 {
 	if (saved_stdin != -1)
 	{
