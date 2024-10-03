@@ -76,13 +76,27 @@ void	ft_creat_pipe_node(t_ast_node **root, t_ast_node **current_node)
 void	ft_creat_redir_node(t_token **current, t_ast_node **current_node)
 {
 	t_redirection	*redir;
+	t_redirection	*last_redir;
 
 	redir = malloc(sizeof(t_redirection));
+	if (!redir)
+	{
+		perror("malloc");
+		exit(EXIT_FAILURE);
+	}
 	redir->type_token = (*current)->type_token;
 	redir->filename = ft_strdup((*current)->next->token_node);
 	redir->heredoc_fd = -1;
-	redir->next = (*current_node)->redirections;
-	(*current_node)->redirections = redir;
+	redir->next = NULL;
+	if ((*current_node)->redirections == NULL)
+		(*current_node)->redirections = redir;
+	else
+	{
+		last_redir = (*current_node)->redirections;
+		while (last_redir->next)
+			last_redir = last_redir->next;
+		last_redir->next = redir;
+	}
 	*current = (*current)->next;
 }
 

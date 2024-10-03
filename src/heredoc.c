@@ -5,6 +5,7 @@ int ft_handle_heredoc(const char *delimiter)
 	int pipe_fd[2];
 	char *line;
 
+	printf("Iniciando heredoc para o delimitador: %s\n", delimiter);
 	if (pipe(pipe_fd) == -1) 
 	{
 		perror("pipe");
@@ -17,6 +18,7 @@ int ft_handle_heredoc(const char *delimiter)
 		if (strcmp(line, delimiter) == 0) 
 		{
 			free(line);
+			printf("Finalizando heredoc para o delimitador: %s\n", delimiter);
 			break;
 		}
 		write(pipe_fd[1], line, strlen(line));
