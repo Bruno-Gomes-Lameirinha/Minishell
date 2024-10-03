@@ -145,5 +145,9 @@ int			handle_heredoc_redirection(t_redirection *redir, int *saved_stdin);
 void		ft_pwd_command(t_ast_node *cmd_tokens);
 t_token		*ft_list_new_token(void);
 t_ast_node	*ft_build_ast(t_token **tokens);
+char		**ft_generate_args(t_ast_node *command_node);
+void		ft_fill_args(char **args, t_ast_node *command_node);
+char		**ft_allocate_args(t_ast_node *command_node);
+void		ft_free_args(char **args);
 
 #endif

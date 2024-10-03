@@ -12,53 +12,73 @@
 
 #include "../include/minishell.h"
 
-char	*ft_search_executable_ast(char *command)
+void	ft_execute_command_ast(t_ast_node *command_node)
 {
-	char	*executable;
-	char	*temp;
-	char	*path_var;
-	char	**paths;
-	int		i;
-
-	if (access(command, X_OK) == 0)
-		return (ft_strdup(command));
-	path_var = getenv("PATH");
-	if (!path_var)
-		return (NULL);
-	paths = ft_split(path_var, ':');
-	if (!paths)
-		return (NULL);
-
-	i = 0;
-	while (paths[i])
-	{
-		temp = ft_strjoin(paths[i], "/");
-		executable = ft_strjoin(temp, command);
-		free(temp);
-		if (access(executable, X_OK) == 0)
-		{
-			ft_free_split(paths);
-			return (executable);
-		}
-		free(executable);
-		i++;
-	}
-	ft_free_split(paths);
-	return (NULL);
-}
-
-void ft_execute_command_ast(t_ast_node *command_node)
-{
-	t_ast_node *current;
 	char	**args;
 	char	*executable;
-	int		n_args;
-	int i;
 
+	args = ft_generate_args(command_node);
+	executable = ft_search_executable_ast(args[0]);
+	command_node->execve_child = fork();
+	if (command_node->execve_child == -1)
+	{
+		perror("fork");
+		ft_free_args(args);
+		exit(EXIT_FAILURE);
+	}
+	if (command_node->execve_child == 0)
+	{
+		execve(executable, args, NULL);
+		perror("execve");
+		ft_free_args(args);
+		exit(EXIT_FAILURE);
+	}
+	else
+	{
+		waitpid(command_node->execve_child, NULL, 0);
+		ft_free_args(args);
+	}
+}
+
+char	**ft_generate_args(t_ast_node *command_node)
+{
+	char	**args;
+
+	args = ft_allocate_args(command_node);
+	ft_fill_args(args, command_node);
+	return (args);
+}
+
+void	ft_fill_args(char **args, t_ast_node *command_node)
+{
+	t_ast_node	*current;
+	int			i;
+
+	current = command_node;
 	i = 0;
+	while (current)
+	{
+		args[i] = ft_strdup(current->value);
+		if (!args[i])
+		{
+			perror("ft_strdup");
+			exit(EXIT_FAILURE);
+		}
+		i++;
+		current = current->right;
+	}
+	args[i] = NULL;
+}
+
+char	**ft_allocate_args(t_ast_node *command_node)
+{
+	int			n_args;
+	t_ast_node	*current;
+	char		**args;
+
 	n_args = 0;
 	current = command_node;
-	while(current)
+	while (current)
 	{
 		n_args++;
 		current = current->right;
@@ -69,23 +89,5 @@ void ft_execute_command_ast(t_ast_node *command_node)
 		perror("malloc");
 		exit(EXIT_FAILURE);
 	}
-	current = command_node;
-	while (current)
-	{
-		args[i] = ft_strdup(current->value);
-		i++;
-		current = current->right;
-	}
-	args[i] = NULL;
-	executable = ft_search_executable_ast(args[0]);
-	command_node->execve_child = fork();
-	if (command_node->execve_child == -1)
-	{
-		perror("fork second child");
-		exit(EXIT_FAILURE);
-	}
-	if (command_node->execve_child == 0)
-		execve(executable, args, NULL);
-	else
-		waitpid(command_node->execve_child, NULL, 0);
+	return (args);
 }
