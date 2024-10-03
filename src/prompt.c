@@ -14,7 +14,7 @@
 
 void	ft_strcpy(char *dst, const char *src)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (src[i])
@@ -35,14 +35,14 @@ void	ft_free_split(char **split)
 	free(split);
 }
 
-char *ft_get_prompt(void)
+char	*ft_get_prompt(void)
 {
-	char cwd[1024];
-	char *home_dir = getenv("HOME");
-	char *relative_cwd;
-	size_t cwd_len;
-	size_t prompt_len;
-	char *prompt;
+	char	cwd[1024];
+	char	*home_dir = getenv("HOME");
+	char	*relative_cwd;
+	size_t	cwd_len;
+	size_t	prompt_len;
+	char	*prompt;
 
 	if (getcwd(cwd, sizeof(cwd)) != NULL) 
 	{

@@ -12,49 +12,106 @@
 
 #include "../include/minishell.h"
 
-char	*ft_search_executable_ast(char *command)
+// char	*ft_search_executable_ast(char *command)
+// {
+// 	char	*executable;
+// 	char	*temp;
+// 	char	*path_var;
+// 	char	**paths;
+// 	int		i;
+
+// 	if (access(command, X_OK) == 0)
+// 		return (ft_strdup(command));
+// 	path_var = getenv("PATH");
+// 	if (!path_var)
+// 		return (NULL);
+// 	paths = ft_split(path_var, ':');
+// 	if (!paths)
+// 		return (NULL);
+// 	i = 0;
+// 	while (paths[i])
+// 	{
+// 		temp = ft_strjoin(paths[i], "/");
+// 		executable = ft_strjoin(temp, command);
+// 		free(temp);
+// 		if (access(executable, X_OK) == 0)
+// 		{
+// 			ft_free_split(paths);
+// 			return (executable);
+// 		}
+// 		free(executable);
+// 		i++;
+// 	}
+// 	ft_free_split(paths);
+// 	return (NULL);
+// }
+
+char	**ft_get_paths(void)
 {
-	char	*executable;
-	char	*temp;
 	char	*path_var;
 	char	**paths;
-	int		i;
 
-	if (access(command, X_OK) == 0)
-		return (ft_strdup(command));
 	path_var = getenv("PATH");
 	if (!path_var)
 		return (NULL);
 	paths = ft_split(path_var, ':');
-	if (!paths)
+	return (paths);
+}
+
+char	*ft_build_executable_path(char *dir, char *command)
+{
+	char	*temp;
+	char	*executable;
+
+	temp = ft_strjoin(dir, "/");
+	if (!temp)
 		return (NULL);
-	i = 0;
-	while (paths[i])
-	{
-		temp = ft_strjoin(paths[i], "/");
-		executable = ft_strjoin(temp, command);
-		free(temp);
-		if (access(executable, X_OK) == 0)
-		{
-			ft_free_split(paths);
-			return (executable);
-		}
-		free(executable);
-		i++;
-	}
-	ft_free_split(paths);
+	executable = ft_strjoin(temp, command);
+	free(temp);
+	return (executable);
+}
+
+char	*ft_check_executable(char *executable)
+{
+	if (access(executable, X_OK) == 0)
+		return (executable);
+	free(executable);
 	return (NULL);
 }
 
-void	ft_free_args(char **args)
+char	*ft_search_in_paths(char **paths, char *command)
 {
-	int	i;
+	char	*executable;
+	int		i;
 
 	i = 0;
-	while (args[i])
+	while (paths[i])
 	{
-		free(args[i]);
+		executable = ft_build_executable_path(paths[i], command);
+		if (!executable)
+		{
+			i++;
+			continue ;
+		}
+		executable = ft_check_executable(executable);
+		if (executable)
+			return (executable);
 		i++;
 	}
-	free(args);
+	return (NULL);
+}
+
+char	*ft_search_executable_ast(char *command)
+{
+	char	**paths;
+	char	*executable;
+
+	if (access(command, X_OK) == 0)
+		return (ft_strdup(command));
+	paths = ft_get_paths();
+	if (!paths)
+		return (NULL);
+	executable = ft_search_in_paths(paths, command);
+	ft_free_split(paths);
+	return (executable);
 }

@@ -22,7 +22,8 @@ void	ft_cd_command_with_ast(t_ast_node *node_ast)
 	pwd  = getcwd(NULL, 1024);
 	free(pwd);
 }
-void ft_echo_command_with_ast(t_ast_node *node) 
+
+void ft_echo_command_with_ast(t_ast_node *node)
 {
 	if (!node) return;
 

@@ -141,7 +141,8 @@ int			ft_handle_redirection_out(t_redirection *redir, \
 int *saved_stdout);
 int			ft_handle_redirection_out_append(t_redirection *redir, \
 int *saved_stdout);
-int			ft_handle_heredoc_redirection(t_redirection *redir, int *saved_stdin);
+int			ft_handle_heredoc_redirection(t_redirection *redir, \
+int *saved_stdin);
 void		ft_pwd_command(t_ast_node *cmd_tokens);
 t_token		*ft_list_new_token(void);
 t_ast_node	*ft_build_ast(t_token **tokens);
@@ -149,5 +150,9 @@ char		**ft_generate_args(t_ast_node *command_node);
 void		ft_fill_args(char **args, t_ast_node *command_node);
 char		**ft_allocate_args(t_ast_node *command_node);
 void		ft_free_args(char **args);
+char		**ft_get_paths(void);
+char		*ft_build_executable_path(char *dir, char *command);
+char		*ft_check_executable(char *executable);
+char		*ft_search_in_paths(char **paths, char *command);
 
 #endif

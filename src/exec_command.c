@@ -91,3 +91,16 @@ char	**ft_allocate_args(t_ast_node *command_node)
 	}
 	return (args);
 }
+
+void	ft_free_args(char **args)
+{
+	int	i;
+
+	i = 0;
+	while (args[i])
+	{
+		free(args[i]);
+		i++;
+	}
+	free(args);
+}
