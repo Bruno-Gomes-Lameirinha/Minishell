@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 17:16:26 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/08 17:23:57 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/08 19:02:15 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	delete_env_key(char *key_to_delete)
 	__environ = new_env;
 }
 
-int	ft_unset_command(t_token *token_node)
+int	ft_unset_command(t_ast_node *command)
 {
 	int		i;
 	char    **args;
@@ -49,7 +49,7 @@ int	ft_unset_command(t_token *token_node)
 
 	i = 0;
 	status = 0;
-	args = convert_tokens_to_args(token_node);;
+	args = convert_tokens_to_args(command);;
 	if (!args[1])
 		return (set_exit_status(status));
 	while (args[++i])

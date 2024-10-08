@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 19:00:47 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/08 18:49:43 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/08 20:11:09 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct s_env
 {
 	char	*key;
 	char	*value;
+	char	*next;
 }	t_env;
 
 typedef struct s_token
@@ -170,27 +171,31 @@ char		*ft_search_in_paths(char **paths, char *command);
 int			check_limits(char *arg, char sign);
 void		ft_status(int status);
 int			validate_argument(char *arg);
-int			ft_exit_command(t_token *tokens);
+int			ft_exit_command(t_ast_node *command);
 void		format_and_print(const char *env_var);
 int			print_smallest_unprinted(char **env, size_t env_size, char *printed);
 void		ft_print_env_sort(void);
-int			ft_export_command(t_token *tokens);
+int			ft_export_command(t_ast_node *command);
 char		***ft_get_env(void);
 char		*get_key(char *arg);
-char    **ft_copy_env(void);
+char    	**ft_copy_env(void);
 void		ft_add_env(char *string);
 void		ft_update_env(char *new_str, char *key);
+int			ft_unset_command(t_ast_node *command);
 int			is_key_without_value(char *key);
 int			is_env_key_present(char *key);
 void		ft_set_env(char *new_str, char *key, char *value);
 void		ft_env_command(t_ast_node *command);
 int			set_exit_status(int status);
 int			is_valid_identifier(char *str, char *cmd_name);
-char   		**convert_tokens_to_args(t_token *token_node);
-int 		count_tokens(t_token *token_node);
+char		**convert_tokens_to_args(t_ast_node *command);
+int 		count_tokens(t_ast_node *command);
 void		ft_expand_variables(t_token	**lexeme);
 size_t		ft_strlen_var(const char *s);
-void		ft_expand_variables_input(char	*input);
-size_t	ft_strlen_start_end(const char *start, const char *end);
+char 		*ft_expand_variables_input(char *input);
+size_t		ft_strlen_start_end(const char *start, const char *end);
+void		ft_env_void(t_env **list);
+char 		*ft_get_env_value(char *key);
+char 		*ft_strjoin_free(char *s1, char *s2);
 
 #endif

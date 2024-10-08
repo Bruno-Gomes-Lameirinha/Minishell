@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 20:43:45 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/08 18:49:05 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/08 19:50:31 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,14 @@ char	***ft_get_env(void)
 	env = ft_copy_env();
 	return (&env);
 }
+
+/* void	ft_env_void(t_env **list)
+{
+	static char	**env;
+	
+	env = ft_copy_env();
+	
+} */
 
 //"clona" o ambiente atual para que o minishell possa fazer modificações sem afetar o processo pai.
 char	**ft_copy_env(void)
@@ -109,6 +117,7 @@ void	ft_env_command(t_ast_node *command)
     int     i;
     char    **env;
     
+
     env = *ft_get_env();
 	if (command->right)
 	{

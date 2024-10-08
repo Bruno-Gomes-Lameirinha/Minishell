@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/08 18:14:34 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/08 19:58:51 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 int	main(void)
 {
 	char	*input;
-	t_env	*env;
+	t_env	**env;
 	t_token	**lexeme;
 	t_ast_node *ast;
 	char	*prompt;
 	
-	env = (t_env*)malloc(sizeof(t_env));
+	env = (t_env**)malloc(sizeof(t_env*));
 	lexeme = (t_token**)malloc(sizeof(t_token*));
 	if (!lexeme)
 	{
@@ -35,10 +35,10 @@ int	main(void)
 		add_history(input);
 		if (input)
 		{
-			//ft_expand_variables_input(input);
+			ft_expand_variables_input(input);
 			ft_tokenize(input, lexeme);
 			//ft_print_linked_list(lexeme);
-			ft_expand_variables(lexeme);
+			//ft_expand_variables(lexeme);
 			ast = ft_build_ast(lexeme);
 			ft_collect_heredocs(ast);
 			ft_execute_ast(ast);
