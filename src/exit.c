@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 19:35:42 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/03 00:25:51 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/08 20:38:02 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,24 +55,24 @@ int	validate_argument(char *arg)
 	return (SUCCESS);
 }
 //Implementa a lógica do comando exit
-int	ft_exit_command(t_token *tokens)
+int	ft_exit_command(t_ast_node *command)
 {
 	long	status;
 
 	status = 0;
 	if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO))
 		printf("exit\n");
-	if (tokens->next)
+	if (command->right)
 	{
-		status = ft_atol(tokens->next->token_node);
-		if (validate_argument(tokens->next->token_node) || \
-				*(tokens->next->token_node) == '\0')
+		status = ft_atol(command->right->value);
+		if (validate_argument(command->right->value) || \
+				*(command->right->value) == '\0')
 		{
 			ft_printf(STDERR_FILENO, "exit:%s: numeric argument required\n", \
-			tokens->next->token_node);
+			command->right->value);
 			exit(SYNTAX_ERROR);
 		}
-		if (tokens->next->next)
+		if (command->right->right)
 		{
 			write(STDERR_FILENO, "exit: too many arguments\n", 25);
 			exit(FAILURE);
