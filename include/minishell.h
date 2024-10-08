@@ -183,5 +183,7 @@ char   		**convert_tokens_to_args(t_token *token_node);
 int 		count_tokens(t_token *token_node);
 void		ft_expand_variables(t_token	**lexeme);
 size_t		ft_strlen_var(const char *s);
+void		ft_expand_variables_input(char	*input);
+size_t	ft_strlen_start_end(const char *start, const char *end);
 
 #endif

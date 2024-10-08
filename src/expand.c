@@ -55,3 +55,49 @@ size_t	ft_strlen_var(const char *s)
 	}
 	return (lenght);
 }
+
+// void	ft_expand_variables_input(char	*input)
+// {
+// 	char	*start;
+// 	char	*var_key;
+// 	char	*var_value;
+// 	char 	*temp;
+
+// 	start = input;
+// 	while(*input)
+// 	{
+// 		while (*input != '$' && *input != '\'')
+// 		{
+// 			input++;
+// 		}
+// 		if (*input == '\'')
+// 		{
+// 			input++;
+// 			while(*input != '\'')
+// 				input++;
+// 			input++;
+// 		}
+// 		if (*input == '$')
+// 		{
+// 			temp = ft_substr(start, 0, ft_strlen_start_end(start, input));
+// 			var_key = ft_substr(input + 1 , 0, ft_strlen_var(input+1));
+// 			var_value = getenv(var_key);
+// 			printf("%s", var_value);
+// 			printf("%s", temp);
+// 			input++;
+// 		}
+		
+// 	}
+// }
+
+// size_t	ft_strlen_start_end(const char *start, const char *end)
+// {
+// 	int	lenght;
+
+// 	lenght = 0;
+// 	while (start++ != end)
+// 	{
+// 		lenght ++;
+// 	}
+// 	return (lenght);
+// }
