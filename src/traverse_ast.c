@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   traverse_ast.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/08/28 17:11:33 by bgomes-l         ###   ########.fr       */
+/*   Updated: 2024/10/08 18:21:34 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ void	ft_execute_command(t_ast_node *root)
 		ft_echo_command_with_ast(root);
 	else if (!strcmp(root->value, "pwd"))
 		ft_pwd_command(root);
+	else if (!strcmp(root->value, "env"))
+		ft_env_command(root);
 	else
 		ft_execute_command_ast(root);
 }

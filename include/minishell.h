@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 19:00:47 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/08 18:18:44 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/08 18:28:12 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,7 +183,7 @@ void		ft_update_env(char *new_str, char *key);
 int			is_key_without_value(char *key);
 int			is_env_key_present(char *key);
 void		ft_set_env(char *new_str, char *key, char *value);
-void		ft_env_command(t_token **cmd_tokens);
+void		ft_env_command(t_ast_node *command);
 int			set_exit_status(int status);
 int			is_valid_identifier(char *str, char *cmd_name);
 char   		**convert_tokens_to_args(t_token *token_node);

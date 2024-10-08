@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 20:43:45 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/08 17:51:50 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/08 18:27:24 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,26 +107,21 @@ void	ft_env_command(t_ast_node *command)
 {
     int     i;
     char    **env;
-    t_ast_node *current_token;
     
     env = *ft_get_env();
-    current_token = *command;
-	if (current_token->next)
+	if (command->right)
 	{
 		write(STDERR_FILENO, "env: too many arguments\n", 24);
 		return ;
 	}
-    if (strcmp(current_token->token_node, "env") == 0)
+	i = 0;
+	while (env[i])
 	{
-		i = 0;
-		while (env[i])
-		{
-			ft_putstr_fd(env[i], STDOUT_FILENO);
-			ft_putstr_fd("\n", STDOUT_FILENO);
-			i++;
-		}
-		return ;
+		ft_putstr_fd(env[i], STDOUT_FILENO);
+		ft_putstr_fd("\n", STDOUT_FILENO);
+		i++;
 	}
+	return ;
         
 }
 
