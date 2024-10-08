@@ -26,6 +26,12 @@
 # include <readline/history.h>
 # include <termios.h>
 
+# define SUCCESS 0
+# define FAILURE 1
+# define SYNTAX_ERROR 2
+
+# define INVALID_QUOTE "Invalid syntax,check for open quotes or brackets.\n"
+
 typedef struct s_env
 {
 	char	*key;
@@ -154,5 +160,28 @@ char		**ft_get_paths(void);
 char		*ft_build_executable_path(char *dir, char *command);
 char		*ft_check_executable(char *executable);
 char		*ft_search_in_paths(char **paths, char *command);
+int			check_limits(char *arg, char sign);
+void		ft_status(int status);
+int			validate_argument(char *arg);
+int			ft_exit_command(t_token *tokens);
+void		format_and_print(const char *env_var);
+int			print_smallest_unprinted(char **env, size_t env_size, char *printed);
+void		ft_print_env_sort(void);
+int			ft_export_command(t_token *tokens);
+char		***ft_get_env(void);
+char		*get_key(char *arg);
+void		ft_copy_env(void);
+void		ft_add_env(char *string);
+void		ft_update_env(char *new_str, char *key);
+int			is_key_without_value(char *key);
+int			is_env_key_present(char *key);
+void		ft_set_env(char *new_str, char *key, char *value);
+void		ft_env_command(t_token **cmd_tokens);
+int			set_exit_status(int status);
+int			is_valid_identifier(char *str, char *cmd_name);
+char   		**convert_tokens_to_args(t_token *token_node);
+int 		count_tokens(t_token *token_node);
+void		ft_expand_variables(t_token	**lexeme);
+size_t		ft_strlen_var(const char *s);
 
 #endif

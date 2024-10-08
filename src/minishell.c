@@ -37,6 +37,7 @@ int	main(void)
 		{
 			ft_tokenize(input, lexeme);
 			//ft_print_linked_list(lexeme);
+			ft_expand_variables(lexeme);
 			ast = ft_build_ast(lexeme);
 			ft_collect_heredocs(ast);
 			ft_execute_ast(ast);
