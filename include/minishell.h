@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 19:00:47 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/08 18:28:12 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/08 18:49:43 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,7 +177,7 @@ void		ft_print_env_sort(void);
 int			ft_export_command(t_token *tokens);
 char		***ft_get_env(void);
 char		*get_key(char *arg);
-void		ft_copy_env(void);
+char    **ft_copy_env(void);
 void		ft_add_env(char *string);
 void		ft_update_env(char *new_str, char *key);
 int			is_key_without_value(char *key);

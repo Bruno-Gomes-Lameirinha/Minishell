@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 20:43:45 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/08 18:27:24 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/08 18:49:05 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,13 @@
 char	***ft_get_env(void)
 {
 	static char	**env;
-	
+
+	env = ft_copy_env();
 	return (&env);
 }
 
 //"clona" o ambiente atual para que o minishell possa fazer modificações sem afetar o processo pai.
-void	ft_copy_env(void)
+char	**ft_copy_env(void)
 {
 	char	**copy;
 	int		i;
@@ -28,8 +29,7 @@ void	ft_copy_env(void)
 	i = 0;
 	while (__environ[i])
 		i++;
-	*ft_get_env() = malloc(sizeof(char *) * (i + 1));
-	copy = *ft_get_env();
+	copy = malloc(sizeof(char *) * (i + 1));
 	i = 0;
 	while (__environ[i])
 	{
@@ -38,6 +38,7 @@ void	ft_copy_env(void)
 	}
 	copy[i] = NULL;
 	__environ = copy;
+	return (copy);
 }
 
 //adiciona uma nova variável de ambiente ao conjunto de variáveis gerenciado pelo minishell.
