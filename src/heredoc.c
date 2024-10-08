@@ -29,17 +29,19 @@ int ft_handle_heredoc(const char *delimiter)
 
 int ft_collect_heredocs(t_ast_node *root)
 {
+	t_redirection *redir;
+	int heredoc_fd;
+
 	if (!root)
 		return 0;
-
 	if (root->type == NODE_COMMAND)
 	{
-		t_redirection *redir = root->redirections;
+		redir = root->redirections;
 		while (redir)
 		{
-			if (redir->type_token == REDIR_HDOC)
+			if (redir->type_token == R_HDOC)
 			{
-				int heredoc_fd = ft_handle_heredoc(redir->filename);
+				heredoc_fd = ft_handle_heredoc(redir->filename);
 				if (heredoc_fd == -1)
 					return -1;
 				redir->heredoc_fd = heredoc_fd;
@@ -51,7 +53,6 @@ int ft_collect_heredocs(t_ast_node *root)
 		return -1;
 	if (ft_collect_heredocs(root->right) == -1)
 		return -1;
-
 	return 0;
 }
 
