@@ -152,6 +152,12 @@ int			print_smallest_unprinted(char **env, size_t env_size, char *printed);
 void		ft_print_env_sort(void);
 int			ft_export_command(t_token *tokens);
 
+//unset
+int			ft_unset_command(t_token *tokens);
+void		delete_env_key(char *key_to_delete);
+
+
+
 //enviroment
 char		***ft_get_env(void);
 char		*get_key(char *arg);
