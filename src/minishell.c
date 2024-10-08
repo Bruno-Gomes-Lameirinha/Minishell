@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/03 00:20:42 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/08 17:27:21 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -361,6 +361,14 @@ void ft_execute_ast(t_ast_node *root)
             ft_echo_command_with_ast(root);
         else if (!strcmp(root->value, "pwd"))
             ft_pwd_command(root);
+		else if (!strcmp(root->value, "env"))
+            ft_env_command(root);
+		else if (!strcmp(root->value, "export"))
+            ft_export_command(root);
+		else if (!strcmp(root->value, "exit"))
+            ft_exit_command(root);
+		else if (!strcmp(root->value, "unset"))
+            ft_unset_command(root);
         else
             ft_execute_command_ast(root);
         if (saved_stdin != -1)

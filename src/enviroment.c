@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 20:43:45 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/03 00:51:24 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/08 17:51:50 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@ char	***ft_get_env(void)
 	
 	return (&env);
 }
-
-
 
 //"clona" o ambiente atual para que o minishell possa fazer modificações sem afetar o processo pai.
 void	ft_copy_env(void)
@@ -105,14 +103,14 @@ void	ft_set_env(char *new_str, char *key, char *value)
 }
 
 // implementa o comando env no minishell.
-void	ft_env_command(t_token **cmd_tokens)
+void	ft_env_command(t_ast_node *command)
 {
     int     i;
     char    **env;
-    t_token *current_token;
+    t_ast_node *current_token;
     
     env = *ft_get_env();
-    current_token = *cmd_tokens;
+    current_token = *command;
 	if (current_token->next)
 	{
 		write(STDERR_FILENO, "env: too many arguments\n", 24);
