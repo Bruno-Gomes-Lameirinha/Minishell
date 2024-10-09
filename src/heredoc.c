@@ -20,9 +20,7 @@ int ft_handle_heredoc(const char *delimiter, int type)
 			break;
 		}
 		if (type != 10 && type != 11)
-		{
 			line = ft_expand_variables_input(line);
-		}
 		write(pipe_fd[1], line, strlen(line));
 		write(pipe_fd[1], "\n", 1);
 		free(line);
