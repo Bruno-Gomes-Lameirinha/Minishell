@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenize.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/27 18:33:00 by bgomes-l          #+#    #+#             */
+/*   Updated: 2024/08/28 17:11:33 by bgomes-l         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/minishell.h"
 
 int	ft_is_space(char c)
@@ -19,7 +31,7 @@ t_token	*ft_list_new_token(void)
 	return (new_node);
 }
 
-void	ft_state_start(char **input, State *state, char **i_token, int *type)
+void	ft_state_start(char **input, t_state *state, char **i_token, int *type)
 {
 	if (ft_is_space(**input))
 			(*input)++;
@@ -67,10 +79,10 @@ void	ft_handle_operators(char ***input, char ***i_token, int **type)
 		if (***input == '>')
 		{
 			*(**i_token)++ = *(**input)++;
-			**type = REDIR_OUTAPP;
+			**type = R_OUTAPP;
 		}
 		else
-			**type = REDIR_OUT;
+			**type = R_OUT;
 	}
 	else if (***input == '<')
 	{
@@ -78,10 +90,10 @@ void	ft_handle_operators(char ***input, char ***i_token, int **type)
 		if (***input == '<')
 		{
 			*(**i_token)++ = *(**input)++;
-			**type = REDIR_HDOC;
+			**type = R_HDOC;
 		}
 		else
-			**type = REDIR_IN;
+			**type = R_IN;
 	}
 }
 
@@ -107,7 +119,8 @@ void	ft_handle_quotes(char ***input, char ***i_token, int **type)
 	}
 }
 
-void	ft_state_command(char **input, State *state, char **i_token, int *type)
+void	ft_state_command(char **input, t_state *state, \
+char **i_token, int *type)
 {
 	if (ft_is_space(**input))
 	{
@@ -136,13 +149,13 @@ char	*ft_mem_token(char *input)
 	len = ft_strlen(input);
 	memset_token = (char *)ft_calloc(len + 1, sizeof(char *));
 	if (!memset_token)
-		return (NULL); // fazer tratativa de erros dos tokens
+		return (NULL);
 	return (memset_token);
 }
 
 void	ft_last_token(char *current_token, t_token **lexeme, int *type)
 {
-	char *last_char;
+	char	*last_char;
 
 	last_char = NULL;
 	last_char = ft_strchr(current_token, '\n');
@@ -156,7 +169,7 @@ void	ft_last_token(char *current_token, t_token **lexeme, int *type)
 
 void	ft_tokenize(char *input, t_token **lexeme)
 {
-	State	state;
+	t_state	state;
 	char	*current_token;
 	char	*i_token;
 	int		*type;

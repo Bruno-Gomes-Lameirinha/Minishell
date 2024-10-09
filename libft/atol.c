@@ -1,31 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   atol.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/03 12:02:24 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/08 18:15:16 by livieira         ###   ########.fr       */
+/*   Created: 2024/10/03 00:16:36 by livieira          #+#    #+#             */
+/*   Updated: 2024/10/03 00:16:39 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "libft.h"
 
-void	ft_pwd_command(t_ast_node *cmd_tokens)
+long	ft_atol(char *str)
 {
-	t_ast_node	*current_token;
-	char		*path;
+	char	*c;
+	int		i;
+	int		sign;
+	long	sum;
 
-	current_token = cmd_tokens;
-	path = NULL;
-	if (strcmp(current_token->value, "pwd") == 0)
+	i = 0;
+	sign = 1;
+	c = str;
+	sum = 0;
+	while ((c[i] >= '\t' && c[i] <= '\r') || c[i] == ' ')
+		i++;
+	if (c[i] == '-')
 	{
-		path = getcwd(NULL, 1024);
-		if (path == NULL)
-			perror("pwd");
-		else
-			printf("%s\n", path);
-		free(path);
+		sign *= -1;
+		i++;
 	}
+	else if (c[i] == '+')
+		i++;
+	while (ft_isdigit(c[i]))
+	{
+		sum = (sum * 10) + (c[i] - '0');
+		i++;
+	}
+	return (sum * sign);
 }

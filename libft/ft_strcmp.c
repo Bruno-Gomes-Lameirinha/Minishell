@@ -1,31 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/03 12:02:24 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/08 18:15:16 by livieira         ###   ########.fr       */
+/*   Created: 2024/10/02 20:46:02 by livieira          #+#    #+#             */
+/*   Updated: 2024/10/02 20:46:23 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "libft.h"
 
-void	ft_pwd_command(t_ast_node *cmd_tokens)
+int	ft_strcmp(const char *s1, const char *s2)
 {
-	t_ast_node	*current_token;
-	char		*path;
+	int	i;
 
-	current_token = cmd_tokens;
-	path = NULL;
-	if (strcmp(current_token->value, "pwd") == 0)
+	i = 0;
+	while ((s1[i] || s2[i]))
 	{
-		path = getcwd(NULL, 1024);
-		if (path == NULL)
-			perror("pwd");
-		else
-			printf("%s\n", path);
-		free(path);
+		if (s1[i] != s2[i])
+			break ;
+		i++;
 	}
+	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }

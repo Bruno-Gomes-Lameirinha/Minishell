@@ -1,31 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_strdup_calloc.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/03 12:02:24 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/08 18:15:16 by livieira         ###   ########.fr       */
+/*   Created: 2024/10/02 20:59:33 by livieira          #+#    #+#             */
+/*   Updated: 2024/10/02 20:59:35 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "libft.h"
 
-void	ft_pwd_command(t_ast_node *cmd_tokens)
+char	*ft_strdup_calloc(const char *s)
 {
-	t_ast_node	*current_token;
-	char		*path;
+	size_t	len;
+	size_t	i;
+	char	*p;
 
-	current_token = cmd_tokens;
-	path = NULL;
-	if (strcmp(current_token->value, "pwd") == 0)
+	len = ft_strlen(s);
+	p = (char *)ft_calloc(len + 1, 1);
+	if (p == NULL)
 	{
-		path = getcwd(NULL, 1024);
-		if (path == NULL)
-			perror("pwd");
-		else
-			printf("%s\n", path);
-		free(path);
+		return (NULL);
 	}
+	i = 0;
+	while (s[i])
+	{
+		p[i] = s[i];
+		i++;
+	}
+	p[i] = '\0';
+	return (p);
 }

@@ -47,3 +47,4 @@ void ft_echo_command_with_ast(t_ast_node *node)
 	if (new_line)
 		write(1, "\n", 1);
 }
+
