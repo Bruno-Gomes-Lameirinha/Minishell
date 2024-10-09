@@ -35,7 +35,7 @@ int	main(void)
 		add_history(input);
 		if (input)
 		{
-			ft_expand_variables_input(input);
+			input = ft_expand_variables_input(input);
 			ft_tokenize(input, lexeme);
 			//ft_print_linked_list(lexeme);
 			//ft_expand_variables(lexeme);
