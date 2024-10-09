@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 17:16:26 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/08 19:02:15 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/08 20:59:05 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	delete_env_key(char *key_to_delete)
 	i = 0;
 	while (current_env[i])
 		i++;
-	new_env = (char **)ft_calloc(i + 1, (sizeof(char *)));
+	new_env = (char **)ft_calloc(i + 2, (sizeof(char *)));
 	i = -1;
 	j = -1;
 	while (current_env[++i])
@@ -32,12 +32,9 @@ void	delete_env_key(char *key_to_delete)
 		env_key = get_key(current_env[i]);
 		if (ft_strcmp(key_to_delete, env_key))
 			new_env[++j] = current_env[i];
-		else
-			free(current_env[i]);
 	}
 	free(current_env);
 	new_env[++j] = NULL;
-	*ft_get_env() = new_env;
 	__environ = new_env;
 }
 
