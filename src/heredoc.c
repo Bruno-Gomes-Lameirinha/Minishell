@@ -1,6 +1,6 @@
 #include "../include/minishell.h"
 
-int ft_handle_heredoc(const char *delimiter)
+int ft_handle_heredoc(const char *delimiter, int type)
 {
 	int pipe_fd[2];
 	char *line;
@@ -18,6 +18,10 @@ int ft_handle_heredoc(const char *delimiter)
 		{
 			free(line);
 			break;
+		}
+		if (type != 10 && type != 11)
+		{
+			line = ft_expand_variables_input(line);
 		}
 		write(pipe_fd[1], line, strlen(line));
 		write(pipe_fd[1], "\n", 1);
@@ -41,7 +45,7 @@ int ft_collect_heredocs(t_ast_node *root)
 		{
 			if (redir->type_token == R_HDOC)
 			{
-				heredoc_fd = ft_handle_heredoc(redir->filename);
+				heredoc_fd = ft_handle_heredoc(redir->filename, redir->type_filename);
 				if (heredoc_fd == -1)
 					return -1;
 				redir->heredoc_fd = heredoc_fd;

@@ -67,6 +67,7 @@ typedef struct s_pipex
 typedef struct s_redirection {
 	int						type_token;
 	char					*filename;
+	int						type_filename;
 	int						heredoc_fd;
 	struct s_redirection	*next;
 }	t_redirection;
@@ -136,7 +137,7 @@ void		ft_free_split(char **split);
 void		ft_execute_command_ast(t_ast_node *root);
 char		*ft_search_executable_ast(char *command);
 void		ft_handle_pipe(t_ast_node *root);
-int			ft_handle_heredoc(const char *delimiter);
+int			ft_handle_heredoc(const char *delimiter, int type);
 void		ft_free_ast(t_ast_node *root);
 int			ft_collect_heredocs(t_ast_node *root);
 t_ast_node	*ft_build_ast(t_token **tokens);

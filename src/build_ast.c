@@ -84,6 +84,7 @@ void	ft_creat_redir_node(t_token **current, t_ast_node **current_node)
 		perror("malloc");
 		exit(EXIT_FAILURE);
 	}
+	redir->type_filename = (*current)->next->type_token;
 	redir->type_token = (*current)->type_token;
 	redir->filename = ft_strdup((*current)->next->token_node);
 	redir->heredoc_fd = -1;
