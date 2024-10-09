@@ -108,6 +108,7 @@ t_ast_node	*ft_build_ast(t_token **tokens)
 	t_ast_node	*last_arg;
 	t_token		*cur;
 
+	cur_node = NULL;
 	cur = *tokens;
 	root = NULL;
 	while (cur)

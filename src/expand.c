@@ -60,16 +60,14 @@ char *ft_expand_variables_input(char *input)
 	return expanded_input;
 }
 
-size_t	ft_strlen_var(const char *s)
+int	ft_strlen_var(char *str)
 {
-	int	lenght;
+	int i;
 
-	lenght = 0;
-	while (ft_isalnum(*s++) || *s++ == '_')
-	{
-		lenght ++;
-	}
-	return (lenght);
+	i = 0;
+	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))  // Variáveis podem ter letras, números e '_'
+		i++;
+	return i;
 }
 
 char *ft_strjoin_free(char *s1, char *s2)

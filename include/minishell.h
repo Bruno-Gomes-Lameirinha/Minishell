@@ -192,7 +192,7 @@ int			is_valid_identifier(char *str, char *cmd_name);
 char		**convert_tokens_to_args(t_ast_node *command);
 int 		count_tokens(t_ast_node *command);
 void		ft_expand_variables(t_token	**lexeme);
-size_t		ft_strlen_var(const char *s);
+int			ft_strlen_var(char *str);
 char 		*ft_expand_variables_input(char *input);
 size_t		ft_strlen_start_end(const char *start, const char *end);
 void		ft_env_void(t_env **list);
