@@ -198,5 +198,6 @@ size_t		ft_strlen_start_end(const char *start, const char *end);
 void		ft_env_void(t_env **list);
 char 		*ft_get_env_value(char *key);
 char 		*ft_strjoin_free(char *s1, char *s2);
+void		set_hostname_in_env(void);
 
 #endif

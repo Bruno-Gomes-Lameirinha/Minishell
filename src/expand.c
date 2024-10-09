@@ -22,6 +22,7 @@ char *ft_expand_variables_input(char *input)
 
 	start = input;
 	expanded_input = ft_strdup("");
+	set_hostname_in_env();
 	while (*input)
 	{
 		while (*input != '$' && *input != '\'' && *input != '\0')
@@ -43,9 +44,9 @@ char *ft_expand_variables_input(char *input)
 			var_key = ft_substr(input, 0, ft_strlen_var(input));
 			var_value = ft_get_env_value(var_key);
 			if (var_value)
-    			expanded_input = ft_strjoin_free(expanded_input, var_value);
+				expanded_input = ft_strjoin_free(expanded_input, var_value);
 			else
-    			expanded_input = ft_strjoin_free(expanded_input, "");
+				expanded_input = ft_strjoin_free(expanded_input, "");
 			free(var_key);
 			input += ft_strlen_var(input);
 			start = input;
@@ -81,20 +82,34 @@ char *ft_strjoin_free(char *s1, char *s2)
 
 char *ft_get_env_value(char *key)
 {
-    char **env;
-    char *env_key;
-    int i;
+	char **env;
+	char *env_key;
+	int i;
 
-    env = *ft_get_env(); // Usa o ambiente clonado
-    i = 0;
-    while (env[i])
-    {
-        env_key = get_key(env[i]); // Extrai a chave da variável do formato "key=value"
-        if (ft_strcmp(env_key, key) == 0) // Compara a chave com a variável procurada
-        {
-            return (ft_strchr(env[i], '=') + 1); // Retorna o valor após o '='
-        }
-        i++;
-    }
-    return (NULL); // Se não encontrar, retorna NULL
+	env = *ft_get_env(); // Usa o ambiente clonado
+	i = 0;
+	while (env[i])
+	{
+		env_key = get_key(env[i]); // Extrai a chave da variável do formato "key=value"
+		if (ft_strcmp(env_key, key) == 0) // Compara a chave com a variável procurada
+		{
+			return (ft_strchr(env[i], '=') + 1); // Retorna o valor após o '='
+		}
+		i++;
+	}
+	return (NULL); // Se não encontrar, retorna NULL
+}
+void set_hostname_in_env(void)
+{
+	char hostname[256];
+	char *hostname_env;
+
+	if (gethostname(hostname, sizeof(hostname)) == 0)
+	{
+		hostname_env = ft_strjoin("HOSTNAME=", hostname);
+		ft_add_env(hostname_env);
+		free(hostname_env);
+	}
+	else
+		perror("gethostname");
 }
