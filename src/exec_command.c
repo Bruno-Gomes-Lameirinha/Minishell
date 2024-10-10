@@ -35,7 +35,7 @@ void	ft_execute_command_ast(t_ast_node *command_node)
 	}
 	else
 	{
-		waitpid(command_node->execve_child, NULL, 0);
+		pid_last_exit_status(command_node->execve_child);
 		ft_free_args(args);
 	}
 }

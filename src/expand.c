@@ -14,19 +14,21 @@
 
 char *ft_expand_variables_input(char *input)
 {
-	char	*start;
-	char	*var_key;
-	char	*var_value;
-	char 	*expanded_input;
-	char 	*temp;
+	char    *start;
+	char    *var_key;
+	char    *var_value;
+	char    *expanded_input;
+	char    *temp;
 
 	start = input;
 	expanded_input = ft_strdup("");
 	set_hostname_in_env();
+
 	while (*input)
 	{
 		while (*input != '$' && *input != '\'' && *input != '\0')
 			input++;
+
 		if (*input == '\'')
 		{
 			input++;
@@ -40,15 +42,27 @@ char *ft_expand_variables_input(char *input)
 		{
 			temp = ft_substr(start, 0, input - start);
 			expanded_input = ft_strjoin_free(expanded_input, temp);
+			free(temp);
 			input++;
-			var_key = ft_substr(input, 0, ft_strlen_var(input));
-			var_value = ft_get_env_value(var_key);
-			if (var_value)
+			if (*input == '?')
+			{
+				var_value = ft_itoa(update_status_error(-1));
 				expanded_input = ft_strjoin_free(expanded_input, var_value);
+				free(var_value);
+				input++;
+			}
 			else
-				expanded_input = ft_strjoin_free(expanded_input, "");
-			free(var_key);
-			input += ft_strlen_var(input);
+			{
+				int var_len = ft_strlen_var(input);
+				var_key = ft_substr(input, 0, var_len);
+				var_value = ft_get_env_value(var_key);
+				if (var_value)
+					expanded_input = ft_strjoin_free(expanded_input, var_value);
+				else
+					expanded_input = ft_strjoin_free(expanded_input, "");
+				free(var_key);
+				input += var_len;
+			}
 			start = input;
 		}
 	}

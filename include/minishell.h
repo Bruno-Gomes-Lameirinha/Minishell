@@ -199,5 +199,7 @@ void		ft_env_void(t_env **list);
 char 		*ft_get_env_value(char *key);
 char 		*ft_strjoin_free(char *s1, char *s2);
 void		set_hostname_in_env(void);
+void		pid_last_exit_status(pid_t pid);
+int			update_status_error(int exit_status);
 
 #endif
