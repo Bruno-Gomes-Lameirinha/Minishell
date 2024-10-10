@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 19:00:47 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/08 20:11:09 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/09 23:21:25 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,19 @@
 # define MINISHELL_H
 
 # include "../libft/libft.h"
-# include <stdio.h>
-# include <stdlib.h>
-# include <sys/types.h>
-# include <sys/wait.h>
-# include <unistd.h>
+# include <errno.h>
 # include <fcntl.h>
+# include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
+# include <stdbool.h>
+# include <stdio.h>
+# include <stdlib.h>
 # include <sys/stat.h>
-# include <readline/history.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 # include <termios.h>
-
-# define SUCCESS 0
-# define FAILURE 1
-# define SYNTAX_ERROR 2
-
-# define INVALID_QUOTE "Invalid syntax,check for open quotes or brackets.\n"
+# include <unistd.h>
 
 # define SUCCESS 0
 # define FAILURE 1
@@ -197,5 +193,11 @@ size_t		ft_strlen_start_end(const char *start, const char *end);
 void		ft_env_void(t_env **list);
 char 		*ft_get_env_value(char *key);
 char 		*ft_strjoin_free(char *s1, char *s2);
+
+//signal
+void	setup_signal_handlers(void);
+void	handle_eof(void);
+void	sigint_handler(int signum);
+
 
 #endif
