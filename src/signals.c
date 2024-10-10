@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 21:56:44 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/09 23:26:52 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/09 23:34:17 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ void	setup_signal_handlers(void)
 	sa.sa_flags = SA_RESTART;            
 	sigemptyset(&sa.sa_mask);
 	sigaction(SIGINT, &sa, NULL);
-
 	sa.sa_handler = SIG_IGN;            
 	sigaction(SIGQUIT, &sa, NULL);
 
