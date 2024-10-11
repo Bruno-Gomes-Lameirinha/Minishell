@@ -23,9 +23,15 @@ void	ft_pwd_command(t_ast_node *cmd_tokens)
 	{
 		path = getcwd(NULL, 1024);
 		if (path == NULL)
+		{
 			perror("pwd");
+			update_status_error(1);
+		}
 		else
+		{
 			printf("%s\n", path);
-		free(path);
+			update_status_error(0);
+			free(path);
+		}
 	}
 }

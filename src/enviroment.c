@@ -20,14 +20,6 @@ char	***ft_get_env(void)
 	return (&env);
 }
 
-/* void	ft_env_void(t_env **list)
-{
-	static char	**env;
-	
-	env = ft_copy_env();
-	
-} */
-
 //"clona" o ambiente atual para que o minishell possa fazer modificações sem afetar o processo pai.
 char	**ft_copy_env(void)
 {
@@ -122,6 +114,7 @@ void	ft_env_command(t_ast_node *command)
 	if (command->right)
 	{
 		write(STDERR_FILENO, "env: too many arguments\n", 24);
+		update_status_error(1);
 		return ;
 	}
 	i = 0;
@@ -131,8 +124,8 @@ void	ft_env_command(t_ast_node *command)
 		ft_putstr_fd("\n", STDOUT_FILENO);
 		i++;
 	}
-	return ;
-        
+	update_status_error(0);
+	return ;  
 }
 
 

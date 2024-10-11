@@ -38,11 +38,33 @@ int *saved_stdout)
 int	ft_handle_heredoc_redirection(t_redirection *redir, int *saved_stdin)
 {
 	if (redir->heredoc_fd == -1)
+	{
+		update_status_error(1);
 		return (-1);
+	}
 	if (*saved_stdin == -1)
+	{
 		*saved_stdin = dup(STDIN_FILENO);
-	dup2(redir->heredoc_fd, STDIN_FILENO);
-	close(redir->heredoc_fd);
+		if (*saved_stdin == -1)
+		{
+			perror("dup");
+			update_status_error(1);
+			return (-1);
+		}
+	}
+	if (dup2(redir->heredoc_fd, STDIN_FILENO) == -1)
+	{
+		perror("dup2");
+		close(redir->heredoc_fd);
+		update_status_error(1);
+		return (-1);
+	}
+	if (close(redir->heredoc_fd) == -1)
+	{
+		perror("close");
+		update_status_error(1);
+		return (-1);
+	}
 	redir->heredoc_fd = -1;
 	return (0);
 }
@@ -57,9 +79,24 @@ int	ft_handle_redirection_out_append(t_redirection *redir, int *saved_stdout)
 		perror("open");
 		return (-1);
 	}
-	if (*saved_stdout == -1)
+		if (*saved_stdout == -1)
+	{
 		*saved_stdout = dup(STDOUT_FILENO);
-	dup2(fd, STDOUT_FILENO);
+		if (*saved_stdout == -1)
+		{
+			perror("dup");
+			close(fd);
+			update_status_error(1);
+			return (-1);
+		}
+	}
+	if (dup2(fd, STDOUT_FILENO) == -1)
+	{
+		perror("dup2");
+		close(fd);
+		update_status_error(1);
+		return (-1);
+	}
 	close(fd);
 	return (0);
 }
@@ -72,11 +109,27 @@ int	ft_handle_redirection_out(t_redirection *redir, int *saved_stdout)
 	if (fd < 0)
 	{
 		perror("open");
+		update_status_error(1);
 		return (-1);
 	}
 	if (*saved_stdout == -1)
+	{
 		*saved_stdout = dup(STDOUT_FILENO);
-	dup2(fd, STDOUT_FILENO);
+		if (*saved_stdout == -1)
+		{
+			perror("dup");
+			close(fd);
+			update_status_error(1);
+			return (-1);
+		}
+	}
+	if (dup2(fd, STDOUT_FILENO) == -1)
+	{
+		perror("dup2");
+		close(fd);
+		update_status_error(1);
+		return (-1);
+	}
 	close(fd);
 	return (0);
 }
@@ -89,11 +142,27 @@ int	ft_handle_redirection_in(t_redirection *redir, int *saved_stdin)
 	if (fd < 0)
 	{
 		perror("open");
+		update_status_error(1);
 		return (-1);
 	}
 	if (*saved_stdin == -1)
+	{
 		*saved_stdin = dup(STDIN_FILENO);
-	dup2(fd, STDIN_FILENO);
+		if (*saved_stdin == -1)
+		{
+			perror("dup");
+			close(fd);
+			update_status_error(1);
+			return (-1);
+		}
+	}
+	if (dup2(fd, STDIN_FILENO) == -1)
+	{
+		perror("dup2");
+		close(fd);
+		update_status_error(1);
+		return (-1);
+	}
 	close(fd);
 	return (0);
 }

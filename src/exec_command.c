@@ -19,11 +19,20 @@ void	ft_execute_command_ast(t_ast_node *command_node)
 
 	args = ft_generate_args(command_node);
 	executable = ft_search_executable_ast(args[0]);
+	if (!executable)
+	{
+		ft_putstr_fd(args[0], STDERR_FILENO);
+		ft_putstr_fd(": command not found\n", STDERR_FILENO);
+		ft_free_args(args);
+		update_status_error(127);
+		return;
+	}
 	command_node->execve_child = fork();
 	if (command_node->execve_child == -1)
 	{
 		perror("fork");
 		ft_free_args(args);
+		update_status_error(1);
 		exit(EXIT_FAILURE);
 	}
 	if (command_node->execve_child == 0)
@@ -31,12 +40,13 @@ void	ft_execute_command_ast(t_ast_node *command_node)
 		execve(executable, args, NULL);
 		perror("execve");
 		ft_free_args(args);
-		exit(EXIT_FAILURE);
+		exit(126);
 	}
 	else
 	{
 		pid_last_exit_status(command_node->execve_child);
 		ft_free_args(args);
+		free(executable);
 	}
 }
 

@@ -25,6 +25,12 @@ void	delete_env_key(char *key_to_delete)
 	while (current_env[i])
 		i++;
 	new_env = (char **)ft_calloc(i + 2, (sizeof(char *)));
+	if (!new_env)
+	{
+		perror("malloc");
+		update_status_error(1);
+		return;
+	}
 	i = -1;
 	j = -1;
 	while (current_env[++i])
@@ -48,12 +54,15 @@ int	ft_unset_command(t_ast_node *command)
 	status = 0;
 	args = convert_tokens_to_args(command);;
 	if (!args[1])
-		return (set_exit_status(status));
+	{	
+		update_status_error(0);
+		return (1);
+	}
 	while (args[++i])
 	{
 		if (!is_valid_identifier(args[i], args[0]) && ++status)
 			continue ;
 		delete_env_key(get_key(args[i]));
 	}
-	return (set_exit_status(!!status));
+	return(update_status_error(status));
 }

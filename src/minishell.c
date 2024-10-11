@@ -18,10 +18,11 @@ void	pid_last_exit_status(pid_t pid)
 
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
-		status = WEXITSTATUS(status);
-	if (status == 139)
-		status = 1;
-	update_status_error(status);
+		update_status_error(WEXITSTATUS(status));
+	else if (WIFSIGNALED(status))
+		update_status_error(128 + WTERMSIG(status));  // Código de saída para terminação por sinal
+	else
+		update_status_error(1);  // Código de saída genérico
 }
 
 int	update_status_error(int exit_status)

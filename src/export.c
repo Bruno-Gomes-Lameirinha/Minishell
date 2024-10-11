@@ -73,6 +73,11 @@ void	ft_print_env_sort(void)
 	while (env[size])
 		size++;
 	printed = ft_calloc(size + 1, sizeof(char));
+	if (!printed)
+	{
+		update_status_error(1);
+		return ;
+	}
 	while (print_smallest_unprinted(env, size, printed))
 		;
 	free(printed);
@@ -126,7 +131,11 @@ int	ft_export_command(t_ast_node *command)
 	status = 0;
 	args = convert_tokens_to_args(command);
 	if (!args[1])
+	{
 		ft_print_env_sort();
+		update_status_error(0);
+		return set_exit_status(status);
+	}
 	while (args[++i])
 	{
 		if (!is_valid_identifier(args[i], args[0]) && ++status)
@@ -138,5 +147,6 @@ int	ft_export_command(t_ast_node *command)
 		else
 			ft_set_env(args[i], key, NULL);
 	}
+	update_status_error(0);
 	return (set_exit_status(status));
 }
