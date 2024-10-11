@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/08 19:58:51 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/09 23:27:20 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ int	main(void)
 	
 	env = (t_env**)malloc(sizeof(t_env*));
 	lexeme = (t_token**)malloc(sizeof(t_token*));
+	setup_signal_handlers();
 	if (!lexeme)
 	{
 		perror("Failed to allocate memory for lexeme");
@@ -54,6 +55,8 @@ int	main(void)
 	{
 		prompt = ft_get_prompt();
 		input = readline(prompt);
+		if (!input)
+			handle_eof();
 		add_history(input);
 		if (input)
 		{

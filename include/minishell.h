@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 19:00:47 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/08 20:11:09 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/11 15:16:17 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,19 @@
 # define MINISHELL_H
 
 # include "../libft/libft.h"
-# include <stdio.h>
-# include <stdlib.h>
-# include <sys/types.h>
-# include <sys/wait.h>
-# include <unistd.h>
+# include <errno.h>
 # include <fcntl.h>
+# include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
+# include <stdbool.h>
+# include <stdio.h>
+# include <stdlib.h>
 # include <sys/stat.h>
-# include <readline/history.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 # include <termios.h>
-
-# define SUCCESS 0
-# define FAILURE 1
-# define SYNTAX_ERROR 2
-
-# define INVALID_QUOTE "Invalid syntax,check for open quotes or brackets.\n"
+# include <unistd.h>
 
 # define SUCCESS 0
 # define FAILURE 1
@@ -201,5 +197,11 @@ char 		*ft_strjoin_free(char *s1, char *s2);
 void		set_hostname_in_env(void);
 void		pid_last_exit_status(pid_t pid);
 int			update_status_error(int exit_status);
+
+//signal
+void	setup_signal_handlers(void);
+void	handle_eof(void);
+void	sigint_handler(int signum);
+
 
 #endif
