@@ -12,8 +12,11 @@ int ft_handle_heredoc(const char *delimiter, int type)
 	}
 	while (1) {
 		line = readline("> ");
-		if (!line) 
+		if (!line)
+		{
+			fprintf(stderr, "bash: aviso: here-document delimitado pelo fim do arquivo (desejava `%s')\n", delimiter);
 			break;
+		}
 		if (strcmp(line, delimiter) == 0) 
 		{
 			free(line);
