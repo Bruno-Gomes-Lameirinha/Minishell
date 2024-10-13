@@ -20,9 +20,9 @@ void	pid_last_exit_status(pid_t pid)
 	if (WIFEXITED(status))
 		update_status_error(WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))
-		update_status_error(128 + WTERMSIG(status));  // Código de saída para terminação por sinal
+		update_status_error(128 + WTERMSIG(status));
 	else
-		update_status_error(1);  // Código de saída genérico
+		update_status_error(1);
 }
 
 int	update_status_error(int exit_status)
@@ -42,7 +42,7 @@ int	main(void)
 	t_ast_node *ast;
 	char	*prompt;
 	
-	env = (t_env**)malloc(sizeof(t_env*));
+	//env = (t_env**)malloc(sizeof(t_env*));
 	lexeme = (t_token**)malloc(sizeof(t_token*));
 	if (!lexeme)
 	{
