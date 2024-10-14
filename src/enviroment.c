@@ -63,6 +63,7 @@ void	ft_add_env(char *string)
 	new_var[i] = NULL;
 	*ft_get_env() = new_var;
 	__environ = new_var;
+	//free(new_var);
 }
 //atualiza as variáveis
 void	ft_update_env(char *new_str, char *key)

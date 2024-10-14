@@ -44,6 +44,7 @@ char	*ft_get_prompt(void)
 	size_t	prompt_len;
 	char	*prompt;
 
+	prompt = NULL;
 	if (getcwd(cwd, sizeof(cwd)) != NULL) 
 	{
 		relative_cwd = cwd;

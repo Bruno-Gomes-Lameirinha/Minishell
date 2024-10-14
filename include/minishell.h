@@ -56,6 +56,7 @@ typedef struct s_ast_node {
 	struct s_ast_node	*left;
 	struct s_ast_node	*right;
 	struct s_ast_node	*next;
+	t_token				**lst;
 	pid_t				execve_child;
 	t_redirection		*redirections;
 }	t_ast_node;
@@ -106,7 +107,7 @@ void		ft_last_token(char *current_token, t_token **lexeme, int *type);
 void		ft_clean_token_list(t_token **lst);
 void		ft_handle_operators(char ***input, char ***i_token, int **type);
 char		*ft_get_prompt(void);
-void		ft_execute_ast(t_ast_node *root);
+void		ft_execute_ast(t_ast_node *root, char *prompt);
 void		ft_echo_command_with_ast(t_ast_node *node);
 void		ft_cd_command_with_ast(t_ast_node *node_ast);
 void		ft_free_split(char **split);
@@ -126,7 +127,7 @@ void		ft_creat_redir_node(t_token **current, t_ast_node **current_node);
 int			ft_handle_redirection(t_redirection *redir, \
 int *saved_stdin, int *saved_stdout);
 void		ft_restore_stdin_stdout(int saved_stdin, int saved_stdout);
-void		ft_execute_command(t_ast_node *root);
+void		ft_execute_command(t_ast_node *root, char *prompt);
 int			ft_handle_redirection_in(t_redirection *redir, int *saved_stdin);
 int			ft_handle_redirection_out(t_redirection *redir, \
 int *saved_stdout);
@@ -148,7 +149,7 @@ char		*ft_search_in_paths(char **paths, char *command);
 int			check_limits(char *arg, char sign);
 void		ft_status(int status);
 int			validate_argument(char *arg);
-int			ft_exit_command(t_ast_node *command);
+int			ft_exit_command(t_ast_node *command, char *prompt);
 void		format_and_print(const char *env_var);
 int			print_smallest_unprinted(char **env, size_t env_size, char *printed);
 void		ft_print_env_sort(void);
@@ -177,8 +178,8 @@ void		set_hostname_in_env(void);
 void		pid_last_exit_status(pid_t pid);
 int			update_status_error(int exit_status);
 void	setup_signal_handlers(void);
-void	handle_eof(void);
+void	handle_eof(char	*prompt, t_token **lexeme);
 void	sigint_handler(int signum);
-void	ft_clean_up(t_token **lst, char	*input, char *prompt, t_ast_node *ast);
+void	ft_clean_up(char *prompt, t_ast_node *ast);
 
 #endif

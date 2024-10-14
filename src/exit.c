@@ -55,7 +55,7 @@ int	validate_argument(char *arg)
 	return (SUCCESS);
 }
 //Implementa a lógica do comando exit
-int	ft_exit_command(t_ast_node *command)
+int	ft_exit_command(t_ast_node *command, char	*prompt)
 {
 	long	status;
 
@@ -78,6 +78,9 @@ int	ft_exit_command(t_ast_node *command)
 			exit(FAILURE);
 		}
 	}
+	free(command->lst);
+	ft_free_ast(command);
 	ft_status(status);
+	free(prompt);
 	exit(*get_exit_status_env());
 }

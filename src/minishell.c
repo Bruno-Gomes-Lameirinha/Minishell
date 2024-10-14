@@ -40,7 +40,9 @@ int	main(void)
 	t_token	**lexeme;
 	t_ast_node *ast;
 	char	*prompt;
+	char *x;
 	
+	x = NULL;
 	lexeme = (t_token**)malloc(sizeof(t_token*));
 	setup_signal_handlers();
 	if (!lexeme)
@@ -54,18 +56,25 @@ int	main(void)
 		prompt = ft_get_prompt();
 		input = readline(prompt);
 		if (!input)
-			handle_eof();
+			handle_eof(prompt, lexeme);
 		add_history(input);
 		if (input)
 		{
-			input = ft_expand_variables_input(input);
+			x = ft_strchr(input, '$');
+			if (x != NULL)
+				input = ft_expand_variables_input(input);
 			ft_tokenize(input, lexeme);
+			free (input);
 			ast = ft_build_ast(lexeme);
+			ast->lst = lexeme;
+			ft_clean_token_list(lexeme);
 			ft_collect_heredocs(ast);
-			ft_execute_ast(ast);
-			ft_clean_up(lexeme,input, prompt, ast);
+			ft_execute_ast(ast, prompt);
+			ft_clean_up(prompt, ast);
 		}
+		
 	}
+	free(lexeme);
 	return (0);
 }
 
@@ -81,10 +90,8 @@ int	*get_exit_status_env(void)
 	return (&exit_status);
 }
 
-void	ft_clean_up(t_token **lst, char	*input, char *prompt, t_ast_node *ast)
+void	ft_clean_up(char *prompt, t_ast_node *ast)
 {
-	ft_clean_token_list(lst);
-	free(input);
 	free(prompt);
 	ft_free_ast(ast);
 }
