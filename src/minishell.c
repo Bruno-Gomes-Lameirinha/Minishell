@@ -54,23 +54,26 @@ int	main(void)
 	while (1)
 	{
 		prompt = ft_get_prompt();
-		input = readline(prompt);
+		input = readline("minishell$ ");
 		if (!input)
-			handle_eof(prompt, lexeme);
+			handle_eof(lexeme);
 		add_history(input);
 		if (input)
 		{
-			x = ft_strchr(input, '$');
-			if (x != NULL)
-				input = ft_expand_variables_input(input);
-			ft_tokenize(input, lexeme);
-			free (input);
-			ast = ft_build_ast(lexeme);
-			ast->lst = lexeme;
-			ft_clean_token_list(lexeme);
-			ft_collect_heredocs(ast);
-			ft_execute_ast(ast, prompt);
-			ft_clean_up(prompt, ast);
+			if (*input != '\0')
+			{
+				x = ft_strchr(input, '$');
+				if (x != NULL)
+					input = ft_expand_variables_input(input);
+				ft_tokenize(input, lexeme);
+				free (input);
+				ast = ft_build_ast(lexeme);
+				ast->lst = lexeme;
+				ft_clean_token_list(lexeme);
+				ft_collect_heredocs(ast);
+				ft_execute_ast(ast);
+				ft_clean_up(prompt, ast);
+			}
 		}
 		
 	}

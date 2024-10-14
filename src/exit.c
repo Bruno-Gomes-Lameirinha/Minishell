@@ -70,11 +70,13 @@ int	ft_exit_command(t_ast_node *command, char	*prompt)
 		{
 			ft_printf(STDERR_FILENO, "exit:%s: numeric argument required\n", \
 			command->right->value);
+			update_status_error(1);
 			exit(SYNTAX_ERROR);
 		}
 		if (command->right->right)
 		{
 			write(STDERR_FILENO, "exit: too many arguments\n", 25);
+			update_status_error(1);
 			exit(FAILURE);
 		}
 	}
@@ -82,5 +84,6 @@ int	ft_exit_command(t_ast_node *command, char	*prompt)
 	ft_free_ast(command);
 	ft_status(status);
 	free(prompt);
+	update_status_error(0);
 	exit(*get_exit_status_env());
 }

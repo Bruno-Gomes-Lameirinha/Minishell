@@ -107,7 +107,7 @@ void		ft_last_token(char *current_token, t_token **lexeme, int *type);
 void		ft_clean_token_list(t_token **lst);
 void		ft_handle_operators(char ***input, char ***i_token, int **type);
 char		*ft_get_prompt(void);
-void		ft_execute_ast(t_ast_node *root, char *prompt);
+void		ft_execute_ast(t_ast_node *root);
 void		ft_echo_command_with_ast(t_ast_node *node);
 void		ft_cd_command_with_ast(t_ast_node *node_ast);
 void		ft_free_split(char **split);
@@ -178,7 +178,7 @@ void		set_hostname_in_env(void);
 void		pid_last_exit_status(pid_t pid);
 int			update_status_error(int exit_status);
 void	setup_signal_handlers(void);
-void	handle_eof(char	*prompt, t_token **lexeme);
+void	handle_eof( t_token **lexeme);
 void	sigint_handler(int signum);
 void	ft_clean_up(char *prompt, t_ast_node *ast);
 

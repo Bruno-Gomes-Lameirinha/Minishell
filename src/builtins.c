@@ -23,7 +23,7 @@ void	ft_cd_command_with_ast(t_ast_node *node_ast)
 	current_token = node_ast;
 	if (current_token->right == NULL && !strcmp(current_token->value, "cd"))
 		path = getenv("HOME");
-	else if (current_token->right)
+	else if (current_token->right && current_token->right->right == NULL)
 		path = current_token->right->value;
 	if (chdir(path) != 0)
 	{

@@ -43,6 +43,7 @@ char	*ft_get_prompt(void)
 	size_t	cwd_len;
 	size_t	prompt_len;
 	char	*prompt;
+	char *temp;
 
 	prompt = NULL;
 	if (getcwd(cwd, sizeof(cwd)) != NULL) 
@@ -73,7 +74,9 @@ char	*ft_get_prompt(void)
 			ft_strlcat(prompt, relative_cwd, cwd_len + prompt_len + 3); 
 		}
 		ft_strlcat(prompt, "$ ", cwd_len + prompt_len + 3); 
-		return prompt;
+		temp = ft_strdup(prompt);
+		free (prompt);
+		return temp;
 	} 
 	else 
 	{
