@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 20:43:45 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/08 19:50:31 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/14 19:30:57 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,26 @@ char	***ft_get_env(void)
 	return (&env);
 }
 
-//"clona" o ambiente atual para que o minishell possa fazer modificações sem afetar o processo pai.
 char	**ft_copy_env(void)
 {
 	char	**copy;
 	int		i;
+	int		j;
 
 	i = 0;
+	j = 0;
 	while (__environ[i])
 		i++;
 	copy = malloc(sizeof(char *) * (i + 1));
 	i = 0;
 	while (__environ[i])
 	{
-		copy[i] = ft_strdup(__environ[i]);
+		if (ft_strncmp(__environ[i], "COLUMNS=", 8) != 0 && 
+		    ft_strncmp(__environ[i], "LINES=", 6) != 0)
+		{
+			copy[j] = ft_strdup(__environ[i]);
+			j++;
+		}
 		i++;
 	}
 	copy[i] = NULL;
@@ -41,7 +47,6 @@ char	**ft_copy_env(void)
 	return (copy);
 }
 
-//adiciona uma nova variável de ambiente ao conjunto de variáveis gerenciado pelo minishell.
 void	ft_add_env(char *string)
 {
 	char	**new_var;
@@ -64,7 +69,6 @@ void	ft_add_env(char *string)
 	*ft_get_env() = new_var;
 	__environ = new_var;
 }
-//atualiza as variáveis
 void	ft_update_env(char *new_str, char *key)
 {
 	int		i;
@@ -89,9 +93,6 @@ void	ft_update_env(char *new_str, char *key)
 	__environ = env;
 }
 
-//Verifica se uma chave de variável de ambiente está presente no conjunto de variáveis.
-
-//define as variaveis
 void	ft_set_env(char *new_str, char *key, char *value)
 {
 	char	*env_var;
@@ -103,7 +104,6 @@ void	ft_set_env(char *new_str, char *key, char *value)
 		ft_add_env(new_str);
 }
 
-// implementa o comando env no minishell.
 void	ft_env_command(t_ast_node *command)
 {
     int     i;
@@ -127,10 +127,3 @@ void	ft_env_command(t_ast_node *command)
 	update_status_error(0);
 	return ;  
 }
-
-
-
-
-
-
-
