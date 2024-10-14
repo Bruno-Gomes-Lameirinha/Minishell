@@ -220,19 +220,6 @@ void	ft_add_token(t_token **lexeme, char *node, int type)
 	}
 }
 
-void	ft_print_linked_list(t_token **lexeme)
-{
-	t_token	*current;
-
-	current = *lexeme;
-	while (current != NULL)
-	{
-		printf("Conteúdo do token: %s\n", current->token_node);
-		printf("Type do token: %d\n", current->type_token);
-		current = current->next;
-	}
-}
-
 void	ft_clean_token_list(t_token **lst)
 {
 	t_token	*node_to_del;

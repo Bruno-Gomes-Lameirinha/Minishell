@@ -34,31 +34,12 @@
 
 # define INVALID_QUOTE "Invalid syntax,check for open quotes or brackets.\n"
 
-typedef struct s_env
-{
-	char	*key;
-	char	*value;
-	char	*next;
-}	t_env;
-
 typedef struct s_token
 {
 	char			*token_node;
 	int				type_token;
 	struct s_token	*next;
 }	t_token;
-
-typedef struct s_pipex
-{
-	int		channel[2];
-	pid_t	first_child;
-	pid_t	second_child;
-	pid_t	third_child;
-	char	**parent_argv;
-	char	**parent_env;
-	char	**argv_childs;
-	char	**path;
-}		t_pipex;
 
 typedef struct s_redirection {
 	int						type_token;
@@ -115,7 +96,6 @@ int			ft_is_space(char c);
 int			get_exit_status(int exit_status);
 int			*get_exit_status_env(void);
 void		ft_add_token(t_token **lexeme, char *node, int type);
-void		ft_print_linked_list(t_token **lexeme);
 void		ft_tokenize(char *input, t_token **lexeme);
 void		ft_state_start(char **input, t_state *state, char **index_token, \
 int *type);
@@ -191,17 +171,14 @@ void		ft_expand_variables(t_token	**lexeme);
 int			ft_strlen_var(char *str);
 char 		*ft_expand_variables_input(char *input);
 size_t		ft_strlen_start_end(const char *start, const char *end);
-void		ft_env_void(t_env **list);
 char 		*ft_get_env_value(char *key);
 char 		*ft_strjoin_free(char *s1, char *s2);
 void		set_hostname_in_env(void);
 void		pid_last_exit_status(pid_t pid);
 int			update_status_error(int exit_status);
-
-//signal
 void	setup_signal_handlers(void);
 void	handle_eof(void);
 void	sigint_handler(int signum);
-
+void	ft_clean_up(t_token **lst, char	*input, char *prompt, t_ast_node *ast);
 
 #endif

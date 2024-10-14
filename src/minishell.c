@@ -37,12 +37,10 @@ int	update_status_error(int exit_status)
 int	main(void)
 {
 	char	*input;
-	t_env	**env;
 	t_token	**lexeme;
 	t_ast_node *ast;
 	char	*prompt;
 	
-	env = (t_env**)malloc(sizeof(t_env*));
 	lexeme = (t_token**)malloc(sizeof(t_token*));
 	setup_signal_handlers();
 	if (!lexeme)
@@ -62,18 +60,12 @@ int	main(void)
 		{
 			input = ft_expand_variables_input(input);
 			ft_tokenize(input, lexeme);
-			//ft_print_linked_list(lexeme);
 			ast = ft_build_ast(lexeme);
 			ft_collect_heredocs(ast);
 			ft_execute_ast(ast);
-			ft_clean_token_list(lexeme);
-			free(input);
-			free(prompt);
-			ft_free_ast(ast);
+			ft_clean_up(lexeme,input, prompt, ast);
 		}
 	}
-	free(lexeme);
-	free(env);
 	return (0);
 }
 
@@ -87,4 +79,12 @@ int	*get_exit_status_env(void)
 	static int	exit_status;
 
 	return (&exit_status);
+}
+
+void	ft_clean_up(t_token **lst, char	*input, char *prompt, t_ast_node *ast)
+{
+	ft_clean_token_list(lst);
+	free(input);
+	free(prompt);
+	ft_free_ast(ast);
 }
