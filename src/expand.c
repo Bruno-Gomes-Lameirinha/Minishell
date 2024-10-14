@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/08 20:24:32 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/14 15:04:30 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,8 @@ char *ft_expand_variables_input(char *input)
 
 	while (*input)
 	{
-		while (*input != '$' && *input != '\'' && *input != '\0')
+		while (*input != '$' && *input != '\'' && *input != '\0' && (*input == '&' && *input + 1 == ' '))
 			input++;
-
 		if (*input == '\'')
 		{
 			input++;
