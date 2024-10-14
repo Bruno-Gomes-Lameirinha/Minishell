@@ -127,7 +127,7 @@ void		ft_creat_redir_node(t_token **current, t_ast_node **current_node);
 int			ft_handle_redirection(t_redirection *redir, \
 int *saved_stdin, int *saved_stdout);
 void		ft_restore_stdin_stdout(int saved_stdin, int saved_stdout);
-void		ft_execute_command(t_ast_node *root, char *prompt);
+void		ft_execute_command(t_ast_node *root);
 int			ft_handle_redirection_in(t_redirection *redir, int *saved_stdin);
 int			ft_handle_redirection_out(t_redirection *redir, \
 int *saved_stdout);
@@ -149,7 +149,7 @@ char		*ft_search_in_paths(char **paths, char *command);
 int			check_limits(char *arg, char sign);
 void		ft_status(int status);
 int			validate_argument(char *arg);
-int			ft_exit_command(t_ast_node *command, char *prompt);
+int			ft_exit_command(t_ast_node *command);
 void		format_and_print(const char *env_var);
 int			print_smallest_unprinted(char **env, size_t env_size, char *printed);
 void		ft_print_env_sort(void);

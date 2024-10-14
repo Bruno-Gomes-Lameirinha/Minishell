@@ -22,7 +22,7 @@ void ft_handle_pipe(t_ast_node *root)
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
 		close(fd[1]);
-		ft_execute_ast(root->left, NULL);
+		ft_execute_ast(root->left);
 		exit(update_status_error(-1));
 	}
 
@@ -37,7 +37,7 @@ void ft_handle_pipe(t_ast_node *root)
 		dup2(fd[0], STDIN_FILENO);
 		close(fd[0]);
 		close(fd[1]);
-		ft_execute_ast(root->right, NULL);
+		ft_execute_ast(root->right);
 		exit(update_status_error(-1));
 	}
 	close(fd[0]);

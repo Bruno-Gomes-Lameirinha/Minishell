@@ -12,7 +12,7 @@
 
 #include "../include/minishell.h"
 
-void	ft_execute_ast(t_ast_node *root, char *prompt)
+void	ft_execute_ast(t_ast_node *root)
 {
 	int	saved_stdin;
 	int	saved_stdout;
@@ -34,12 +34,12 @@ void	ft_execute_ast(t_ast_node *root, char *prompt)
 			ft_restore_stdin_stdout(saved_stdin, saved_stdout);
 			return ;
 		}
-		ft_execute_command(root, prompt);
+		ft_execute_command(root);
 		ft_restore_stdin_stdout(saved_stdin, saved_stdout);
 	}
 }
 
-void	ft_execute_command(t_ast_node *root, char *prompt)
+void	ft_execute_command(t_ast_node *root)
 {
 	if (!strcmp(root->value, "cd"))
 		ft_cd_command_with_ast(root);
@@ -52,7 +52,7 @@ void	ft_execute_command(t_ast_node *root, char *prompt)
 	else if (!strcmp(root->value, "export"))
 		ft_export_command(root);
 	else if (!strcmp(root->value, "exit"))
-		ft_exit_command(root, prompt);
+		ft_exit_command(root);
 	else if (!strcmp(root->value, "unset"))
 		ft_unset_command(root);
 	else
