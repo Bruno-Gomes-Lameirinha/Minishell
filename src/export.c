@@ -146,6 +146,6 @@ int	ft_export_command(t_ast_node *command)
 		else
 			ft_set_env(args[i], key, NULL);
 	}
-	update_status_error(0);
+	update_status_error(status);
 	return (set_exit_status(status));
 }

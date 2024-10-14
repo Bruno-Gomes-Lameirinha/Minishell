@@ -26,7 +26,7 @@ char *ft_expand_variables_input(char *input)
 
 	while (*input)
 	{
-		while (*input != '$' && *input != '\'' && *input != '\0' && (*input == '&' && *input + 1 == ' '))
+		while (*input != '$' && *input != '\'' && *input != '\0')
 			input++;
 		if (*input == '\'')
 		{
@@ -35,6 +35,11 @@ char *ft_expand_variables_input(char *input)
 				input++;
 			if (*input == '\'')
 				input++;
+			continue;
+		}
+		if ((*input == '$' && (*(input + 1) == ' ')) || (*input == '$' && (*(input + 1) == '\"')) || (*input == '$' && (*(input + 1) == '\0')))
+		{
+			input++;
 			continue;
 		}
 		if (*input == '$')
