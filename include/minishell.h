@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
+/*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 19:00:47 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/11 15:16:17 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/15 18:45:47 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,12 +151,13 @@ void		ft_status(int status);
 int			validate_argument(char *arg);
 int			ft_exit_command(t_ast_node *command);
 void		format_and_print(const char *env_var);
-int			print_smallest_unprinted(char **env, size_t env_size, char *printed);
+int			print_smallest_unprinted(char **env, size_t env_size, \
+char *printed);
 void		ft_print_env_sort(void);
 int			ft_export_command(t_ast_node *command);
 char		***ft_get_env(void);
 char		*get_key(char *arg);
-char    	**ft_copy_env(void);
+char		**ft_copy_env(void);
 void		ft_add_env(char *string);
 void		ft_update_env(char *new_str, char *key);
 int			ft_unset_command(t_ast_node *command);
@@ -167,19 +168,19 @@ void		ft_env_command(t_ast_node *command);
 int			set_exit_status(int status);
 int			is_valid_identifier(char *str, char *cmd_name);
 char		**convert_tokens_to_args(t_ast_node *command);
-int 		count_tokens(t_ast_node *command);
+int			count_tokens(t_ast_node *command);
 void		ft_expand_variables(t_token	**lexeme);
 int			ft_strlen_var(char *str);
-char 		*ft_expand_variables_input(char *input);
+char		*ft_expand_variables_input(char *input);
 size_t		ft_strlen_start_end(const char *start, const char *end);
-char 		*ft_get_env_value(char *key);
-char 		*ft_strjoin_free(char *s1, char *s2);
+char		*ft_get_env_value(char *key);
+char		*ft_strjoin_free(char *s1, char *s2);
 void		set_hostname_in_env(void);
 void		pid_last_exit_status(pid_t pid);
 int			update_status_error(int exit_status);
-void	setup_signal_handlers(void);
-void	handle_eof( t_token **lexeme);
-void	sigint_handler(int signum);
-void	ft_clean_up(char *prompt, t_ast_node *ast);
+void		setup_signal_handlers(void);
+void		handle_eof( t_token **lexeme);
+void		sigint_handler(int signum);
+void		ft_clean_up(char *prompt, t_ast_node *ast);
 
 #endif
