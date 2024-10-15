@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
+/*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 18:16:08 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/03 00:17:03 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/15 17:48:26 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,5 @@ char	*ft_strndup(char *s, int n);
 int		ft_strcmp(const char *s1, const char *s2);
 char	*ft_strdup_calloc(const char *s);
 long	ft_atol(char *str);
-
-
 
 #endif
