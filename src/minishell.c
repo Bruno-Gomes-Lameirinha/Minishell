@@ -39,9 +39,10 @@ int	main(void)
 	char	*input;
 	t_token	**lexeme;
 	t_ast_node *ast;
-	char	*prompt;
+	// char	*prompt;
 	char *x;
 	
+	setlocale(LC_ALL, "pt_BR.UTF-8");
 	x = NULL;
 	lexeme = (t_token**)malloc(sizeof(t_token*));
 	setup_signal_handlers();
@@ -53,7 +54,7 @@ int	main(void)
 	*lexeme = NULL;
 	while (1)
 	{
-		prompt = ft_get_prompt();
+		//prompt = ft_get_prompt();
 		input = readline("minishell$ ");
 		if (!input)
 			handle_eof(lexeme);
@@ -68,11 +69,11 @@ int	main(void)
 				ft_tokenize(input, lexeme);
 				free (input);
 				ast = ft_build_ast(lexeme);
-				ast->lst = lexeme;
+				//ast->lst = lexeme;
 				ft_clean_token_list(lexeme);
 				ft_collect_heredocs(ast);
 				ft_execute_ast(ast);
-				ft_clean_up(prompt, ast);
+				ft_clean_up(ast);
 			}
 		}
 		
@@ -93,8 +94,7 @@ int	*get_exit_status_env(void)
 	return (&exit_status);
 }
 
-void	ft_clean_up(char *prompt, t_ast_node *ast)
+void	ft_clean_up(t_ast_node *ast)
 {
-	free(prompt);
 	ft_free_ast(ast);
 }

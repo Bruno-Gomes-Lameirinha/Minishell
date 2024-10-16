@@ -27,6 +27,7 @@
 # include <sys/wait.h>
 # include <termios.h>
 # include <unistd.h>
+# include <locale.h>
 
 # define SUCCESS 0
 # define FAILURE 1
@@ -56,7 +57,8 @@ typedef struct s_ast_node {
 	struct s_ast_node	*left;
 	struct s_ast_node	*right;
 	struct s_ast_node	*next;
-	t_token				**lst;
+	struct s_ast_node	*head;
+	t_token				*lst;
 	pid_t				execve_child;
 	t_redirection		*redirections;
 }	t_ast_node;
@@ -181,6 +183,6 @@ int			update_status_error(int exit_status);
 void		setup_signal_handlers(void);
 void		handle_eof( t_token **lexeme);
 void		sigint_handler(int signum);
-void		ft_clean_up(char *prompt, t_ast_node *ast);
+void		ft_clean_up(t_ast_node *ast);
 
 #endif

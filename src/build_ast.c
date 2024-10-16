@@ -44,11 +44,17 @@ t_ast_node **last_arg_node)
 	t_ast_node	*arg_node;
 
 	arg_node = malloc(sizeof(t_ast_node));
+    if (!arg_node)
+	{
+        perror("Erro ao alocar memória para arg_node");
+        exit(EXIT_FAILURE);
+    }
 	arg_node->type = NODE_ARGUMENT;
 	arg_node->value = ft_strdup(current->token_node);
 	arg_node->left = NULL;
 	arg_node->right = NULL;
 	arg_node->next = NULL;
+	arg_node->redirections = NULL;
 	if (!(*last_arg_node))
 	{
 		(*current_node)->right = arg_node;
@@ -64,11 +70,13 @@ void	ft_creat_pipe_node(t_ast_node **root, t_ast_node **current_node)
 {
 	t_ast_node	*pipe_node;
 
+	pipe_node = NULL;
 	pipe_node = malloc(sizeof(t_ast_node));
 	pipe_node->type = NODE_PIPE;
 	pipe_node->value = NULL;
 	pipe_node->left = *root;
 	pipe_node->right = NULL;
+	pipe_node->redirections = NULL;
 	*root = pipe_node;
 	*current_node = pipe_node;
 }
@@ -107,8 +115,13 @@ t_ast_node	*ft_build_ast(t_token **tokens)
 	t_ast_node	*cur_node;
 	t_ast_node	*last_arg;
 	t_token		*cur;
+	t_token		*lst;
+	t_ast_node	*head;
 
+	lst = NULL;
+	head = NULL;
 	cur_node = NULL;
+	last_arg = NULL;
 	cur = *tokens;
 	root = NULL;
 	while (cur)
@@ -128,5 +141,11 @@ t_ast_node	*ft_build_ast(t_token **tokens)
 			ft_creat_redir_node(&cur, &cur_node);
 		cur = cur->next;
 	}
+	if (head == NULL)
+		head = root;
+	if (lst == NULL)
+		lst = cur;
+	root->head = head;
+	root->lst = lst;
 	return (root);
 }

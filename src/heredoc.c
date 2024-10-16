@@ -63,24 +63,28 @@ int ft_collect_heredocs(t_ast_node *root)
 
 void ft_free_ast(t_ast_node *root)
 {
+	t_redirection *redir;
+	t_redirection *tmp_redir;
+
+	redir = NULL;
+	tmp_redir = NULL;
 	if (!root)
 		return;
-
 	ft_free_ast(root->left);
 	ft_free_ast(root->right);
-
-	if (root->type == NODE_COMMAND)
+	if (root->redirections != NULL)
+		redir = root->redirections;
+	if (redir)
 	{
-		t_redirection *redir = root->redirections;
 		while (redir)
 		{
-			t_redirection *tmp = redir;
+			tmp_redir = redir;
 			redir = redir->next;
-			if (tmp->filename)
-				free(tmp->filename);
-			if (tmp->heredoc_fd != -1)
-				close(tmp->heredoc_fd);
-			free(tmp);
+			if (tmp_redir->filename)
+				free(tmp_redir->filename);
+			if (tmp_redir->heredoc_fd != -1)
+				close(tmp_redir->heredoc_fd);
+			free(tmp_redir);
 		}
 	}
 	if (root->value)

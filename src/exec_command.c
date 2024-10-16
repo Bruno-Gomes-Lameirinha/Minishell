@@ -19,7 +19,7 @@ void	ft_execute_command_ast(t_ast_node *command_node)
 
 	args = ft_generate_args(command_node);
 	executable = ft_search_executable_ast(args[0]);
-	if (!executable)
+	if (!executable && args[0][0] != '.')
 	{
 		ft_putstr_fd(args[0], STDERR_FILENO);
 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
@@ -40,6 +40,8 @@ void	ft_execute_command_ast(t_ast_node *command_node)
 		execve(executable, args, NULL);
 		perror("execve");
 		ft_free_args(args);
+		ft_clean_token_list(command_node->lst);
+		ft_free_ast(command_node->head);
 		exit(126);
 	}
 	else
