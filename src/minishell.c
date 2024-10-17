@@ -39,29 +39,27 @@ int	main(void)
 	char	*input;
 	t_token	**lexeme;
 	t_ast_node *ast;
-	char	*prompt;
 	char *x;
 	
 	x = NULL;
-	lexeme = (t_token**)malloc(sizeof(t_token*));
 	setup_signal_handlers();
-	if (!lexeme)
-	{
-		perror("Failed to allocate memory for lexeme");
-		exit(EXIT_FAILURE);
-	}
-	*lexeme = NULL;
 	while (1)
 	{
-		prompt = ft_get_prompt();
 		input = readline("minishell$ ");
 		if (!input)
-			handle_eof(lexeme);
+			handle_eof();
 		add_history(input);
 		if (input)
 		{
 			if (*input != '\0')
 			{
+				lexeme = (t_token**)malloc(sizeof(t_token*));
+				if (!lexeme)
+				{
+					perror("Failed to allocate memory for lexeme");
+					exit(EXIT_FAILURE);
+				}
+				*lexeme = NULL;
 				x = ft_strchr(input, '$');
 				if (x != NULL)
 					input = ft_expand_variables_input(input);
@@ -72,12 +70,11 @@ int	main(void)
 				ft_clean_token_list(lexeme);
 				ft_collect_heredocs(ast);
 				ft_execute_ast(ast);
-				ft_clean_up(prompt, ast);
+				ft_free_ast(ast);
 			}
 		}
 		
 	}
-	free(lexeme);
 	return (0);
 }
 
@@ -93,8 +90,7 @@ int	*get_exit_status_env(void)
 	return (&exit_status);
 }
 
-void	ft_clean_up(char *prompt, t_ast_node *ast)
-{
-	free(prompt);
-	ft_free_ast(ast);
-}
+// void	ft_clean_up(char *prompt, t_ast_node *ast)
+// {
+// 	ft_free_ast(ast);
+// }

@@ -23,11 +23,10 @@ void	sigint_handler(int signum)
 	}
 }
 
-void	handle_eof( t_token **lexeme)
+void	handle_eof( void)
 {
 	rl_replace_line("", 0);
 	write(STDOUT_FILENO, "exit\n", 5);
-	free(lexeme);
 	exit(0);
 }
 

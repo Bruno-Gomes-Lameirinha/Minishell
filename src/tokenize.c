@@ -236,4 +236,5 @@ void	ft_clean_token_list(t_token **lst)
 		free (node_to_del);
 	}
 	*lst = NULL;
+	free(lst);
 }

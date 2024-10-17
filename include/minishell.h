@@ -179,8 +179,8 @@ void		set_hostname_in_env(void);
 void		pid_last_exit_status(pid_t pid);
 int			update_status_error(int exit_status);
 void		setup_signal_handlers(void);
-void		handle_eof( t_token **lexeme);
+void		handle_eof(void);
 void		sigint_handler(int signum);
-void		ft_clean_up(char *prompt, t_ast_node *ast);
+void		ft_clean_up(t_ast_node *ast);
 
 #endif
