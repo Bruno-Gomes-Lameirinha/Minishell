@@ -24,7 +24,7 @@ void ft_handle_pipe(t_ast_node *root)
 		close(fd[1]);
 		ft_execute_ast(root->left);
 		ft_free_ast(root->head);
-		exit(update_status_error(-1));
+		exit(ft_update_status_error(-1));
 	}
 
 	right_pid = fork();
@@ -40,10 +40,10 @@ void ft_handle_pipe(t_ast_node *root)
 		close(fd[1]);
 		ft_execute_ast(root->right);
 		ft_free_ast(root->head);
-		exit(update_status_error(-1));
+		exit(ft_update_status_error(-1));
 	}
 	close(fd[0]);
 	close(fd[1]);
 	waitpid(left_pid, NULL, 0);
-	pid_last_exit_status(right_pid);
+	ft_pid_last_exit_status(right_pid);
 }

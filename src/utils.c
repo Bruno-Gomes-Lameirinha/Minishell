@@ -22,15 +22,15 @@ int	is_valid_identifier(char *str, char *cmd_name)
 			return (1);
 	}
 	ft_printf(STDERR_FILENO, "%s: not a valid identifier\n", cmd_name);
-	set_exit_status(FAILURE);
+	ft_set_exit_status(FAILURE);
 	return (0);
 }
 
-int	set_exit_status(int status)
+int	ft_set_exit_status(int status)
 {
 	int	exit_status;
 
-	exit_status = *get_exit_status_env();
+	exit_status = *ft_get_exit_status_env();
 	exit_status = status;
 	return (exit_status);
 }
@@ -45,7 +45,7 @@ int	is_env_key_present(char *key)
 	i = -1;
 	while (env[++i])
 	{
-		env_key = get_key(env[i]);
+		env_key = ft_get_key(env[i]);
 		if (!ft_strcmp(key, env_key))
 			return (1);
 	}
@@ -64,7 +64,7 @@ int	is_key_without_value(char *key)
 	{
 		if (!ft_strchr(env[i], '='))
 		{
-			env_key = get_key(env[i]);
+			env_key = ft_get_key(env[i]);
 			if (!ft_strcmp(key, env_key))
 				return (1);
 		}
@@ -72,7 +72,7 @@ int	is_key_without_value(char *key)
 	return (0);
 }
 
-char	*get_key(char *arg)
+char	*ft_get_key(char *arg)
 {
 	char	*equal_sign;
 

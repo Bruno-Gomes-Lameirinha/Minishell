@@ -28,18 +28,18 @@ void	ft_cd_command_with_ast(t_ast_node *node_ast)
 	if (chdir(path) != 0)
 	{
 		perror("cd");
-		update_status_error(1);
+		ft_update_status_error(1);
 		return;
 	}
 	else
-		update_status_error(0);
+		ft_update_status_error(0);
 	pwd  = getcwd(NULL, 1024);
 	if (pwd)	
 		free(pwd);
 	else
 	{
 		perror("getcwd");
-		update_status_error(1);
+		ft_update_status_error(1);
 	}
 }
 
@@ -50,7 +50,7 @@ void ft_echo_command_with_ast(t_ast_node *node)
 
 	if (!node) 
 	{
-		update_status_error(1);
+		ft_update_status_error(1);
 		return;
 	}
 	new_line = 1;
@@ -65,14 +65,14 @@ void ft_echo_command_with_ast(t_ast_node *node)
 		if (write(1, current->value, strlen(current->value)) == -1)
 		{
 			perror("write");
-			update_status_error(1);
+			ft_update_status_error(1);
 			return;
 		}
 		if (current->right)
 			if (write(1, " ", 1) == -1)
 			{
 				perror("write");
-				update_status_error(1);
+				ft_update_status_error(1);
 				return;
 			}
 		current = current->right;
@@ -83,9 +83,9 @@ void ft_echo_command_with_ast(t_ast_node *node)
 		if (write(1, "\n", 1) == -1)
 		{
 			perror("write");
-			update_status_error(1);
+			ft_update_status_error(1);
 			return;
 		}
 	}
-	update_status_error(0);
+	ft_update_status_error(0);
 }

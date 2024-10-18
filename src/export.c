@@ -12,7 +12,7 @@
 
 #include "../include/minishell.h"
 
-void	format_and_print(const char *env_var)
+void	ft_format_and_print(const char *env_var)
 {
 	char	*name;
 	char	*equal;
@@ -33,7 +33,7 @@ void	format_and_print(const char *env_var)
 	free(copy);
 }
 
-int	print_smallest_unprinted(char **env, size_t env_size, char *printed)
+int	ft_print_smallest_unprinted(char **env, size_t env_size, char *printed)
 {
 	int	small_pos;
 
@@ -52,7 +52,7 @@ int	print_smallest_unprinted(char **env, size_t env_size, char *printed)
 	}
 	if (small_pos != -1)
 	{
-		format_and_print(env[small_pos]);
+		ft_format_and_print(env[small_pos]);
 		printed[small_pos]++;
 		return (1);
 	}
@@ -72,15 +72,15 @@ void	ft_print_env_sort(void)
 	printed = ft_calloc(size + 1, sizeof(char));
 	if (!printed)
 	{
-		update_status_error(1);
+		ft_update_status_error(1);
 		return ;
 	}
-	while (print_smallest_unprinted(env, size, printed))
+	while (ft_print_smallest_unprinted(env, size, printed))
 		;
 	free(printed);
 }
 
-int count_tokens(t_ast_node *command)
+int ft_count_tokens(t_ast_node *command)
 {
     int			count;
     t_ast_node	*current;
@@ -104,7 +104,7 @@ char    **convert_tokens_to_args(t_ast_node *command)
 	
     i = 0;
     current = command;
-	num_tokens = count_tokens(command);
+	num_tokens = ft_count_tokens(command);
     args = malloc(sizeof(char *) * (num_tokens + 1));
     if (!args)
         return NULL;
@@ -132,20 +132,20 @@ int	ft_export_command(t_ast_node *command)
 	if (!args[1])
 	{
 		ft_print_env_sort();
-		update_status_error(0);
-		return set_exit_status(status);
+		ft_update_status_error(0);
+		return ft_set_exit_status(status);
 	}
 	while (args[++i])
 	{
 		if (!is_valid_identifier(args[i], args[0]) && ++status)
 			continue ;
-		key = get_key(args[i]);
+		key = ft_get_key(args[i]);
 		equal_sign = ft_strchr(args[i], '=');
 		if (equal_sign)
 			ft_set_env(args[i], key, equal_sign + 1);
 		else
 			ft_set_env(args[i], key, NULL);
 	}
-	update_status_error(status);
-	return (set_exit_status(status));
+	ft_update_status_error(status);
+	return (ft_set_exit_status(status));
 }

@@ -14,106 +14,86 @@
 
 char *ft_expand_variables_input(char *input)
 {
-	char    *start;
-	char    *var_key;
-	char    *var_value;
-	char    *expanded_input;
-	char    *temp;
+	char	*start;
+	char	*expanded_input;
 
 	start = input;
 	expanded_input = ft_strdup("");
-
 	while (*input)
 	{
-		while (*input != '$' && *input != '\'' && *input != '\0')
-			input++;
-		if (*input == '\'')
-		{
-			input++;
-			while (*input != '\'' && *input != '\0')
-				input++;
-			if (*input == '\'')
-				input++;
+		input = ft_skip_until_special_char(input);
+		if (*input == '\0')
+			break;
+		if (ft_handle_special_char(&input, &start, &expanded_input))
 			continue;
-		}
-		if ((*input == '$' && (*(input + 1) == ' ')) || (*input == '$' && (*(input + 1) == '\"')) || (*input == '$' && (*(input + 1) == '\0')))
-		{
-			input++;
-			continue;
-		}
-		if (*input == '$')
-		{
-			temp = ft_substr(start, 0, input - start);
-			expanded_input = ft_strjoin_free(expanded_input, temp);
-			free(temp);
-			input++;
-			if (*input == '?')
-			{
-				var_value = ft_itoa(update_status_error(-1));
-				expanded_input = ft_strjoin_free(expanded_input, var_value);
-				free(var_value);
-				input++;
-			}
-			else
-			{
-				int var_len = ft_strlen_var(input);
-				var_key = ft_substr(input, 0, var_len);
-				var_value = ft_get_env_value(var_key);
-				if (var_value)
-					expanded_input = ft_strjoin_free(expanded_input, var_value);
-				else
-					expanded_input = ft_strjoin_free(expanded_input, "");
-				free(var_key);
-				input += var_len;
-			}
-			start = input;
-		}
 	}
 	if (*start != '\0')
-	{
-		temp = ft_strdup(start);
-		expanded_input = ft_strjoin_free(expanded_input, temp);
-		free(temp);
-	}
+		expanded_input = ft_append_text(start, input, expanded_input);
 	return expanded_input;
 }
 
-int	ft_strlen_var(char *str)
+char *ft_skip_until_special_char(char *input)
 {
-	int i;
-
-	i = 0;
-	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))  // Variáveis podem ter letras, números e '_'
-		i++;
-	return i;
+	while (*input != '$' && *input != '\'' && *input != '\0')
+		input++;
+	return input;
 }
 
-char *ft_strjoin_free(char *s1, char *s2)
+int ft_handle_special_char(char **input, char **start, char **expanded_input)
 {
-	char *result;
-
-	result = ft_strjoin(s1, s2);
-	if (s1)
-		free(s1);
-	return result;
-}
-
-char *ft_get_env_value(char *key)
-{
-	char **env;
-	char *env_key;
-	int i;
-
-	env = *ft_get_env(); // Usa o ambiente clonado
-	i = 0;
-	while (env[i])
+	if (**input == '\'')
 	{
-		env_key = get_key(env[i]); // Extrai a chave da variável do formato "key=value"
-		if (ft_strcmp(env_key, key) == 0) // Compara a chave com a variável procurada
-		{
-			return (ft_strchr(env[i], '=') + 1); // Retorna o valor após o '='
-		}
-		i++;
+		*input = ft_skip_single_quotes(*input);
+		return 1;
 	}
-	return (NULL); // Se não encontrar, retorna NULL
+	if (ft_should_skip_dollar(*input))
+	{
+		(*input)++;
+		return 1;
+	}
+	if (**input == '$')
+	{
+		*expanded_input = ft_append_text(*start, *input, *expanded_input);
+		(*input)++;
+		*input = ft_process_variable(*input, expanded_input);
+		*start = *input;
+		return 1;
+	}
+	return 0;
+}
+
+char *ft_skip_single_quotes(char *input)
+{
+	input++;
+	while (*input != '\'' && *input != '\0')
+		input++;
+	if (*input == '\'')
+		input++;
+	return input;
+}
+
+char *ft_process_variable(char *input, char **expanded_input)
+{
+	char *var_key;
+	char *var_value;
+	int var_len;
+
+	if (*input == '?')
+	{
+		var_value = ft_itoa(ft_update_status_error(-1));
+		*expanded_input = ft_strjoin_free(*expanded_input, var_value);
+		free(var_value);
+		input++;
+	}
+	else
+	{
+		var_len = ft_strlen_var(input);
+		var_key = ft_substr(input, 0, var_len);
+		var_value = ft_get_env_value(var_key);
+		if (var_value)
+			*expanded_input = ft_strjoin_free(*expanded_input, var_value);
+		free(var_key);
+		input += var_len;
+	}
+	return input;
 }

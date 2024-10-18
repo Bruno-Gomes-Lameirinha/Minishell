@@ -80,7 +80,7 @@ void	ft_update_env(char *new_str, char *key)
 	i = -1;
 	while (env[++i])
 	{
-		env_key = get_key(env[i]);
+		env_key = ft_get_key(env[i]);
 		if (!ft_strcmp(key, env_key))
 		{
 			aux = env[i];
@@ -114,7 +114,7 @@ void	ft_env_command(t_ast_node *command)
 	if (command->right)
 	{
 		write(STDERR_FILENO, "env: too many arguments\n", 24);
-		update_status_error(1);
+		ft_update_status_error(1);
 		return ;
 	}
 	i = 0;
@@ -124,6 +124,6 @@ void	ft_env_command(t_ast_node *command)
 		ft_putstr_fd("\n", STDOUT_FILENO);
 		i++;
 	}
-	update_status_error(0);
+	ft_update_status_error(0);
 	return ;  
 }

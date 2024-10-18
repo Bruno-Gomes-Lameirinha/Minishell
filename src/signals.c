@@ -12,7 +12,7 @@
 
 #include "../include/minishell.h"
 
-void	sigint_handler(int signum)
+void	ft_sigint_handler(int signum)
 {
 	if (signum == SIGINT)
 	{
@@ -23,18 +23,18 @@ void	sigint_handler(int signum)
 	}
 }
 
-void	handle_eof( void)
+void	ft_handle_eof( void)
 {
 	rl_replace_line("", 0);
 	write(STDOUT_FILENO, "exit\n", 5);
 	exit(0);
 }
 
-void	setup_signal_handlers(void)
+void	ft_setup_signal_handlers(void)
 {
 	struct sigaction	sa;
 
-	sa.sa_handler = sigint_handler;
+	sa.sa_handler = ft_sigint_handler;
 	sa.sa_flags = SA_RESTART;
 	sigemptyset(&sa.sa_mask);
 	sigaction(SIGINT, &sa, NULL);

@@ -94,8 +94,8 @@ enum e_token
 
 void		ft_strcpy(char *dst, const char *src);
 int			ft_is_space(char c);
-int			get_exit_status(int exit_status);
-int			*get_exit_status_env(void);
+int			ft_get_exit_status(int exit_status);
+int			*ft_get_exit_status_env(void);
 void		ft_add_token(t_token **lexeme, char *node, int type);
 void		ft_tokenize(char *input, t_token **lexeme);
 void		ft_state_start(char **input, t_state *state, char **index_token, \
@@ -146,17 +146,17 @@ char		**ft_get_paths(void);
 char		*ft_build_executable_path(char *dir, char *command);
 char		*ft_check_executable(char *executable);
 char		*ft_search_in_paths(char **paths, char *command);
-int			check_limits(char *arg, char sign);
+int			ft_check_limits(char *arg, char sign);
 void		ft_status(int status);
-int			validate_argument(char *arg);
+int			ft_validate_argument(char *arg);
 int			ft_exit_command(t_ast_node *command);
-void		format_and_print(const char *env_var);
-int			print_smallest_unprinted(char **env, size_t env_size, \
+void		ft_format_and_print(const char *env_var);
+int			ft_print_smallest_unprinted(char **env, size_t env_size, \
 char *printed);
 void		ft_print_env_sort(void);
 int			ft_export_command(t_ast_node *command);
 char		***ft_get_env(void);
-char		*get_key(char *arg);
+char		*ft_get_key(char *arg);
 char		**ft_copy_env(void);
 void		ft_add_env(char *string);
 void		ft_update_env(char *new_str, char *key);
@@ -165,23 +165,25 @@ int			is_key_without_value(char *key);
 int			is_env_key_present(char *key);
 void		ft_set_env(char *new_str, char *key, char *value);
 void		ft_env_command(t_ast_node *command);
-int			set_exit_status(int status);
+int			ft_set_exit_status(int status);
 int			is_valid_identifier(char *str, char *cmd_name);
 char		**convert_tokens_to_args(t_ast_node *command);
-int			count_tokens(t_ast_node *command);
-void		ft_expand_variables(t_token	**lexeme);
+int			ft_count_tokens(t_ast_node *command);
 int			ft_strlen_var(char *str);
 char		*ft_expand_variables_input(char *input);
-size_t		ft_strlen_start_end(const char *start, const char *end);
 char		*ft_get_env_value(char *key);
 char		*ft_strjoin_free(char *s1, char *s2);
-void		set_hostname_in_env(void);
-void		pid_last_exit_status(pid_t pid);
-int			update_status_error(int exit_status);
-void		setup_signal_handlers(void);
-void		handle_eof(void);
-void		sigint_handler(int signum);
-void		ft_clean_up(t_ast_node *ast);
+void		ft_pid_last_exit_status(pid_t pid);
+int			ft_update_status_error(int exit_status);
+void		ft_setup_signal_handlers(void);
+void		ft_handle_eof(void);
+void		ft_sigint_handler(int signum);
 void		ft_set_head_lst(t_ast_node *root);
+char		*ft_skip_until_special_char(char *input);
+int			ft_handle_special_char(char **input, char **start, char **expanded_input);
+char		*ft_skip_single_quotes(char *input);
+int			ft_should_skip_dollar(char *input);
+char		*ft_append_text(char *start, char *end, char *expanded_input);
+char 		*ft_process_variable(char *input, char **expanded_input);
 
 # endif

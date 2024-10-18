@@ -12,20 +12,20 @@
 
 #include "../include/minishell.h"
 
-void	pid_last_exit_status(pid_t pid)
+void	ft_pid_last_exit_status(pid_t pid)
 {
 	int	status;
 
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
-		update_status_error(WEXITSTATUS(status));
+		ft_update_status_error(WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))
-		update_status_error(128 + WTERMSIG(status));  // Código de saída para terminação por sinal
+		ft_update_status_error(128 + WTERMSIG(status));  // Código de saída para terminação por sinal
 	else
-		update_status_error(1);  // Código de saída genérico
+		ft_update_status_error(1);  // Código de saída genérico
 }
 
-int	update_status_error(int exit_status)
+int	ft_update_status_error(int exit_status)
 {
 	static int	status;
 
@@ -42,12 +42,12 @@ int	main(void)
 	char *x;
 	
 	x = NULL;
-	setup_signal_handlers();
+	ft_setup_signal_handlers();
 	while (1)
 	{
 		input = readline("minishell$ ");
 		if (!input)
-			handle_eof();
+			ft_handle_eof();
 		add_history(input);
 		if (input)
 		{
@@ -77,12 +77,12 @@ int	main(void)
 	return (0);
 }
 
-int	get_exit_status(int exit_status)
+int	ft_get_exit_status(int exit_status)
 {
 	return ((exit_status & 0xff00) >> 8);
 }
 
-int	*get_exit_status_env(void)
+int	*ft_get_exit_status_env(void)
 {
 	static int	exit_status;
 

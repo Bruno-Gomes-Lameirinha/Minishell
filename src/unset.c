@@ -28,14 +28,14 @@ void	delete_env_key(char *key_to_delete)
 	if (!new_env)
 	{
 		perror("malloc");
-		update_status_error(1);
+		ft_update_status_error(1);
 		return;
 	}
 	i = -1;
 	j = -1;
 	while (current_env[++i])
 	{
-		env_key = get_key(current_env[i]);
+		env_key = ft_get_key(current_env[i]);
 		if (ft_strcmp(key_to_delete, env_key))
 			new_env[++j] = current_env[i];
 	}
@@ -55,14 +55,14 @@ int	ft_unset_command(t_ast_node *command)
 	args = convert_tokens_to_args(command);;
 	if (!args[1])
 	{	
-		update_status_error(0);
+		ft_update_status_error(0);
 		return (1);
 	}
 	while (args[++i])
 	{
 		if (!is_valid_identifier(args[i], args[0]) && ++status)
 			continue ;
-		delete_env_key(get_key(args[i]));
+		delete_env_key(ft_get_key(args[i]));
 	}
-	return(update_status_error(status));
+	return(ft_update_status_error(status));
 }

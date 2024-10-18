@@ -12,7 +12,7 @@
 
 #include "../include/minishell.h"
 
-int	check_limits(char *arg, char sign)
+int	ft_check_limits(char *arg, char sign)
 {
 	if (*arg == '+' || *arg == '-')
 		arg++;
@@ -30,7 +30,7 @@ void	ft_status(int status)
 		exit(status % 256);
 }
 
-int	validate_argument(char *arg)
+int	ft_validate_argument(char *arg)
 {
 	int		i;
 	char	sign;
@@ -48,7 +48,7 @@ int	validate_argument(char *arg)
 			return (FAILURE);
 		i++;
 	}
-	if (check_limits(arg, sign) == FAILURE)
+	if (ft_check_limits(arg, sign) == FAILURE)
 		return (FAILURE);
 	return (SUCCESS);
 }
@@ -63,24 +63,24 @@ int	ft_exit_command(t_ast_node *command)
 	if (command->right)
 	{
 		status = ft_atol(command->right->value);
-		if (validate_argument(command->right->value) || \
+		if (ft_validate_argument(command->right->value) || \
 				*(command->right->value) == '\0')
 		{
 			ft_printf(STDERR_FILENO, "exit:%s: numeric argument required\n", \
 			command->right->value);
-			update_status_error(1);
+			ft_update_status_error(1);
 			exit(SYNTAX_ERROR);
 		}
 		if (command->right->right)
 		{
 			write(STDERR_FILENO, "exit: too many arguments\n", 25);
-			update_status_error(1);
+			ft_update_status_error(1);
 			exit(FAILURE);
 		}
 	}
 	//free(command->lst);
 	ft_free_ast(command);
 	ft_status(status);
-	update_status_error(0);
-	exit(*get_exit_status_env());
+	ft_update_status_error(0);
+	exit(*ft_get_exit_status_env());
 }
