@@ -22,7 +22,6 @@ char *ft_expand_variables_input(char *input)
 
 	start = input;
 	expanded_input = ft_strdup("");
-	set_hostname_in_env();
 
 	while (*input)
 	{
@@ -117,18 +116,4 @@ char *ft_get_env_value(char *key)
 		i++;
 	}
 	return (NULL); // Se não encontrar, retorna NULL
-}
-void set_hostname_in_env(void)
-{
-	char hostname[256];
-	char *hostname_env;
-
-	if (gethostname(hostname, sizeof(hostname)) == 0)
-	{
-		hostname_env = ft_strjoin("HOSTNAME=", hostname);
-		ft_add_env(hostname_env);
-		free(hostname_env);
-	}
-	else
-		perror("gethostname");
 }

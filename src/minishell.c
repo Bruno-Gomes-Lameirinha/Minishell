@@ -73,7 +73,6 @@ int	main(void)
 				ft_free_ast(ast->head);
 			}
 		}
-		
 	}
 	return (0);
 }
@@ -89,11 +88,6 @@ int	*get_exit_status_env(void)
 
 	return (&exit_status);
 }
-
-// void	ft_clean_up(char *prompt, t_ast_node *ast)
-// {
-// 	ft_free_ast(ast);
-// }
 
 void	ft_set_head_lst(t_ast_node *root)
 {
