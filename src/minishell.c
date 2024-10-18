@@ -66,11 +66,11 @@ int	main(void)
 				ft_tokenize(input, lexeme);
 				free (input);
 				ast = ft_build_ast(lexeme);
-				ast->lst = lexeme;
 				ft_clean_token_list(lexeme);
+				ft_set_head_lst(ast);
 				ft_collect_heredocs(ast);
 				ft_execute_ast(ast);
-				ft_free_ast(ast);
+				ft_free_ast(ast->head);
 			}
 		}
 		
@@ -94,3 +94,32 @@ int	*get_exit_status_env(void)
 // {
 // 	ft_free_ast(ast);
 // }
+
+void	ft_set_head_lst(t_ast_node *root)
+{
+	if (!root)
+		return;
+	
+	t_ast_node *head;
+	t_ast_node *current;
+
+	head = root;
+	current = root;
+
+	current->head = root;
+	if (current->right)
+		current = current->right;
+	while(current)
+	{
+		current->head = head;
+		current = current->right;
+	}
+	current = head;
+	if (current->left)
+		current = current->left;
+	while(current)
+	{
+		current->head = head;
+		current = current->left;
+	}
+}

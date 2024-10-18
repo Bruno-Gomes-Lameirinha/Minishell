@@ -37,9 +37,11 @@ void	ft_execute_command_ast(t_ast_node *command_node)
 	}
 	if (command_node->execve_child == 0)
 	{
+		ft_free_ast(command_node->head);
 		execve(executable, args, NULL);
 		perror("execve");
 		ft_free_args(args);
+		ft_printf(2, "%s", command_node->head);
 		exit(126);
 	}
 	else

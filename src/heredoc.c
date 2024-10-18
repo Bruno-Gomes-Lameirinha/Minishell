@@ -68,6 +68,7 @@ void ft_free_ast(t_ast_node *root)
 
 	ft_free_ast(root->left);
 	ft_free_ast(root->right);
+	ft_free_ast(root->next);
 
 	if (root->type == NODE_COMMAND)
 	{

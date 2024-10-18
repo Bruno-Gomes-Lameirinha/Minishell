@@ -21,6 +21,7 @@ t_ast_node **current_node, t_ast_node **last_arg_node)
 	cmd_node->type = NODE_COMMAND;
 	cmd_node->value = ft_strdup(current->token_node);
 	cmd_node->left = NULL;
+	cmd_node->head = NULL;
 	cmd_node->right = NULL;
 	cmd_node->next = NULL;
 	cmd_node->redirections = NULL;
@@ -47,7 +48,9 @@ t_ast_node **last_arg_node)
 	arg_node->type = NODE_ARGUMENT;
 	arg_node->value = ft_strdup(current->token_node);
 	arg_node->left = NULL;
+	arg_node->head = NULL;
 	arg_node->right = NULL;
+	arg_node->redirections = NULL;
 	arg_node->next = NULL;
 	if (!(*last_arg_node))
 	{
@@ -68,7 +71,10 @@ void	ft_creat_pipe_node(t_ast_node **root, t_ast_node **current_node)
 	pipe_node->type = NODE_PIPE;
 	pipe_node->value = NULL;
 	pipe_node->left = *root;
+	pipe_node->next = NULL;
 	pipe_node->right = NULL;
+	pipe_node->head = NULL;
+	pipe_node->redirections = NULL;
 	*root = pipe_node;
 	*current_node = pipe_node;
 }

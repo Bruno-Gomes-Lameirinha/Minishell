@@ -1,20 +1,114 @@
-==43927== Memcheck, a memory error detector
-==43927== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==43927== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
-==43927== Command: ./minishell
-==43927== Parent PID: 35636
-==43927== 
-==43927== 
-==43927== HEAP SUMMARY:
-==43927==     in use at exit: 204,190 bytes in 221 blocks
-==43927==   total heap usage: 497 allocs, 276 frees, 235,182 bytes allocated
-==43927== 
-==43927== LEAK SUMMARY:
-==43927==    definitely lost: 0 bytes in 0 blocks
-==43927==    indirectly lost: 0 bytes in 0 blocks
-==43927==      possibly lost: 0 bytes in 0 blocks
-==43927==    still reachable: 0 bytes in 0 blocks
-==43927==         suppressed: 204,190 bytes in 221 blocks
-==43927== 
-==43927== For lists of detected and suppressed errors, rerun with: -s
-==43927== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==66932== Memcheck, a memory error detector
+==66932== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==66932== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==66932== Command: ./minishell
+==66932== Parent PID: 65827
+==66932== 
+==66981== 
+==66981== HEAP SUMMARY:
+==66981==     in use at exit: 208,223 bytes in 225 blocks
+==66981==   total heap usage: 546 allocs, 321 frees, 240,154 bytes allocated
+==66981== 
+==66981== LEAK SUMMARY:
+==66981==    definitely lost: 0 bytes in 0 blocks
+==66981==    indirectly lost: 0 bytes in 0 blocks
+==66981==      possibly lost: 0 bytes in 0 blocks
+==66981==    still reachable: 0 bytes in 0 blocks
+==66981==         suppressed: 208,223 bytes in 225 blocks
+==66981== 
+==66981== For lists of detected and suppressed errors, rerun with: -s
+==66981== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==66982== 
+==66982== HEAP SUMMARY:
+==66982==     in use at exit: 208,223 bytes in 225 blocks
+==66982==   total heap usage: 546 allocs, 321 frees, 240,166 bytes allocated
+==66982== 
+==66982== LEAK SUMMARY:
+==66982==    definitely lost: 0 bytes in 0 blocks
+==66982==    indirectly lost: 0 bytes in 0 blocks
+==66982==      possibly lost: 0 bytes in 0 blocks
+==66982==    still reachable: 0 bytes in 0 blocks
+==66982==         suppressed: 208,223 bytes in 225 blocks
+==66982== 
+==66982== For lists of detected and suppressed errors, rerun with: -s
+==66982== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==66979== 
+==66979== HEAP SUMMARY:
+==66979==     in use at exit: 208,554 bytes in 233 blocks
+==66979==   total heap usage: 522 allocs, 289 frees, 239,741 bytes allocated
+==66979== 
+==66979== 11 bytes in 3 blocks are still reachable in loss record 3 of 69
+==66979==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==66979==    by 0x10D5F7: ft_strdup (in /home/bruno/42sp/minishell/minishell)
+==66979==    by 0x10B9F5: ft_creat_cmd_node (build_ast.c:22)
+==66979==    by 0x10BD92: ft_build_ast (build_ast.c:125)
+==66979==    by 0x109722: main (minishell.c:68)
+==66979== 
+==66979== 128 bytes in 2 blocks are still reachable in loss record 24 of 69
+==66979==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==66979==    by 0x10BB97: ft_creat_pipe_node (build_ast.c:70)
+==66979==    by 0x10BDCC: ft_build_ast (build_ast.c:130)
+==66979==    by 0x109722: main (minishell.c:68)
+==66979== 
+==66979== 192 bytes in 3 blocks are still reachable in loss record 27 of 69
+==66979==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==66979==    by 0x10B9D8: ft_creat_cmd_node (build_ast.c:20)
+==66979==    by 0x10BD92: ft_build_ast (build_ast.c:125)
+==66979==    by 0x109722: main (minishell.c:68)
+==66979== 
+==66979== LEAK SUMMARY:
+==66979==    definitely lost: 0 bytes in 0 blocks
+==66979==    indirectly lost: 0 bytes in 0 blocks
+==66979==      possibly lost: 0 bytes in 0 blocks
+==66979==    still reachable: 331 bytes in 8 blocks
+==66979==         suppressed: 208,223 bytes in 225 blocks
+==66979== 
+==66979== For lists of detected and suppressed errors, rerun with: -s
+==66979== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==66980== 
+==66980== HEAP SUMMARY:
+==66980==     in use at exit: 208,554 bytes in 233 blocks
+==66980==   total heap usage: 546 allocs, 313 frees, 240,154 bytes allocated
+==66980== 
+==66980== 11 bytes in 3 blocks are still reachable in loss record 3 of 69
+==66980==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==66980==    by 0x10D5F7: ft_strdup (in /home/bruno/42sp/minishell/minishell)
+==66980==    by 0x10B9F5: ft_creat_cmd_node (build_ast.c:22)
+==66980==    by 0x10BD92: ft_build_ast (build_ast.c:125)
+==66980==    by 0x109722: main (minishell.c:68)
+==66980== 
+==66980== 128 bytes in 2 blocks are still reachable in loss record 24 of 69
+==66980==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==66980==    by 0x10BB97: ft_creat_pipe_node (build_ast.c:70)
+==66980==    by 0x10BDCC: ft_build_ast (build_ast.c:130)
+==66980==    by 0x109722: main (minishell.c:68)
+==66980== 
+==66980== 192 bytes in 3 blocks are still reachable in loss record 27 of 69
+==66980==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==66980==    by 0x10B9D8: ft_creat_cmd_node (build_ast.c:20)
+==66980==    by 0x10BD92: ft_build_ast (build_ast.c:125)
+==66980==    by 0x109722: main (minishell.c:68)
+==66980== 
+==66980== LEAK SUMMARY:
+==66980==    definitely lost: 0 bytes in 0 blocks
+==66980==    indirectly lost: 0 bytes in 0 blocks
+==66980==      possibly lost: 0 bytes in 0 blocks
+==66980==    still reachable: 331 bytes in 8 blocks
+==66980==         suppressed: 208,223 bytes in 225 blocks
+==66980== 
+==66980== For lists of detected and suppressed errors, rerun with: -s
+==66980== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==66932== 
+==66932== HEAP SUMMARY:
+==66932==     in use at exit: 208,223 bytes in 225 blocks
+==66932==   total heap usage: 525 allocs, 300 frees, 239,773 bytes allocated
+==66932== 
+==66932== LEAK SUMMARY:
+==66932==    definitely lost: 0 bytes in 0 blocks
+==66932==    indirectly lost: 0 bytes in 0 blocks
+==66932==      possibly lost: 0 bytes in 0 blocks
+==66932==    still reachable: 0 bytes in 0 blocks
+==66932==         suppressed: 208,223 bytes in 225 blocks
+==66932== 
+==66932== For lists of detected and suppressed errors, rerun with: -s
+==66932== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
