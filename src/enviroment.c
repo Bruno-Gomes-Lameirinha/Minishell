@@ -12,69 +12,73 @@
 
 #include "../include/minishell.h"
 
-char	***ft_get_env(void)
+char ***ft_get_env(void)
 {
-	static char	**env;
+    static char **env = NULL;
 
-	env = ft_copy_env();
-	return (&env);
+    if (!env)
+        env = ft_copy_env();
+    return (&env);
 }
 
-char	**ft_copy_env(void)
-{
-	char	**copy;
-	int		i;
-	int		j;
 
-	i = 0;
-	j = 0;
-	while (__environ[i])
-		i++;
-	copy = malloc(sizeof(char *) * (i + 1));
-	i = 0;
-	while (__environ[i])
-	{
-		if (ft_strncmp(__environ[i], "COLUMNS=", 8) != 0 && 
-		    ft_strncmp(__environ[i], "LINES=", 6) != 0)
-		{
-			copy[j] = ft_strdup(__environ[i]);
-			j++;
-		}
-		i++;
-	}
-	copy[i] = NULL;
-	__environ = copy;
-	return (copy);
+char **ft_copy_env(void)
+{
+    char **copy;
+    int i;
+    int j;
+
+    i = 0;
+    j = 0;
+    while (__environ[i])
+        i++;
+    copy = malloc(sizeof(char *) * (i + 1));
+    i = 0;
+    while (__environ[i])
+    {
+        if (ft_strncmp(__environ[i], "COLUMNS=", 8) != 0 && 
+            ft_strncmp(__environ[i], "LINES=", 6) != 0)
+        {
+            copy[j] = ft_strdup(__environ[i]);
+            j++;
+        }
+        i++;
+    }
+    copy[j] = NULL; // Correção: usar 'j' ao invés de 'i'
+    return (copy);
 }
 
-void	ft_add_env(char *string)
+void ft_add_env(char *string)
 {
-	char	**new_var;
-	char	**env;
-	int		i;
+	char **new_var;
+	char **env;
+	int i;
 
-	i = 0;
 	env = *ft_get_env();
-	while (env[i])
-		i++;
-	new_var = ft_calloc(i + 2, sizeof(char *));
 	i = 0;
 	while (env[i])
-	{
-		new_var[i] = env[i];
 		i++;
+
+	new_var = malloc(sizeof(char *) * (i + 2));
+	if (!new_var)
+	{
+		perror("malloc failed");
+		exit(EXIT_FAILURE);
 	}
+	for (i = 0; env[i]; i++)
+		new_var[i] = env[i];
 	new_var[i++] = ft_strdup(string);
 	new_var[i] = NULL;
+	free(env);
 	*ft_get_env() = new_var;
 	__environ = new_var;
 }
-void	ft_update_env(char *new_str, char *key)
+void ft_update_env(char *new_str, char *key)
 {
-	int		i;
-	char	*env_key;
-	char	*aux;
-	char	**env;
+	int i;
+	char *env_key;
+	char *aux;
+	char **env;
 
 	env = *ft_get_env();
 	i = -1;
@@ -86,31 +90,35 @@ void	ft_update_env(char *new_str, char *key)
 			aux = env[i];
 			env[i] = ft_strdup_calloc(new_str);
 			free(aux);
-			break ;
+			free(env_key);
+			return;
 		}
+		free(env_key);
 	}
-	*ft_get_env() = env;
-	__environ = env;
+	ft_add_env(new_str);
 }
 
-void	ft_set_env(char *new_str, char *key, char *value)
+void ft_free_env(char **env)
 {
-	char	*env_var;
+    int i;
 
-	env_var = getenv(key);
-	if ((env_var || is_key_without_value(key)) && value != NULL)
-		ft_update_env(new_str, key);
-	else if (!is_env_key_present(key))
-		ft_add_env(new_str);
+    if (!env)
+        return;
+    for (i = 0; env[i]; i++)
+    {
+        free(env[i]);
+    }
+    free(env);
+    *ft_get_env() = NULL; // Evitar duplas liberações
 }
 
 void	ft_env_command(t_ast_node *command)
 {
-    int     i;
-    char    **env;
-    
+	int     i;
+	char    **env;
+	
 
-    env = *ft_get_env();
+	env = *ft_get_env();
 	if (command->right)
 	{
 		write(STDERR_FILENO, "env: too many arguments\n", 24);
@@ -126,4 +134,15 @@ void	ft_env_command(t_ast_node *command)
 	}
 	ft_update_status_error(0);
 	return ;  
+}
+
+void	ft_set_env(char *new_str, char *key, char *value)
+{
+	char	*env_var;
+
+	env_var = getenv(key);
+	if ((env_var || is_key_without_value(key)) && value != NULL)
+		ft_update_env(new_str, key);
+	else if (!is_env_key_present(key))
+		ft_add_env(new_str);
 }

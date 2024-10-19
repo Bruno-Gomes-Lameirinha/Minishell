@@ -49,20 +49,22 @@ char *ft_strjoin_free(char *s1, char *s2)
 
 char *ft_get_env_value(char *key)
 {
-	char **env;
-	char *env_key;
-	int i;
+    char **env;
+    char *env_key;
+    int i;
 
-	env = *ft_get_env();
-	i = 0;
-	while (env[i])
-	{
-		env_key = ft_get_key(env[i]);
-		if (ft_strcmp(env_key, key) == 0)
-		{
-			return (ft_strchr(env[i], '=') + 1);
-		}
-		i++;
-	}
-	return (NULL);
+    env = *ft_get_env();
+    i = 0;
+    while (env[i])
+    {
+        env_key = ft_get_key(env[i]);
+        if (ft_strcmp(env_key, key) == 0)
+        {
+            free(env_key);
+            return (ft_strchr(env[i], '=') + 1);
+        }
+        free(env_key);
+        i++;
+    }
+    return (NULL);
 }

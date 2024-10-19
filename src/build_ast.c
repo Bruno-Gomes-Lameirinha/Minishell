@@ -121,7 +121,7 @@ t_ast_node	*ft_build_ast(t_token **tokens)
 	while (cur)
 	{
 		if (cur->type_token == WORD || cur->type_token == SINGLE_QUOTES || cur->type_token == DOUBLE_QUOTES)
-			handle_word_token(cur, &root, &cur_node, &last_arg);
+			ft_handle_word_token(cur, &root, &cur_node, &last_arg);
 		else if (cur->type_token == PIPE)
 			ft_creat_pipe_node(&root, &cur_node);
 		else if (cur->type_token == R_OUT || cur->type_token == R_OUTAPP || cur->type_token == R_IN || cur->type_token == R_HDOC)
@@ -131,7 +131,7 @@ t_ast_node	*ft_build_ast(t_token **tokens)
 	return (root);
 }
 
-void handle_word_token(t_token *cur, t_ast_node **root, t_ast_node **cur_node, t_ast_node **last_arg)
+void ft_handle_word_token(t_token *cur, t_ast_node **root, t_ast_node **cur_node, t_ast_node **last_arg)
 {
 	if (!(*cur_node) || (*cur_node)->type != NODE_COMMAND)
 		ft_creat_cmd_node(cur, root, cur_node, last_arg);

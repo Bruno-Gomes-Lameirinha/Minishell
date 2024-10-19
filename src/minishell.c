@@ -71,6 +71,7 @@ int	main(void)
 				ft_collect_heredocs(ast);
 				ft_execute_ast(ast);
 				ft_free_ast(ast->head);
+				
 			}
 		}
 	}

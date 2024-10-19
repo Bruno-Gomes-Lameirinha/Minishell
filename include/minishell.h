@@ -185,6 +185,8 @@ char		*ft_skip_single_quotes(char *input);
 int			ft_should_skip_dollar(char *input);
 char		*ft_append_text(char *start, char *end, char *expanded_input);
 char 		*ft_process_variable(char *input, char **expanded_input);
-void		handle_word_token(t_token *cur, t_ast_node **root, t_ast_node **cur_node, t_ast_node **last_arg);
+void		ft_handle_word_token(t_token *cur, t_ast_node **root, t_ast_node **cur_node, t_ast_node **last_arg);
+void		ft_free_env(char **env);
+void		ft_init_env(void);
 
 # endif
