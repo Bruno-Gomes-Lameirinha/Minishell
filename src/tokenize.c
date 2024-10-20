@@ -194,6 +194,12 @@ void	ft_tokenize(char *input, t_token **lexeme)
 	}
 	if (*current_token)
 		ft_last_token(current_token, lexeme, type);
+	else
+    {
+        free(current_token);
+        free(type);
+    }
+	
 }
 
 void	ft_add_token(t_token **lexeme, char *node, int type)
