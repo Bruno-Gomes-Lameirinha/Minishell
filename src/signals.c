@@ -27,6 +27,7 @@ void	ft_handle_eof( void)
 {
 	rl_replace_line("", 0);
 	write(STDOUT_FILENO, "exit\n", 5);
+	ft_free_env(*ft_get_env());
 	exit(0);
 }
 

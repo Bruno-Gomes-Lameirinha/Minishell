@@ -118,34 +118,37 @@ char    **convert_tokens_to_args(t_ast_node *command)
     return args;
 }
 
-int	ft_export_command(t_ast_node *command)
+int ft_export_command(t_ast_node *command)
 {
-	int		i;
-	char	**args;
-	char	*equal_sign;
-	char	*key;
-	int		status;
+    int     i;
+    char    **args;
+    char    *equal_sign;
+    char    *key;
+    int     status;
 
-	i = 0;
-	status = 0;
-	args = convert_tokens_to_args(command);
-	if (!args[1])
-	{
-		ft_print_env_sort();
-		ft_update_status_error(0);
-		return ft_set_exit_status(status);
-	}
-	while (args[++i])
-	{
-		if (!is_valid_identifier(args[i], args[0]) && ++status)
-			continue ;
-		key = ft_get_key(args[i]);
-		equal_sign = ft_strchr(args[i], '=');
-		if (equal_sign)
-			ft_set_env(args[i], key, equal_sign + 1);
-		else
-			ft_set_env(args[i], key, NULL);
-	}
-	ft_update_status_error(status);
-	return (ft_set_exit_status(status));
+    i = 0;
+    status = 0;
+    args = convert_tokens_to_args(command);
+    if (!args[1])
+    {
+        ft_print_env_sort();
+        ft_update_status_error(0);
+        free(args); // Liberar args
+        return ft_set_exit_status(status);
+    }
+    while (args[++i])
+    {
+        if (!is_valid_identifier(args[i], args[0]) && ++status)
+            continue;
+        key = ft_get_key(args[i]);
+        equal_sign = ft_strchr(args[i], '=');
+        if (equal_sign)
+            ft_set_env(args[i], key, equal_sign + 1);
+        else
+            ft_set_env(args[i], key, NULL);
+        free(key); // Liberar key
+    }
+    ft_update_status_error(status);
+    free(args); // Liberar args após o uso
+    return (ft_set_exit_status(status));
 }

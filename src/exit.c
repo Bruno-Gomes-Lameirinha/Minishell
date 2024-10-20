@@ -78,9 +78,9 @@ int	ft_exit_command(t_ast_node *command)
 			exit(FAILURE);
 		}
 	}
-	//free(command->lst);
 	ft_free_ast(command);
 	ft_status(status);
 	ft_update_status_error(0);
+	ft_free_env(*ft_get_env());
 	exit(*ft_get_exit_status_env());
 }

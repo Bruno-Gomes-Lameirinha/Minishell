@@ -35,21 +35,25 @@ int	ft_set_exit_status(int status)
 	return (exit_status);
 }
 
-int	is_env_key_present(char *key)
+int is_env_key_present(char *key)
 {
-	int		i;
-	char	*env_key;
-	char	**env;
+    int     i;
+    char    *env_key;
+    char    **env;
 
-	env = *ft_get_env();
-	i = -1;
-	while (env[++i])
-	{
-		env_key = ft_get_key(env[i]);
-		if (!ft_strcmp(key, env_key))
-			return (1);
-	}
-	return (0);
+    env = *ft_get_env();
+    i = -1;
+    while (env[++i])
+    {
+        env_key = ft_get_key(env[i]);
+        if (!ft_strcmp(key, env_key))
+        {
+            free(env_key); // Liberar env_key antes de retornar
+            return (1);
+        }
+        free(env_key); // Liberar env_key após o uso
+    }
+    return (0);
 }
 
 int	is_key_without_value(char *key)
@@ -76,6 +80,8 @@ char	*ft_get_key(char *arg)
 {
 	char	*equal_sign;
 
+	if (!arg)
+		return (NULL);
 	equal_sign = ft_strchr(arg, '=');
 	if (!equal_sign)
 		return (ft_strdup(arg));
