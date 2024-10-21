@@ -187,5 +187,9 @@ char		*ft_append_text(char *start, char *end, char *expanded_input);
 char 		*ft_process_variable(char *input, char **expanded_input);
 void		ft_handle_word_token(t_token *cur, t_ast_node **root, t_ast_node **cur_node, t_ast_node **last_arg);
 void		ft_free_env(char **env);
+void		ft_print_arguments(t_ast_node *current);
+void		ft_write_space(void);
+void		ft_write_value(const char *value);
+void		ft_print_newline(int new_line);
 
 # endif

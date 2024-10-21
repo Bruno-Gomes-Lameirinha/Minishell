@@ -12,80 +12,65 @@
 
 #include "../include/minishell.h"
 
-//valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind-out.txt --suppressions=.suppress_readline_error.sup ./minishell
-
-void	ft_cd_command_with_ast(t_ast_node *node_ast)
-{
-	t_ast_node	*current_token;
-	char	*path;
-	char	*pwd;
-
-	current_token = node_ast;
-	if (current_token->right == NULL && !strcmp(current_token->value, "cd"))
-		path = getenv("HOME");
-	else if (current_token->right && current_token->right->right == NULL)
-		path = current_token->right->value;
-	if (chdir(path) != 0)
-	{
-		perror("cd");
-		ft_update_status_error(1);
-		return;
-	}
-	else
-		ft_update_status_error(0);
-	pwd  = getcwd(NULL, 1024);
-	if (pwd)	
-		free(pwd);
-	else
-	{
-		perror("getcwd");
-		ft_update_status_error(1);
-	}
-}
-
-void ft_echo_command_with_ast(t_ast_node *node)
+void	ft_echo_command_with_ast(t_ast_node *node)
 {
 	int			new_line;
 	t_ast_node	*current;
 
-	if (!node) 
+	if (!node)
 	{
 		ft_update_status_error(1);
-		return;
+		return ;
 	}
 	new_line = 1;
 	current = node->right;
-	if (current && !strcmp(current->value, "-n")) 
+	if (current && !strcmp(current->value, "-n"))
 	{
 		new_line = 0;
 		current = current->right;
 	}
+	ft_print_arguments(current);
+	ft_print_newline(new_line);
+	ft_update_status_error(0);
+}
+
+void	ft_print_arguments(t_ast_node *current)
+{
 	while (current)
 	{
-		if (write(1, current->value, strlen(current->value)) == -1)
-		{
-			perror("write");
-			ft_update_status_error(1);
-			return;
-		}
+		ft_write_value(current->value);
 		if (current->right)
-			if (write(1, " ", 1) == -1)
-			{
-				perror("write");
-				ft_update_status_error(1);
-				return;
-			}
+			ft_write_space();
 		current = current->right;
-
 	}
+}
+
+void	ft_write_space(void)
+{
+	if (write(1, " ", 1) == -1)
+	{
+		perror("write");
+		ft_update_status_error(1);
+	}
+}
+
+void	ft_write_value(const char *value)
+{
+	if (write(1, value, strlen(value)) == -1)
+	{
+		perror("write");
+		ft_update_status_error(1);
+	}
+}
+
+void	ft_print_newline(int new_line)
+{
 	if (new_line)
 	{
 		if (write(1, "\n", 1) == -1)
 		{
 			perror("write");
 			ft_update_status_error(1);
-			return;
 		}
 	}
-	ft_update_status_error(0);
 }

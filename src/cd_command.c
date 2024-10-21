@@ -12,37 +12,31 @@
 
 #include "../include/minishell.h"
 
-t_ast_node	*ft_build_ast(t_token **tokens)
+void	ft_cd_command_with_ast(t_ast_node *node_ast)
 {
-	t_ast_node	*root;
-	t_ast_node	*cur_node;
-	t_ast_node	*last_arg;
-	t_token		*cur;
+	t_ast_node	*current_token;
+	char		*path;
+	char		*pwd;
 
-	root = NULL;
-	cur_node = NULL;
-	last_arg = NULL;
-	cur = *tokens;
-	while (cur)
+	current_token = node_ast;
+	if (current_token->right == NULL && !strcmp(current_token->value, "cd"))
+		path = getenv("HOME");
+	else if (current_token->right && current_token->right->right == NULL)
+		path = current_token->right->value;
+	if (chdir(path) != 0)
 	{
-		if (cur->type_token == WORD || cur->type_token == SINGLE_QUOTES || \
-		cur->type_token == DOUBLE_QUOTES)
-			ft_handle_word_token(cur, &root, &cur_node, &last_arg);
-		else if (cur->type_token == PIPE)
-			ft_creat_pipe_node(&root, &cur_node);
-		else if (cur->type_token == R_OUT || cur->type_token == R_OUTAPP || \
-		cur->type_token == R_IN || cur->type_token == R_HDOC)
-			ft_creat_redir_node(&cur, &cur_node);
-		cur = cur->next;
+		perror("cd");
+		ft_update_status_error(1);
+		return ;
 	}
-	return (root);
-}
-
-void	ft_handle_word_token(t_token *cur, t_ast_node **root, \
-t_ast_node **cur_node, t_ast_node **last_arg)
-{
-	if (!(*cur_node) || (*cur_node)->type != NODE_COMMAND)
-		ft_creat_cmd_node(cur, root, cur_node, last_arg);
 	else
-		ft_creat_arg_node(cur, cur_node, last_arg);
+		ft_update_status_error(0);
+	pwd = getcwd(NULL, 1024);
+	if (pwd)
+		free(pwd);
+	else
+	{
+		perror("getcwd");
+		ft_update_status_error(1);
+	}
 }
