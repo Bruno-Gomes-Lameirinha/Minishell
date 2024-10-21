@@ -141,8 +141,8 @@ void	ft_set_env(char *new_str, char *key, char *value)
 	char	*env_var;
 
 	env_var = getenv(key);
-	if ((env_var || is_key_without_value(key)) && value != NULL)
+	if ((env_var || ft_is_key_without_value(key)) && value != NULL)
 		ft_update_env(new_str, key);
-	else if (!is_env_key_present(key))
+	else if (!ft_is_env_key_present(key))
 		ft_add_env(new_str);
 }

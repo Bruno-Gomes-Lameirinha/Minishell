@@ -95,7 +95,7 @@ int ft_count_tokens(t_ast_node *command)
     return count;
 }
 
-char    **convert_tokens_to_args(t_ast_node *command)
+char    **ft_convert_tokens_to_args(t_ast_node *command)
 {
     char		**args;
     int			i;
@@ -128,7 +128,7 @@ int ft_export_command(t_ast_node *command)
 
     i = 0;
     status = 0;
-    args = convert_tokens_to_args(command);
+    args = ft_convert_tokens_to_args(command);
     if (!args[1])
     {
         ft_print_env_sort();
@@ -138,7 +138,7 @@ int ft_export_command(t_ast_node *command)
     }
     while (args[++i])
     {
-        if (!is_valid_identifier(args[i], args[0]) && ++status)
+        if (!ft_is_valid_identifier(args[i], args[0]) && ++status)
             continue;
         key = ft_get_key(args[i]);
         equal_sign = ft_strchr(args[i], '=');

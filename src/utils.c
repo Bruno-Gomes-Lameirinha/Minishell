@@ -12,7 +12,7 @@
 
 #include "../include/minishell.h"
 
-int	is_valid_identifier(char *str, char *cmd_name)
+int	ft_is_valid_identifier(char *str, char *cmd_name)
 {
 	if (*str != '=' && !ft_isdigit(*str) && *str != '\0')
 	{
@@ -35,7 +35,7 @@ int	ft_set_exit_status(int status)
 	return (exit_status);
 }
 
-int is_env_key_present(char *key)
+int ft_is_env_key_present(char *key)
 {
     int     i;
     char    *env_key;
@@ -56,7 +56,7 @@ int is_env_key_present(char *key)
     return (0);
 }
 
-int	is_key_without_value(char *key)
+int	ft_is_key_without_value(char *key)
 {
 	int		i;
 	char	*env_key;

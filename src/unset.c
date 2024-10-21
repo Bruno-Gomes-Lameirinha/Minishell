@@ -62,7 +62,7 @@ int ft_unset_command(t_ast_node *command)
 
     i = 0;
     status = 0;
-    args = convert_tokens_to_args(command);
+    args = ft_convert_tokens_to_args(command);
     if (!args[1])
     {
         ft_update_status_error(0);
@@ -71,7 +71,7 @@ int ft_unset_command(t_ast_node *command)
     }
     while (args[++i])
     {
-        if (!is_valid_identifier(args[i], args[0]) && ++status)
+        if (!ft_is_valid_identifier(args[i], args[0]) && ++status)
             continue;
         delete_env_key(args[i]);
     }

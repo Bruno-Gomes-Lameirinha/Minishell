@@ -161,13 +161,13 @@ char		**ft_copy_env(void);
 void		ft_add_env(char *string);
 void		ft_update_env(char *new_str, char *key);
 int			ft_unset_command(t_ast_node *command);
-int			is_key_without_value(char *key);
-int			is_env_key_present(char *key);
+int			ft_is_key_without_value(char *key);
+int			ft_is_env_key_present(char *key);
 void		ft_set_env(char *new_str, char *key, char *value);
 void		ft_env_command(t_ast_node *command);
 int			ft_set_exit_status(int status);
-int			is_valid_identifier(char *str, char *cmd_name);
-char		**convert_tokens_to_args(t_ast_node *command);
+int			ft_is_valid_identifier(char *str, char *cmd_name);
+char		**ft_convert_tokens_to_args(t_ast_node *command);
 int			ft_count_tokens(t_ast_node *command);
 int			ft_strlen_var(char *str);
 char		*ft_expand_variables_input(char *input);
@@ -187,6 +187,5 @@ char		*ft_append_text(char *start, char *end, char *expanded_input);
 char 		*ft_process_variable(char *input, char **expanded_input);
 void		ft_handle_word_token(t_token *cur, t_ast_node **root, t_ast_node **cur_node, t_ast_node **last_arg);
 void		ft_free_env(char **env);
-void		ft_init_env(void);
 
 # endif
