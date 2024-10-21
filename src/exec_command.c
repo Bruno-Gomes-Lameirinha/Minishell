@@ -20,99 +20,41 @@ void	ft_execute_command_ast(t_ast_node *command_node)
 	args = ft_generate_args(command_node);
 	executable = ft_search_executable_ast(args[0]);
 	if (!executable)
-	{
-		ft_putstr_fd(args[0], STDERR_FILENO);
-		ft_putstr_fd(": command not found\n", STDERR_FILENO);
-		ft_free_args(args);
-		ft_update_status_error(127);
-		return;
-	}
+		return (ft_handle_command_not_found(args));
 	command_node->execve_child = fork();
 	if (command_node->execve_child == -1)
-	{
-		perror("fork");
-		ft_free_args(args);
-		ft_update_status_error(1);
-		exit(EXIT_FAILURE);
-	}
+		ft_handle_fork_error(args);
 	if (command_node->execve_child == 0)
-	{
-		ft_free_ast(command_node->head);
-		execve(executable, args, NULL);
-		perror("execve");
-		ft_free_args(args);
-		ft_printf(2, "%s", command_node->head);
-		exit(126);
-	}
+		ft_execute_child_process(command_node, executable, args);
 	else
-	{
 		ft_pid_last_exit_status(command_node->execve_child);
-		ft_free_args(args);
-		free(executable);
-	}
+	ft_free_args(args);
+	free(executable);
 }
 
-char	**ft_generate_args(t_ast_node *command_node)
+void	ft_execute_child_process(t_ast_node *command_node, \
+char *executable, char **args)
 {
-	char	**args;
-
-	args = ft_allocate_args(command_node);
-	ft_fill_args(args, command_node);
-	return (args);
+	ft_free_ast(command_node->head);
+	execve(executable, args, NULL);
+	perror("execve");
+	ft_free_args(args);
+	ft_printf(2, "%s", command_node->head);
+	exit(126);
 }
 
-void	ft_fill_args(char **args, t_ast_node *command_node)
+void	ft_handle_fork_error(char **args)
 {
-	t_ast_node	*current;
-	int			i;
-
-	current = command_node;
-	i = 0;
-	while (current)
-	{
-		args[i] = ft_strdup(current->value);
-		if (!args[i])
-		{
-			perror("ft_strdup");
-			exit(EXIT_FAILURE);
-		}
-		i++;
-		current = current->right;
-	}
-	args[i] = NULL;
+	perror("fork");
+	ft_free_args(args);
+	ft_update_status_error(1);
+	exit(EXIT_FAILURE);
 }
 
-char	**ft_allocate_args(t_ast_node *command_node)
+void	ft_handle_command_not_found(char **args)
 {
-	int			n_args;
-	t_ast_node	*current;
-	char		**args;
-
-	n_args = 0;
-	current = command_node;
-	while (current)
-	{
-		n_args++;
-		current = current->right;
-	}
-	args = malloc(sizeof(char *) * (n_args + 1));
-	if (!args)
-	{
-		perror("malloc");
-		exit(EXIT_FAILURE);
-	}
-	return (args);
-}
-
-void	ft_free_args(char **args)
-{
-	int	i;
-
-	i = 0;
-	while (args[i])
-	{
-		free(args[i]);
-		i++;
-	}
-	free(args);
+	ft_putstr_fd(args[0], STDERR_FILENO);
+	ft_putstr_fd(": command not found\n", STDERR_FILENO);
+	ft_free_args(args);
+	ft_update_status_error(127);
 }

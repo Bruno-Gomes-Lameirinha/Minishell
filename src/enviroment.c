@@ -12,73 +12,67 @@
 
 #include "../include/minishell.h"
 
-char ***ft_get_env(void)
+char	**ft_copy_env(void)
 {
-    static char **env = NULL;
+	char	**copy;
+	int		i;
+	int		j;
 
-    if (!env)
-        env = ft_copy_env();
-    return (&env);
+	i = 0;
+	j = 0;
+	while (__environ[i])
+		i++;
+	copy = malloc(sizeof(char *) * (i + 1));
+	i = 0;
+	while (__environ[i])
+	{
+		if (ft_strncmp(__environ[i], "COLUMNS=", 8) != 0 \
+		&& ft_strncmp(__environ[i], "LINES=", 6) != 0)
+		{
+			copy[j] = ft_strdup(__environ[i]);
+			j++;
+		}
+		i++;
+	}
+	copy[j] = NULL;
+	return (copy);
 }
 
-
-char **ft_copy_env(void)
+void	ft_add_env(char *string)
 {
-    char **copy;
-    int i;
-    int j;
-
-    i = 0;
-    j = 0;
-    while (__environ[i])
-        i++;
-    copy = malloc(sizeof(char *) * (i + 1));
-    i = 0;
-    while (__environ[i])
-    {
-        if (ft_strncmp(__environ[i], "COLUMNS=", 8) != 0 && 
-            ft_strncmp(__environ[i], "LINES=", 6) != 0)
-        {
-            copy[j] = ft_strdup(__environ[i]);
-            j++;
-        }
-        i++;
-    }
-    copy[j] = NULL; // Correção: usar 'j' ao invés de 'i'
-    return (copy);
-}
-
-void ft_add_env(char *string)
-{
-	char **new_var;
-	char **env;
-	int i;
+	char	**new_var;
+	char	**env;
+	int		i;
 
 	env = *ft_get_env();
 	i = 0;
 	while (env[i])
 		i++;
-
 	new_var = malloc(sizeof(char *) * (i + 2));
 	if (!new_var)
 	{
 		perror("malloc failed");
 		exit(EXIT_FAILURE);
 	}
-	for (i = 0; env[i]; i++)
+	i = 0;
+	while (env[i])
+	{
 		new_var[i] = env[i];
+		i++;
+	}
 	new_var[i++] = ft_strdup(string);
 	new_var[i] = NULL;
 	free(env);
 	*ft_get_env() = new_var;
 	__environ = new_var;
 }
-void ft_update_env(char *new_str, char *key)
+
+void	ft_update_env(char *new_str, char *key)
 {
-	int i;
-	char *env_key;
-	char *aux;
-	char **env;
+	int		i;
+	char	*env_key;
+	char	*aux;
+	char	**env;
 
 	env = *ft_get_env();
 	i = -1;
@@ -91,32 +85,17 @@ void ft_update_env(char *new_str, char *key)
 			env[i] = ft_strdup_calloc(new_str);
 			free(aux);
 			free(env_key);
-			return;
+			return ;
 		}
 		free(env_key);
 	}
 	ft_add_env(new_str);
 }
 
-void ft_free_env(char **env)
-{
-    int i;
-
-    if (!env)
-        return;
-    for (i = 0; env[i]; i++)
-    {
-        free(env[i]);
-    }
-    free(env);
-    *ft_get_env() = NULL; // Evitar duplas liberações
-}
-
 void	ft_env_command(t_ast_node *command)
 {
-	int     i;
-	char    **env;
-	
+	int		i;
+	char	**env;
 
 	env = *ft_get_env();
 	if (command->right)
@@ -133,7 +112,7 @@ void	ft_env_command(t_ast_node *command)
 		i++;
 	}
 	ft_update_status_error(0);
-	return ;  
+	return ;
 }
 
 void	ft_set_env(char *new_str, char *key, char *value)
