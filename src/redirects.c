@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirects.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/08/28 17:11:33 by bgomes-l         ###   ########.fr       */
+/*   Updated: 2024/10/21 23:21:17 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,13 +108,4 @@ int	ft_handle_redirection_in(t_redirection *redir, int *saved_stdin)
 		return (ft_perror_close_exit("dup2", fd));
 	close(fd);
 	return (0);
-}
-
-int	ft_perror_close_exit(const char *msg, int fd)
-{
-	perror(msg);
-	if (fd != -1)
-		close(fd);
-	ft_update_status_error(1);
-	return (-1);
 }
