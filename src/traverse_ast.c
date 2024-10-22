@@ -24,7 +24,9 @@ void	ft_execute_ast(t_ast_node *root)
 	if (root->type == NODE_PIPE)
 	{
 		ft_handle_pipe(root);
-		while (wait(NULL) > 0);
+		while (wait(NULL) > 0)
+		{
+		}
 	}
 	else if (root->type == NODE_COMMAND)
 	{

@@ -12,12 +12,13 @@ LDFLAGS     := -lreadline
 SRC_MINISHELL = 
             
 SRC_MINISHELL_MAIN = $(SRC_PATH)/minishell.c  $(SRC_PATH)/tokenize.c $(SRC_PATH)/enviroment_utils.c\
-					$(SRC_PATH)/enviroment.c  $(SRC_PATH)/pipe.c $(SRC_PATH)/heredoc.c exit.c export.c utils.c unset.c \
+					$(SRC_PATH)/enviroment.c  $(SRC_PATH)/pipe.c $(SRC_PATH)/heredoc.c export.c unset.c \
 					$(SRC_PATH)/build_ast.c $(SRC_PATH)/traverse_ast.c $(SRC_PATH)/exec_command.c \
-					$(SRC_PATH)/redirects.c $(SRC_PATH)/exec_command_utils.c $(SRC_PATH)/prompt.c \
+					$(SRC_PATH)/redirects.c $(SRC_PATH)/exec_command_utils.c $(SRC_PATH)/exit.c \
 					$(SRC_PATH)/expand.c $(SRC_PATH)/pwd.c $(SRC_PATH)/signals.c $(SRC_PATH)/expand_utils.c \
 					$(SRC_PATH)/build_ast_II.c $(SRC_PATH)/cd_command.c $(SRC_PATH)/echo.c \
-					$(SRC_PATH)/exec_command_utils_II.c  $(SRC_PATH)/export_utils.c 
+					$(SRC_PATH)/exec_command_utils_II.c  $(SRC_PATH)/export_utils.c $(SRC_PATH)/tokenize_utils.c \
+					$(SRC_PATH)/tokenize_II.c $(SRC_PATH)/tokenize_III.c $(SRC_PATH)/enviroment_utils_II.c
 
 SRC_MINISHELL_BONUS = $(BONUS_PATH)/minishell_bonus.c 
 

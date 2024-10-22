@@ -38,33 +38,17 @@ int *saved_stdout)
 int	ft_handle_heredoc_redirection(t_redirection *redir, int *saved_stdin)
 {
 	if (redir->heredoc_fd == -1)
-	{
-		ft_update_status_error(1);
-		return (-1);
-	}
+		return (ft_perror_close_exit(NULL, -1));
 	if (*saved_stdin == -1)
 	{
 		*saved_stdin = dup(STDIN_FILENO);
 		if (*saved_stdin == -1)
-		{
-			perror("dup");
-			ft_update_status_error(1);
-			return (-1);
-		}
+			return (ft_perror_close_exit("dup", -1));
 	}
 	if (dup2(redir->heredoc_fd, STDIN_FILENO) == -1)
-	{
-		perror("dup2");
-		close(redir->heredoc_fd);
-		ft_update_status_error(1);
-		return (-1);
-	}
+		return (ft_perror_close_exit("dup2", redir->heredoc_fd));
 	if (close(redir->heredoc_fd) == -1)
-	{
-		perror("close");
-		ft_update_status_error(1);
-		return (-1);
-	}
+		return (ft_perror_close_exit("close", -1));
 	redir->heredoc_fd = -1;
 	return (0);
 }
@@ -75,28 +59,15 @@ int	ft_handle_redirection_out_append(t_redirection *redir, int *saved_stdout)
 
 	fd = open(redir->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (fd < 0)
-	{
-		perror("open");
-		return (-1);
-	}
-		if (*saved_stdout == -1)
+		return (ft_perror_close_exit("open", -1));
+	if (*saved_stdout == -1)
 	{
 		*saved_stdout = dup(STDOUT_FILENO);
 		if (*saved_stdout == -1)
-		{
-			perror("dup");
-			close(fd);
-			ft_update_status_error(1);
-			return (-1);
-		}
+			return (ft_perror_close_exit("dup", fd));
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
-	{
-		perror("dup2");
-		close(fd);
-		ft_update_status_error(1);
-		return (-1);
-	}
+		return (ft_perror_close_exit("dup2", fd));
 	close(fd);
 	return (0);
 }
@@ -107,29 +78,15 @@ int	ft_handle_redirection_out(t_redirection *redir, int *saved_stdout)
 
 	fd = open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd < 0)
-	{
-		perror("open");
-		ft_update_status_error(1);
-		return (-1);
-	}
+		return (ft_perror_close_exit("open", -1));
 	if (*saved_stdout == -1)
 	{
 		*saved_stdout = dup(STDOUT_FILENO);
 		if (*saved_stdout == -1)
-		{
-			perror("dup");
-			close(fd);
-			ft_update_status_error(1);
-			return (-1);
-		}
+			return (ft_perror_close_exit("dup", fd));
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
-	{
-		perror("dup2");
-		close(fd);
-		ft_update_status_error(1);
-		return (-1);
-	}
+		return (ft_perror_close_exit("dup2", fd));
 	close(fd);
 	return (0);
 }
@@ -140,29 +97,24 @@ int	ft_handle_redirection_in(t_redirection *redir, int *saved_stdin)
 
 	fd = open(redir->filename, O_RDONLY);
 	if (fd < 0)
-	{
-		perror("open");
-		ft_update_status_error(1);
-		return (-1);
-	}
+		return (ft_perror_close_exit("open", -1));
 	if (*saved_stdin == -1)
 	{
 		*saved_stdin = dup(STDIN_FILENO);
 		if (*saved_stdin == -1)
-		{
-			perror("dup");
-			close(fd);
-			ft_update_status_error(1);
-			return (-1);
-		}
+			return (ft_perror_close_exit("dup", fd));
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)
-	{
-		perror("dup2");
-		close(fd);
-		ft_update_status_error(1);
-		return (-1);
-	}
+		return (ft_perror_close_exit("dup2", fd));
 	close(fd);
 	return (0);
+}
+
+int	ft_perror_close_exit(const char *msg, int fd)
+{
+	perror(msg);
+	if (fd != -1)
+		close(fd);
+	ft_update_status_error(1);
+	return (-1);
 }

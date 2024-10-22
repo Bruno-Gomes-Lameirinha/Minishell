@@ -76,3 +76,13 @@ void	ft_free_args(char **args)
 	}
 	free(args);
 }
+
+void	ft_free_split(char **split)
+{
+	int	i;
+
+	i = 0;
+	while (split[i])
+		free(split[i++]);
+	free(split);
+}

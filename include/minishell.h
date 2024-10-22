@@ -202,5 +202,15 @@ void		ft_process_heredoc_line(int *pipe_fd, char *line, int type);
 void		ft_perror_exit(const char *msg);
 void		ft_handle_child_left(int *fd, t_ast_node *root);
 void		ft_handle_child_right(int *fd, t_ast_node *root);
-
+int			ft_perror_close_exit(const char *msg, int fd);
+void		ft_handle_pipe_operator(char ***input, char ***i_token, int **type);
+void		ft_handle_and_operator(char ***input, char ***i_token, int **type);
+void		ft_handle_redirect_out_operator(char ***input, char ***i_token, int **type);
+void		ft_handle_redirect_in_operator(char ***input, char ***i_token, int **type);
+void		ft_reset_token_state(char *current_token, char **i_token, t_state *state);
+void		ft_free_token(char	*current_token, int	*type);
+char		*ft_mem_token(char *input);
+void		ft_delete_env_key(char *key_to_delete);
+int			ft_copy_env_except_key(char **current_env, char **new_env, char *key_to_delete);
+char		**ft_allocate_new_env(char **current_env);
 # endif
