@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 19:00:47 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/21 23:08:59 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/21 23:42:17 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,5 +223,6 @@ void		ft_delete_env_key(char *key_to_delete);
 int			ft_copy_env_except_key(char **current_env, \
 char **new_env, char *key_to_delete);
 char		**ft_allocate_new_env(char **current_env);
+void		execute_minishell(char *input);
 
 #endif
