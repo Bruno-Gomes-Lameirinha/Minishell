@@ -222,5 +222,7 @@ char		**ft_allocate_new_env(char **current_env);
 char		*get_input(void);
 void		process_input(char *input);
 int			ft_contains_slash(char *command);
+char		*ft_handle_command_without_slash(char *command);
+char		*ft_handle_command_with_slash(char *command);
 
 #endif

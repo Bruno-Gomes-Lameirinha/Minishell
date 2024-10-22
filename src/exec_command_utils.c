@@ -12,16 +12,57 @@
 
 #include "../include/minishell.h"
 
-char	**ft_get_paths(void)
+char	*ft_search_executable_ast(char *command)
 {
-	char	*path_var;
-	char	**paths;
+	if (ft_strchr(command, '/') != NULL)
+		return (ft_handle_command_with_slash(command));
+	else
+		return (ft_handle_command_without_slash(command));
+}
 
-	path_var = getenv("PATH");
-	if (!path_var)
+char	*ft_handle_command_with_slash(char *command)
+{
+	if (access(command, F_OK) != 0)
+	{
+		ft_putstr_fd(command, STDERR_FILENO);
+		ft_putstr_fd(": Arquivo ou diretório não encontrado\n", STDERR_FILENO);
+		ft_update_status_error(127);
 		return (NULL);
-	paths = ft_split(path_var, ':');
-	return (paths);
+	}
+	if (access(command, X_OK) != 0)
+	{
+		ft_putstr_fd(command, STDERR_FILENO);
+		ft_putstr_fd(": Permissão negada\n", STDERR_FILENO);
+		ft_update_status_error(126);
+		return (NULL);
+	}
+	return (ft_strdup(command));
+}
+
+char	*ft_handle_command_without_slash(char *command)
+{
+	char	**paths;
+	char	*executable;
+
+	paths = ft_get_paths();
+	if (!paths)
+	{
+		ft_putstr_fd(command, STDERR_FILENO);
+		ft_putstr_fd(": command not found\n", STDERR_FILENO);
+		ft_update_status_error(127);
+		return (NULL);
+	}
+	executable = ft_search_in_paths(paths, command);
+	ft_free_split(paths);
+	if (executable)
+		return (executable);
+	else
+	{
+		ft_putstr_fd(command, STDERR_FILENO);
+		ft_putstr_fd(": command not found\n", STDERR_FILENO);
+		ft_update_status_error(127);
+		return (NULL);
+	}
 }
 
 char	*ft_build_executable_path(char *dir, char *command)
@@ -35,14 +76,6 @@ char	*ft_build_executable_path(char *dir, char *command)
 	executable = ft_strjoin(temp, command);
 	free(temp);
 	return (executable);
-}
-
-char	*ft_check_executable(char *executable)
-{
-	if (access(executable, X_OK) == 0)
-		return (executable);
-	free(executable);
-	return (NULL);
 }
 
 char	*ft_search_in_paths(char **paths, char *command)
@@ -59,61 +92,10 @@ char	*ft_search_in_paths(char **paths, char *command)
 			i++;
 			continue ;
 		}
-		executable = ft_check_executable(executable);
-		if (executable)
+		if (access(executable, X_OK) == 0)
 			return (executable);
+		free(executable);
 		i++;
 	}
 	return (NULL);
-}
-
-char	*ft_search_executable_ast(char *command)
-{
-	char	**paths;
-	char	*executable;
-
-	if (ft_contains_slash(command))
-	{
-		if (access(command, F_OK) != 0)
-		{
-			ft_putstr_fd(command, STDERR_FILENO);
-			ft_putstr_fd(": Arquivo ou diretório não encontrado\n", STDERR_FILENO);
-			ft_update_status_error(127);
-			return (NULL);
-		}
-		if (access(command, X_OK) != 0)
-		{
-			ft_putstr_fd(command, STDERR_FILENO);
-			ft_putstr_fd(": Permissão negada\n", STDERR_FILENO);
-			ft_update_status_error(126);
-			return (NULL);
-		}
-		return (ft_strdup(command));
-	}
-	else
-	{
-		paths = ft_get_paths();
-		if (!paths)
-		{
-			ft_putstr_fd(command, STDERR_FILENO);
-			ft_putstr_fd(": command not found\n", STDERR_FILENO);
-			ft_update_status_error(127);
-			return (NULL);
-		}
-		executable = ft_search_in_paths(paths, command);
-		ft_free_split(paths);
-		if (executable)
-			return (executable);
-		else
-		{
-			ft_putstr_fd(command, STDERR_FILENO);
-			ft_putstr_fd(": command not found\n", STDERR_FILENO);
-			ft_update_status_error(127);
-			return (NULL);
-		}
-	}
-}
-int	ft_contains_slash(char *command)
-{
-	return (ft_strchr(command, '/') != NULL);
 }
