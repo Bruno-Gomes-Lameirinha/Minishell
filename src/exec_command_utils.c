@@ -72,12 +72,48 @@ char	*ft_search_executable_ast(char *command)
 	char	**paths;
 	char	*executable;
 
-	if (access(command, X_OK) == 0)
+	if (ft_contains_slash(command))
+	{
+		if (access(command, F_OK) != 0)
+		{
+			ft_putstr_fd(command, STDERR_FILENO);
+			ft_putstr_fd(": Arquivo ou diretório não encontrado\n", STDERR_FILENO);
+			ft_update_status_error(127);
+			return (NULL);
+		}
+		if (access(command, X_OK) != 0)
+		{
+			ft_putstr_fd(command, STDERR_FILENO);
+			ft_putstr_fd(": Permissão negada\n", STDERR_FILENO);
+			ft_update_status_error(126);
+			return (NULL);
+		}
 		return (ft_strdup(command));
-	paths = ft_get_paths();
-	if (!paths)
-		return (NULL);
-	executable = ft_search_in_paths(paths, command);
-	ft_free_split(paths);
-	return (executable);
+	}
+	else
+	{
+		paths = ft_get_paths();
+		if (!paths)
+		{
+			ft_putstr_fd(command, STDERR_FILENO);
+			ft_putstr_fd(": command not found\n", STDERR_FILENO);
+			ft_update_status_error(127);
+			return (NULL);
+		}
+		executable = ft_search_in_paths(paths, command);
+		ft_free_split(paths);
+		if (executable)
+			return (executable);
+		else
+		{
+			ft_putstr_fd(command, STDERR_FILENO);
+			ft_putstr_fd(": command not found\n", STDERR_FILENO);
+			ft_update_status_error(127);
+			return (NULL);
+		}
+	}
+}
+int	ft_contains_slash(char *command)
+{
+	return (ft_strchr(command, '/') != NULL);
 }

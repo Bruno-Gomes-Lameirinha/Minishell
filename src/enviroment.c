@@ -16,25 +16,28 @@ char	**ft_copy_env(void)
 {
 	char	**copy;
 	int		i;
-	int		j;
 
 	i = 0;
-	j = 0;
 	while (__environ[i])
 		i++;
 	copy = malloc(sizeof(char *) * (i + 1));
+	if (!copy)
+	{
+		perror("malloc failed");
+		exit(EXIT_FAILURE);
+	}
 	i = 0;
 	while (__environ[i])
 	{
-		if (ft_strncmp(__environ[i], "COLUMNS=", 8) != 0 \
-		&& ft_strncmp(__environ[i], "LINES=", 6) != 0)
+		copy[i] = ft_strdup(__environ[i]);
+		if (!copy[i])
 		{
-			copy[j] = ft_strdup(__environ[i]);
-			j++;
+			perror("ft_strdup failed");
+			exit(EXIT_FAILURE);
 		}
 		i++;
 	}
-	copy[j] = NULL;
+	copy[i] = NULL;
 	return (copy);
 }
 

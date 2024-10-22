@@ -35,7 +35,8 @@ void	process_input(char *input)
 	ft_set_head_lst(ast);
 	ft_collect_heredocs(ast);
 	ft_execute_ast(ast);
-	ft_free_ast(ast->head);
+	if (ast)
+		ft_free_ast(ast->head);
 }
 
 char	*get_input(void)

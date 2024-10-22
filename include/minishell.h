@@ -221,5 +221,6 @@ char **new_env, char *key_to_delete);
 char		**ft_allocate_new_env(char **current_env);
 char		*get_input(void);
 void		process_input(char *input);
+int			ft_contains_slash(char *command);
 
 #endif
