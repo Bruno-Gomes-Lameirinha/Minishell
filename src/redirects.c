@@ -109,12 +109,3 @@ int	ft_handle_redirection_in(t_redirection *redir, int *saved_stdin)
 	close(fd);
 	return (0);
 }
-
-int	ft_perror_close_exit(const char *msg, int fd)
-{
-	perror(msg);
-	if (fd != -1)
-		close(fd);
-	ft_update_status_error(1);
-	return (-1);
-}

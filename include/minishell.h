@@ -180,12 +180,14 @@ void		ft_handle_eof(void);
 void		ft_sigint_handler(int signum);
 void		ft_set_head_lst(t_ast_node *root);
 char		*ft_skip_until_special_char(char *input);
-int			ft_handle_special_char(char **input, char **start, char **expanded_input);
+int			ft_handle_special_char(char **input, char **start, \
+char **expanded_input);
 char		*ft_skip_single_quotes(char *input);
 int			ft_should_skip_dollar(char *input);
 char		*ft_append_text(char *start, char *end, char *expanded_input);
-char 		*ft_process_variable(char *input, char **expanded_input);
-void		ft_handle_word_token(t_token *cur, t_ast_node **root, t_ast_node **cur_node, t_ast_node **last_arg);
+char		*ft_process_variable(char *input, char **expanded_input);
+void		ft_handle_word_token(t_token *cur, t_ast_node **root, \
+t_ast_node **cur_node, t_ast_node **last_arg);
 void		ft_free_env(char **env);
 void		ft_print_arguments(t_ast_node *current);
 void		ft_write_space(void);
@@ -205,12 +207,19 @@ void		ft_handle_child_right(int *fd, t_ast_node *root);
 int			ft_perror_close_exit(const char *msg, int fd);
 void		ft_handle_pipe_operator(char ***input, char ***i_token, int **type);
 void		ft_handle_and_operator(char ***input, char ***i_token, int **type);
-void		ft_handle_redirect_out_operator(char ***input, char ***i_token, int **type);
-void		ft_handle_redirect_in_operator(char ***input, char ***i_token, int **type);
-void		ft_reset_token_state(char *current_token, char **i_token, t_state *state);
+void		ft_handle_redirect_out_operator(char ***input, \
+char ***i_token, int **type);
+void		ft_handle_redirect_in_operator(char ***input, \
+char ***i_token, int **type);
+void		ft_reset_token_state(char *current_token, \
+char **i_token, t_state *state);
 void		ft_free_token(char	*current_token, int	*type);
 char		*ft_mem_token(char *input);
 void		ft_delete_env_key(char *key_to_delete);
-int			ft_copy_env_except_key(char **current_env, char **new_env, char *key_to_delete);
+int			ft_copy_env_except_key(char **current_env, \
+char **new_env, char *key_to_delete);
 char		**ft_allocate_new_env(char **current_env);
-# endif
+char		*get_input(void);
+void		process_input(char *input);
+
+#endif

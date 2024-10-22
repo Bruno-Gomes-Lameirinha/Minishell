@@ -12,99 +12,70 @@
 
 #include "../include/minishell.h"
 
-void	ft_pid_last_exit_status(pid_t pid)
+void	process_input(char *input)
 {
-	int	status;
+	t_token		**lexeme;
+	t_ast_node	*ast;
+	char		*x;
 
-	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-		ft_update_status_error(WEXITSTATUS(status));
-	else if (WIFSIGNALED(status))
-		ft_update_status_error(128 + WTERMSIG(status));
-	else
-		ft_update_status_error(1);
+	lexeme = (t_token **)malloc(sizeof(t_token *));
+	if (!lexeme)
+	{
+		perror("Failed to allocate memory for lexeme");
+		exit(EXIT_FAILURE);
+	}
+	*lexeme = NULL;
+	x = ft_strchr(input, '$');
+	if (x != NULL)
+		input = ft_expand_variables_input(input);
+	ft_tokenize(input, lexeme);
+	free(input);
+	ast = ft_build_ast(lexeme);
+	ft_clean_token_list(lexeme);
+	ft_set_head_lst(ast);
+	ft_collect_heredocs(ast);
+	ft_execute_ast(ast);
+	ft_free_ast(ast->head);
 }
 
-int	ft_update_status_error(int exit_status)
+char	*get_input(void)
 {
-	static int	status;
+	char	*input;
 
-	if (exit_status != -1)
-		status = exit_status;
-	return (status);
+	input = readline("minishell$ ");
+	if (!input)
+		ft_handle_eof();
+	add_history(input);
+	return (input);
 }
 
 int	main(void)
 {
 	char	*input;
-	t_token	**lexeme;
-	t_ast_node *ast;
-	char *x;
-	
-	x = NULL;
+
 	ft_setup_signal_handlers();
 	while (1)
 	{
-		input = readline("minishell$ ");
-		if (!input)
-			ft_handle_eof();
-		add_history(input);
-		if (input)
-		{
-			if (*input != '\0')
-			{
-				lexeme = (t_token**)malloc(sizeof(t_token*));
-				if (!lexeme)
-				{
-					perror("Failed to allocate memory for lexeme");
-					exit(EXIT_FAILURE);
-				}
-				*lexeme = NULL;
-				x = ft_strchr(input, '$');
-				if (x != NULL)
-					input = ft_expand_variables_input(input);
-				ft_tokenize(input, lexeme);
-				free (input);
-				ast = ft_build_ast(lexeme);
-				ft_clean_token_list(lexeme);
-				ft_set_head_lst(ast);
-				ft_collect_heredocs(ast);
-				ft_execute_ast(ast);
-				ft_free_ast(ast->head);
-				
-			}
-		}
+		input = get_input();
+		if (*input != '\0')
+			process_input(input);
 	}
 	return (0);
 }
 
-int	ft_get_exit_status(int exit_status)
-{
-	return ((exit_status & 0xff00) >> 8);
-}
-
-int	*ft_get_exit_status_env(void)
-{
-	static int	exit_status;
-
-	return (&exit_status);
-}
-
 void	ft_set_head_lst(t_ast_node *root)
 {
-	if (!root)
-		return;
-	
-	t_ast_node *head;
-	t_ast_node *current;
+	t_ast_node	*head;
+	t_ast_node	*current;
 
+	if (!root)
+		return ;
 	head = root;
 	current = root;
-
 	current->head = root;
 	if (current->right)
 		current = current->right;
-	while(current)
+	while (current)
 	{
 		current->head = head;
 		current = current->right;
@@ -112,7 +83,7 @@ void	ft_set_head_lst(t_ast_node *root)
 	current = head;
 	if (current->left)
 		current = current->left;
-	while(current)
+	while (current)
 	{
 		current->head = head;
 		current = current->left;
