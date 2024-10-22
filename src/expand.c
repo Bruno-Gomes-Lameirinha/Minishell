@@ -12,7 +12,7 @@
 
 #include "../include/minishell.h"
 
-char *ft_expand_variables_input(char *input)
+char	*ft_expand_variables_input(char *input)
 {
 	char	*start;
 	char	*expanded_input;
@@ -23,33 +23,33 @@ char *ft_expand_variables_input(char *input)
 	{
 		input = ft_skip_until_special_char(input);
 		if (*input == '\0')
-			break;
+			break ;
 		if (ft_handle_special_char(&input, &start, &expanded_input))
-			continue;
+			continue ;
 	}
 	if (*start != '\0')
 		expanded_input = ft_append_text(start, input, expanded_input);
-	return expanded_input;
+	return (expanded_input);
 }
 
-char *ft_skip_until_special_char(char *input)
+char	*ft_skip_until_special_char(char *input)
 {
 	while (*input != '$' && *input != '\'' && *input != '\0')
 		input++;
-	return input;
+	return (input);
 }
 
-int ft_handle_special_char(char **input, char **start, char **expanded_input)
+int	ft_handle_special_char(char **input, char **start, char **expanded_input)
 {
 	if (**input == '\'')
 	{
 		*input = ft_skip_single_quotes(*input);
-		return 1;
+		return (1);
 	}
 	if (ft_should_skip_dollar(*input))
 	{
 		(*input)++;
-		return 1;
+		return (1);
 	}
 	if (**input == '$')
 	{
@@ -57,26 +57,26 @@ int ft_handle_special_char(char **input, char **start, char **expanded_input)
 		(*input)++;
 		*input = ft_process_variable(*input, expanded_input);
 		*start = *input;
-		return 1;
+		return (1);
 	}
-	return 0;
+	return (0);
 }
 
-char *ft_skip_single_quotes(char *input)
+char	*ft_skip_single_quotes(char *input)
 {
 	input++;
 	while (*input != '\'' && *input != '\0')
 		input++;
 	if (*input == '\'')
 		input++;
-	return input;
+	return (input);
 }
 
-char *ft_process_variable(char *input, char **expanded_input)
+char	*ft_process_variable(char *input, char **expanded_input)
 {
-	char *var_key;
-	char *var_value;
-	int var_len;
+	char	*var_key;
+	char	*var_value;
+	int		var_len;
 
 	if (*input == '?')
 	{
@@ -95,5 +95,5 @@ char *ft_process_variable(char *input, char **expanded_input)
 		free(var_key);
 		input += var_len;
 	}
-	return input;
+	return (input);
 }

@@ -191,5 +191,16 @@ void		ft_print_arguments(t_ast_node *current);
 void		ft_write_space(void);
 void		ft_write_value(const char *value);
 void		ft_print_newline(int new_line);
+void		ft_handle_command_not_found(char **args);
+void		ft_handle_fork_error(char **args);
+void		ft_execute_child_process(t_ast_node *command_node, \
+char *executable, char **args);
+void		ft_handle_exit_argument(t_ast_node *command);
+void		ft_process_export_arg(char *arg, int *status);
+int			ft_handle_no_args_export(char **args, int status);
+void		ft_process_heredoc_line(int *pipe_fd, char *line, int type);
+void		ft_perror_exit(const char *msg);
+void		ft_handle_child_left(int *fd, t_ast_node *root);
+void		ft_handle_child_right(int *fd, t_ast_node *root);
 
 # endif

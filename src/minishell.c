@@ -20,9 +20,9 @@ void	ft_pid_last_exit_status(pid_t pid)
 	if (WIFEXITED(status))
 		ft_update_status_error(WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))
-		ft_update_status_error(128 + WTERMSIG(status));  // Código de saída para terminação por sinal
+		ft_update_status_error(128 + WTERMSIG(status));
 	else
-		ft_update_status_error(1);  // Código de saída genérico
+		ft_update_status_error(1);
 }
 
 int	ft_update_status_error(int exit_status)
