@@ -1,50 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins.c                                         :+:      :+:    :+:   */
+/*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/01 19:05:53 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/08 18:16:44 by livieira         ###   ########.fr       */
+/*   Created: 2023/07/27 18:33:00 by bgomes-l          #+#    #+#             */
+/*   Updated: 2024/10/09 23:27:20 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-char	***ft_get_env(void)
+void	ft_pid_last_exit_status(pid_t pid)
 {
-	static char	**env = NULL;
+	int	status;
 
-	if (!env)
-		env = ft_copy_env();
-	return (&env);
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		ft_update_status_error(WEXITSTATUS(status));
+	else if (WIFSIGNALED(status))
+		ft_update_status_error(128 + WTERMSIG(status));
+	else
+		ft_update_status_error(1);
 }
 
-void	ft_free_env(char **env)
+int	ft_update_status_error(int exit_status)
 {
-	int	i;
+	static int	status;
 
-	if (!env)
-		return ;
-	i = 0;
-	while (env[i])
-	{
-		free(env[i]);
-		i++;
-	}
-	free(env);
-	*ft_get_env() = NULL;
-}
-
-int	*ft_get_exit_status_env(void)
-{
-	static int	exit_status;
-
-	return (&exit_status);
-}
-
-int	ft_get_exit_status(int exit_status)
-{
-	return ((exit_status & 0xff00) >> 8);
+	if (exit_status != -1)
+		status = exit_status;
+	return (status);
 }

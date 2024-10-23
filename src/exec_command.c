@@ -20,7 +20,10 @@ void	ft_execute_command_ast(t_ast_node *command_node)
 	args = ft_generate_args(command_node);
 	executable = ft_search_executable_ast(args[0]);
 	if (!executable)
-		return (ft_handle_command_not_found(args));
+	{
+		ft_free_args(args);
+		return ;
+	}
 	command_node->execve_child = fork();
 	if (command_node->execve_child == -1)
 		ft_handle_fork_error(args);
@@ -35,11 +38,13 @@ void	ft_execute_command_ast(t_ast_node *command_node)
 void	ft_execute_child_process(t_ast_node *command_node, \
 char *executable, char **args)
 {
+	char	**envp;
+
+	envp = *ft_get_env();
 	ft_free_ast(command_node->head);
-	execve(executable, args, NULL);
+	execve(executable, args, envp);
 	perror("execve");
 	ft_free_args(args);
-	ft_printf(2, "%s", command_node->head);
 	exit(126);
 }
 
@@ -57,4 +62,16 @@ void	ft_handle_command_not_found(char **args)
 	ft_putstr_fd(": command not found\n", STDERR_FILENO);
 	ft_free_args(args);
 	ft_update_status_error(127);
+}
+
+char	**ft_get_paths(void)
+{
+	char	*path_var;
+	char	**paths;
+
+	path_var = getenv("PATH");
+	if (!path_var)
+		return (NULL);
+	paths = ft_split(path_var, ':');
+	return (paths);
 }

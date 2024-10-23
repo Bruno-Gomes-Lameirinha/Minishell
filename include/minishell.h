@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 19:00:47 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/22 00:23:44 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/22 21:27:53 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,18 +212,22 @@ void		ft_handle_child_right(int *fd, t_ast_node *root);
 int			ft_perror_close_exit(const char *msg, int fd);
 void		ft_handle_pipe_operator(char ***input, char ***i_token, int **type);
 void		ft_handle_and_operator(char ***input, char ***i_token, int **type);
-void		ft_handle_redirect_out_operator(char ***input, char ***i_token, \
-int **type);
-void		ft_handle_redirect_in_operator(char ***input, char ***i_token, \
-int **type);
-void		ft_reset_token_state(char *current_token, char **i_token, \
-t_state *state);
+void		ft_handle_redirect_out_operator(char ***input, \
+char ***i_token, int **type);
+void		ft_handle_redirect_in_operator(char ***input, \
+char ***i_token, int **type);
+void		ft_reset_token_state(char *current_token, \
+char **i_token, t_state *state);
 void		ft_free_token(char	*current_token, int	*type);
 char		*ft_mem_token(char *input);
 void		ft_delete_env_key(char *key_to_delete);
 int			ft_copy_env_except_key(char **current_env, \
 char **new_env, char *key_to_delete);
 char		**ft_allocate_new_env(char **current_env);
-void		execute_minishell(char *input);
+char		*get_input(void);
+void		process_input(char *input);
+int			ft_contains_slash(char *command);
+char		*ft_handle_command_without_slash(char *command);
+char		*ft_handle_command_with_slash(char *command);
 
 #endif
