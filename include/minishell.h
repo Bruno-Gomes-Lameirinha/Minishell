@@ -6,7 +6,7 @@
 /*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 19:00:47 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/21 23:42:17 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/22 00:23:44 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,8 @@ enum e_token
 	SUBSHELL,
 	ARCHIVE,
 	DOUBLE_QUOTES,
-	SINGLE_QUOTES
+	SINGLE_QUOTES,
+	UNCLOSED_QUOTES
 };
 
 void		ft_strcpy(char *dst, const char *src);

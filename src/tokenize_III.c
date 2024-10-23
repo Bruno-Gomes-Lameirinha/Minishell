@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_command.c                                     :+:      :+:    :+:   */
+/*   tokenize_III.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/08/28 17:11:33 by bgomes-l         ###   ########.fr       */
+/*   Updated: 2024/10/22 00:24:29 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,14 @@ void	ft_handle_quotes(char ***input, char ***i_token, int **type)
 		while (***input && ***input != '\'')
 			*(**i_token)++ = *(**input)++;
 		if (***input == '\'')
+		{
 			(**input)++;
-		**type = SINGLE_QUOTES;
+			**type = SINGLE_QUOTES;
+		}
+		else
+		{
+			*type = UNCLOSED_QUOTES;
+		}
 	}
 	else if (***input == '\"')
 	{
@@ -42,7 +48,13 @@ void	ft_handle_quotes(char ***input, char ***i_token, int **type)
 		while (***input && ***input != '\"')
 			*(**i_token)++ = *(**input)++;
 		if (***input == '\"')
+		{
 			(**input)++;
-		**type = DOUBLE_QUOTES;
+			**type = DOUBLE_QUOTES;
+		}
+		else
+		{
+			*type = UNCLOSED_QUOTES;
+		}
 	}
 }
