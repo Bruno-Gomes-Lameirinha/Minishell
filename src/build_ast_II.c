@@ -83,6 +83,7 @@ void	ft_creat_redir_node(t_token **current, t_ast_node **current_node)
 {
 	t_redirection	*redir;
 	t_redirection	*last_redir;
+	t_ast_node		*cmd_node;
 
 	redir = malloc(sizeof(t_redirection));
 	if (!redir)
@@ -95,6 +96,26 @@ void	ft_creat_redir_node(t_token **current, t_ast_node **current_node)
 	redir->filename = ft_strdup((*current)->next->token_node);
 	redir->heredoc_fd = -1;
 	redir->next = NULL;
+
+	// Verifique se o current_node é um pipe ou outro tipo que não seja comando
+	if ((*current_node) && ((*current_node)->type == NODE_PIPE || (*current_node)->type == NODE_ARGUMENT))
+	{
+		// Navega para o próximo nó de comando à direita do pipe
+		cmd_node = (*current_node)->left;
+		while (cmd_node && cmd_node->type != NODE_COMMAND)
+			cmd_node = cmd_node->left;
+		if (cmd_node)
+			*current_node = cmd_node; // Define current_node como o comando correto
+		else
+		{
+			// Erro: não encontrou um comando onde o redirecionamento deveria estar
+			perror("Erro: não há comando para associar o redirecionamento");
+			free(redir);
+			return;
+		}
+	}
+
+	// Adiciona o redirecionamento ao nó de comando encontrado
 	if ((*current_node)->redirections == NULL)
 		(*current_node)->redirections = redir;
 	else
@@ -104,5 +125,5 @@ void	ft_creat_redir_node(t_token **current, t_ast_node **current_node)
 			last_redir = last_redir->next;
 		last_redir->next = redir;
 	}
-	*current = (*current)->next;
+	*current = (*current)->next;  // Avança o ponteiro de token
 }
