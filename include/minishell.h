@@ -47,7 +47,7 @@ typedef struct s_redirection {
 	int						type_filename;
 	int						heredoc_fd;
 	struct s_redirection	*next;
-}	t_redirection;
+}	t_redir;
 
 typedef struct s_ast_node {
 	int					type;
@@ -58,8 +58,16 @@ typedef struct s_ast_node {
 	struct s_ast_node	*next;
 	struct s_ast_node	*head;
 	pid_t				execve_child;
-	t_redirection		*redirections;
+	t_redir				*redirections;
 }	t_ast_node;
+
+typedef struct s_ast_builder_context
+{
+	t_ast_node		*root;
+	t_ast_node		*current_node;
+	t_ast_node		*last_arg_node;
+	t_redir			*pending_redir;
+}	t_ast_builder;
 
 typedef enum t_node_type {
 	NODE_COMMAND,
@@ -92,7 +100,6 @@ enum e_token
 	SINGLE_QUOTES
 };
 
-void		ft_strcpy(char *dst, const char *src);
 int			ft_is_space(char c);
 int			ft_get_exit_status(int exit_status);
 int			*ft_get_exit_status_env(void);
@@ -118,23 +125,18 @@ int			ft_handle_heredoc(const char *delimiter, int type);
 void		ft_free_ast(t_ast_node *root);
 int			ft_collect_heredocs(t_ast_node *root);
 t_ast_node	*ft_build_ast(t_token **tokens);
-void	ft_creat_cmd_node(t_token *current, t_ast_node **root, \
-t_ast_node **current_node, t_ast_node **last_arg_node, t_redirection **pending_redir);
-void		ft_creat_arg_node(t_token *current, t_ast_node **current_node, \
-t_ast_node	**last_arg_node);
-void		ft_creat_pipe_node(t_ast_node **root, t_ast_node **current_node);
-void	ft_creat_redir_node(t_token **current, t_ast_node **current_node, t_redirection **pending_redir);
-int			ft_handle_redirection(t_redirection *redir, \
-int *saved_stdin, int *saved_stdout);
+void		ft_creat_cmd_node(t_token *current, t_ast_builder *ctx);
+void		ft_creat_arg_node(t_token *current, t_ast_builder *ctx);
+void		ft_creat_pipe_node(t_ast_builder *ctx);
+void		ft_creat_redir_node(t_token **current, t_ast_builder *ctx);
+int			ft_handle_redirection(t_redir *redir, int *saved_stdin, \
+int *saved_stdout);
 void		ft_restore_stdin_stdout(int saved_stdin, int saved_stdout);
 void		ft_execute_command(t_ast_node *root);
-int			ft_handle_redirection_in(t_redirection *redir, int *saved_stdin);
-int			ft_handle_redirection_out(t_redirection *redir, \
-int *saved_stdout);
-int			ft_handle_redirection_out_append(t_redirection *redir, \
-int *saved_stdout);
-int			ft_handle_heredoc_redirection(t_redirection *redir, \
-int *saved_stdin);
+int			ft_handle_redirection_in(t_redir *redir, int *saved_stdin);
+int			ft_handle_redirection_out(t_redir *redir, int *saved_stdout);
+int			ft_handle_redirection_out_append(t_redir *redir, int *saved_stdout);
+int			ft_handle_heredoc_redirection(t_redir *redir, int *saved_stdin);
 void		ft_pwd_command(t_ast_node *cmd_tokens);
 t_token		*ft_list_new_token(void);
 t_ast_node	*ft_build_ast(t_token **tokens);
@@ -144,7 +146,6 @@ char		**ft_allocate_args(t_ast_node *command_node);
 void		ft_free_args(char **args);
 char		**ft_get_paths(void);
 char		*ft_build_executable_path(char *dir, char *command);
-char		*ft_check_executable(char *executable);
 char		*ft_search_in_paths(char **paths, char *command);
 int			ft_check_limits(char *arg, char sign);
 void		ft_status(int status);
@@ -186,8 +187,7 @@ char		*ft_skip_single_quotes(char *input);
 int			ft_should_skip_dollar(char *input);
 char		*ft_append_text(char *start, char *end, char *expanded_input);
 char		*ft_process_variable(char *input, char **expanded_input);
-void	ft_handle_word_token(t_token *cur, t_ast_node **root, \
-t_ast_node **cur_node, t_ast_node **last_arg, t_redirection **pending_redir);
+void		ft_handle_word_token(t_token *cur, t_ast_builder *ctx);
 void		ft_free_env(char **env);
 void		ft_print_arguments(t_ast_node *current);
 void		ft_write_space(void);
@@ -207,23 +207,29 @@ void		ft_handle_child_right(int *fd, t_ast_node *root);
 int			ft_perror_close_exit(const char *msg, int fd);
 void		ft_handle_pipe_operator(char ***input, char ***i_token, int **type);
 void		ft_handle_and_operator(char ***input, char ***i_token, int **type);
-void		ft_handle_redirect_out_operator(char ***input, \
-char ***i_token, int **type);
-void		ft_handle_redirect_in_operator(char ***input, \
-char ***i_token, int **type);
-void		ft_reset_token_state(char *current_token, \
-char **i_token, t_state *state);
+void		ft_handle_redirect_out_operator(char ***input, char ***i_token, \
+int **type);
+void		ft_handle_redirect_in_operator(char ***input, char ***i_token, \
+int **type);
+void		ft_reset_token_state(char *current_token, char **i_token, \
+t_state *state);
 void		ft_free_token(char	*current_token, int	*type);
 char		*ft_mem_token(char *input);
 void		ft_delete_env_key(char *key_to_delete);
-int			ft_copy_env_except_key(char **current_env, \
-char **new_env, char *key_to_delete);
+int			ft_copy_env_except_key(char **current_env, char **new_env, \
+char *key_to_delete);
 char		**ft_allocate_new_env(char **current_env);
 char		*get_input(void);
 void		process_input(char *input);
-int			ft_contains_slash(char *command);
 char		*ft_handle_command_without_slash(char *command);
 char		*ft_handle_command_with_slash(char *command);
-int check_unclosed_quotes(const char *input);
+int			ft_check_unclosed_quotes(const char *input);
+void		ft_add_redirection_to_pending(t_redir **pending_redir, \
+t_redir *redir);
+void		ft_add_redirection_to_command(t_ast_node *current_node, \
+t_redir *redir);
+t_redir		*create_redirection(t_token **current);
+void		ft_update_status_from_children(int status[2]);
+t_ast_node	*ft_initialize_cmd_node(t_token *current);
 
 #endif

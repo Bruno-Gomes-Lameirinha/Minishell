@@ -14,36 +14,28 @@
 
 void	ft_handle_pipe(t_ast_node *root)
 {
-    int		fd[2];
-    pid_t	left_pid;
-    pid_t	right_pid;
-    int		left_status;
-    int		right_status;
+	int		fd[2];
+	pid_t	left_pid;
+	pid_t	right_pid;
+	int		status[2];
 
-    if (pipe(fd) == -1)
-        ft_perror_exit("pipe");
-    left_pid = fork();
-    if (left_pid == -1)
-        ft_perror_exit("fork");
-    if (left_pid == 0)
-        ft_handle_child_left(fd, root);
-    right_pid = fork();
-    if (right_pid == -1)
-        ft_perror_exit("fork");
-    if (right_pid == 0)
-        ft_handle_child_right(fd, root);
-    close(fd[0]);
-    close(fd[1]);
-    waitpid(left_pid, &left_status, 0);
-    waitpid(right_pid, &right_status, 0);
-    
-    // Atualize o exit code com base no processo que terminou por último
-    if (WIFEXITED(right_status))
-        ft_update_status_error(WEXITSTATUS(right_status));
-    else if (WIFEXITED(left_status))
-        ft_update_status_error(WEXITSTATUS(left_status));
-    else
-        ft_update_status_error(1); // Defina como 1 se nenhum dos processos terminou normalmente
+	if (pipe(fd) == -1)
+		ft_perror_exit("pipe");
+	left_pid = fork();
+	if (left_pid == -1)
+		ft_perror_exit("fork");
+	if (left_pid == 0)
+		ft_handle_child_left(fd, root);
+	right_pid = fork();
+	if (right_pid == -1)
+		ft_perror_exit("fork");
+	if (right_pid == 0)
+		ft_handle_child_right(fd, root);
+	close(fd[0]);
+	close(fd[1]);
+	waitpid(left_pid, &status[0], 0);
+	waitpid(right_pid, &status[1], 0);
+	ft_update_status_from_children(status);
 }
 
 void	ft_handle_child_left(int *fd, t_ast_node *root)
@@ -70,4 +62,14 @@ void	ft_perror_exit(const char *msg)
 {
 	perror(msg);
 	exit(EXIT_FAILURE);
+}
+
+void	ft_update_status_from_children(int status[2])
+{
+	if (WIFEXITED(status[1]))
+		ft_update_status_error(WEXITSTATUS(status[1]));
+	else if (WIFEXITED(status[0]))
+		ft_update_status_error(WEXITSTATUS(status[0]));
+	else
+		ft_update_status_error(1);
 }

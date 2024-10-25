@@ -12,7 +12,7 @@
 
 #include "../include/minishell.h"
 
-int	ft_handle_redirection(t_redirection *redir, int *saved_stdin, \
+int	ft_handle_redirection(t_redir *redir, int *saved_stdin, \
 int *saved_stdout)
 {
 	int	ret;
@@ -35,7 +35,7 @@ int *saved_stdout)
 	return (0);
 }
 
-int	ft_handle_heredoc_redirection(t_redirection *redir, int *saved_stdin)
+int	ft_handle_heredoc_redirection(t_redir *redir, int *saved_stdin)
 {
 	if (redir->heredoc_fd == -1)
 		return (ft_perror_close_exit(NULL, -1));
@@ -53,7 +53,7 @@ int	ft_handle_heredoc_redirection(t_redirection *redir, int *saved_stdin)
 	return (0);
 }
 
-int	ft_handle_redirection_out_append(t_redirection *redir, int *saved_stdout)
+int	ft_handle_redirection_out_append(t_redir *redir, int *saved_stdout)
 {
 	int	fd;
 
@@ -72,7 +72,7 @@ int	ft_handle_redirection_out_append(t_redirection *redir, int *saved_stdout)
 	return (0);
 }
 
-int	ft_handle_redirection_out(t_redirection *redir, int *saved_stdout)
+int	ft_handle_redirection_out(t_redir *redir, int *saved_stdout)
 {
 	int	fd;
 
@@ -91,7 +91,7 @@ int	ft_handle_redirection_out(t_redirection *redir, int *saved_stdout)
 	return (0);
 }
 
-int	ft_handle_redirection_in(t_redirection *redir, int *saved_stdin)
+int	ft_handle_redirection_in(t_redir *redir, int *saved_stdin)
 {
 	int	fd;
 

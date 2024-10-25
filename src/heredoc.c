@@ -53,8 +53,8 @@ void	ft_process_heredoc_line(int *pipe_fd, char *line, int type)
 
 int	ft_collect_heredocs(t_ast_node *root)
 {
-	t_redirection	*redir;
-	int				heredoc_fd;
+	t_redir	*redir;
+	int		heredoc_fd;
 
 	if (!root)
 		return (0);
@@ -82,8 +82,8 @@ int	ft_collect_heredocs(t_ast_node *root)
 
 void	ft_free_ast(t_ast_node *root)
 {
-	t_redirection	*redir;
-	t_redirection	*tmp;
+	t_redir	*redir;
+	t_redir	*tmp;
 
 	if (!root)
 		return ;
