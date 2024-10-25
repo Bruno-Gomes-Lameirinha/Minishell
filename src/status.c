@@ -14,15 +14,15 @@
 
 void	ft_pid_last_exit_status(pid_t pid)
 {
-	int	status;
+    int status;
 
-	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-		ft_update_status_error(WEXITSTATUS(status));
-	else if (WIFSIGNALED(status))
-		ft_update_status_error(128 + WTERMSIG(status));
-	else
-		ft_update_status_error(1);
+    waitpid(pid, &status, 0);
+    if (WIFEXITED(status))
+        ft_update_status_error(WEXITSTATUS(status));
+    else if (WIFSIGNALED(status))
+        ft_update_status_error(128 + WTERMSIG(status));
+    else
+        ft_update_status_error(1);
 }
 
 int	ft_update_status_error(int exit_status)

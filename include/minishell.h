@@ -118,12 +118,12 @@ int			ft_handle_heredoc(const char *delimiter, int type);
 void		ft_free_ast(t_ast_node *root);
 int			ft_collect_heredocs(t_ast_node *root);
 t_ast_node	*ft_build_ast(t_token **tokens);
-void		ft_creat_cmd_node(t_token *current, t_ast_node **root, \
-t_ast_node **current_node, t_ast_node **last_arg_node);
+void	ft_creat_cmd_node(t_token *current, t_ast_node **root, \
+t_ast_node **current_node, t_ast_node **last_arg_node, t_redirection **pending_redir);
 void		ft_creat_arg_node(t_token *current, t_ast_node **current_node, \
 t_ast_node	**last_arg_node);
 void		ft_creat_pipe_node(t_ast_node **root, t_ast_node **current_node);
-void		ft_creat_redir_node(t_token **current, t_ast_node **current_node);
+void	ft_creat_redir_node(t_token **current, t_ast_node **current_node, t_redirection **pending_redir);
 int			ft_handle_redirection(t_redirection *redir, \
 int *saved_stdin, int *saved_stdout);
 void		ft_restore_stdin_stdout(int saved_stdin, int saved_stdout);
@@ -186,8 +186,8 @@ char		*ft_skip_single_quotes(char *input);
 int			ft_should_skip_dollar(char *input);
 char		*ft_append_text(char *start, char *end, char *expanded_input);
 char		*ft_process_variable(char *input, char **expanded_input);
-void		ft_handle_word_token(t_token *cur, t_ast_node **root, \
-t_ast_node **cur_node, t_ast_node **last_arg);
+void	ft_handle_word_token(t_token *cur, t_ast_node **root, \
+t_ast_node **cur_node, t_ast_node **last_arg, t_redirection **pending_redir);
 void		ft_free_env(char **env);
 void		ft_print_arguments(t_ast_node *current);
 void		ft_write_space(void);
@@ -224,5 +224,6 @@ void		process_input(char *input);
 int			ft_contains_slash(char *command);
 char		*ft_handle_command_without_slash(char *command);
 char		*ft_handle_command_with_slash(char *command);
+int check_unclosed_quotes(const char *input);
 
 #endif

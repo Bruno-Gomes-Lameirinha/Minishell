@@ -59,7 +59,12 @@ int	main(void)
 	{
 		input = get_input();
 		if (*input != '\0')
-			process_input(input);
+		{
+			if (check_unclosed_quotes(input))
+    		    free(input);
+			else
+				process_input(input);
+		}
 	}
 	return (0);
 }
@@ -89,4 +94,27 @@ void	ft_set_head_lst(t_ast_node *root)
 		current->head = head;
 		current = current->left;
 	}
+}
+
+int check_unclosed_quotes(const char *input)
+{
+    int i = 0;
+    int single_quote_open = 0;
+    int double_quote_open = 0;
+
+    while (input[i] != '\0')
+    {
+        if (input[i] == '\'' && double_quote_open == 0)
+            single_quote_open = !single_quote_open;
+        else if (input[i] == '\"' && single_quote_open == 0)
+            double_quote_open = !double_quote_open;
+        i++;
+    }
+
+    if (single_quote_open || double_quote_open)
+    {
+        fprintf(stderr, "Error: This shell does not handle unclosed quotes\n");
+        return 1;
+    }
+    return 0;
 }
