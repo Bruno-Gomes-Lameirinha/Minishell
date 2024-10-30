@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   enviroment.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
+/*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 20:43:45 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/14 19:30:57 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/30 14:42:02 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ char	**ft_copy_env(void)
 	while (__environ[i])
 		i++;
 	copy = malloc(sizeof(char *) * (i + 1));
+	if (copy == NULL)
+		return (NULL);
 	i = 0;
 	while (__environ[i])
 	{
@@ -49,11 +51,8 @@ void	ft_add_env(char *string)
 	while (env[i])
 		i++;
 	new_var = malloc(sizeof(char *) * (i + 2));
-	if (!new_var)
-	{
-		perror("malloc failed");
-		exit(EXIT_FAILURE);
-	}
+	if (new_var == NULL)
+		return ;
 	i = 0;
 	while (env[i])
 	{

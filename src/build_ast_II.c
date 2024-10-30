@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   build_ast.c                                        :+:      :+:    :+:   */
+/*   build_ast_II.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/08/28 17:11:33 by bgomes-l         ###   ########.fr       */
+/*   Updated: 2024/10/30 14:43:21 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,8 @@ void	ft_creat_pipe_node(t_ast_builder *ctx)
 	t_ast_node	*pipe_node;
 
 	pipe_node = malloc(sizeof(t_ast_node));
-	if (!pipe_node)
-	{
-		perror("malloc");
-		exit(EXIT_FAILURE);
-	}
+	if (pipe_node == NULL)
+		return ;
 	pipe_node->type = NODE_PIPE;
 	pipe_node->value = NULL;
 	pipe_node->left = ctx->root;
@@ -60,11 +57,8 @@ t_redir	*create_redirection(t_token **current)
 		return (redir);
 	}
 	redir = malloc(sizeof(t_redir));
-	if (!redir)
-	{
-		perror("malloc");
-		exit(EXIT_FAILURE);
-	}
+	if (redir == NULL)
+		return (NULL);
 	if ((*current)->next)
 	{
 		redir->type_filename = (*current)->next->type_token;
