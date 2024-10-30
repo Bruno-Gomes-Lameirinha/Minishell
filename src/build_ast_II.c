@@ -28,23 +28,25 @@ void	ft_creat_pipe_node(t_ast_builder *ctx)
 	pipe_node->next = NULL;
 	pipe_node->right = NULL;
 	pipe_node->head = NULL;
+	pipe_node->status = 0;
 	pipe_node->redirections = NULL;
 	ctx->root = pipe_node;
 	ctx->current_node = pipe_node;
 }
 
-int		ft_creat_redir_node(t_token **current, t_ast_builder *ctx)
+int	ft_creat_redir_node(t_token **current, t_ast_builder *ctx)
 {
 	t_redir	*redir;
 
 	redir = create_redirection(current);
 	if (redir == NULL)
-		return;
+		return(1);
 	if (ctx->current_node && ctx->current_node->type == NODE_COMMAND)
 		ft_add_redirection_to_command(ctx->current_node, redir);
 	else
 		ft_add_redirection_to_pending(&ctx->pending_redir, redir);
 	*current = (*current)->next;
+	return(0);
 }
 
 t_redir	*create_redirection(t_token **current)
@@ -53,7 +55,7 @@ t_redir	*create_redirection(t_token **current)
 
 	if (!(*current)->next)
 	{
-		ft_putstr_fd("Minishell: syntax error near unexpected token `|'\n", 2);
+		ft_putstr_fd("Minishell: syntax error near unexpected token `newline'\n", 2);
 		redir = NULL;
 		return (redir);
 	}

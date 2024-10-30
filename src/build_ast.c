@@ -31,9 +31,15 @@ t_ast_node	*ft_build_ast(t_token **tokens)
 			ft_creat_pipe_node(&ctx);
 		else if (cur->type_token == R_OUT || cur->type_token == R_OUTAPP || \
 				cur->type_token == R_IN || cur->type_token == R_HDOC)
-			ft_creat_redir_node(&cur, &ctx);
+			if (ft_creat_redir_node(&cur, &ctx) == 1)
+			{
+				ctx.root->status = 1;
+				return (ctx.root);
+			}
 		cur = cur->next;
 	}
+	if (ctx.root)
+		ctx.root->status = 0;
 	return (ctx.root);
 }
 
@@ -81,6 +87,7 @@ t_ast_node	*ft_initialize_cmd_node(t_token *current)
 	cmd_node->head = NULL;
 	cmd_node->right = NULL;
 	cmd_node->next = NULL;
+	cmd_node->head = NULL;
 	cmd_node->redirections = NULL;
 	return (cmd_node);
 }
@@ -98,6 +105,7 @@ void	ft_creat_arg_node(t_token *current, t_ast_builder *ctx)
 	arg_node->type = NODE_ARGUMENT;
 	arg_node->value = ft_strdup(current->token_node);
 	arg_node->left = NULL;
+	arg_node->head = NULL;
 	arg_node->head = NULL;
 	arg_node->right = NULL;
 	arg_node->redirections = NULL;

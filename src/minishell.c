@@ -31,10 +31,18 @@ void	process_input(char *input)
 	ft_tokenize(input, lexeme);
 	free(input);
 	ast = ft_build_ast(lexeme);
-	ft_clean_token_list(lexeme);
-	ft_set_head_lst(ast);
-	ft_collect_heredocs(ast);
-	ft_execute_ast(ast);
+	if (ast && ast->status == 1)
+	{
+		ft_clean_token_list(lexeme);
+		ft_set_head_lst(ast);
+	}
+	else
+	{
+		ft_clean_token_list(lexeme);
+		ft_set_head_lst(ast);
+		ft_collect_heredocs(ast);
+		ft_execute_ast(ast);
+	}
 	if (ast)
 		ft_free_ast(ast->head);
 }

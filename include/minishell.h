@@ -57,6 +57,7 @@ typedef struct s_ast_node {
 	struct s_ast_node	*right;
 	struct s_ast_node	*next;
 	struct s_ast_node	*head;
+	int					status;
 	pid_t				execve_child;
 	t_redir				*redirections;
 }	t_ast_node;
@@ -128,7 +129,7 @@ t_ast_node	*ft_build_ast(t_token **tokens);
 void		ft_creat_cmd_node(t_token *current, t_ast_builder *ctx);
 void		ft_creat_arg_node(t_token *current, t_ast_builder *ctx);
 void		ft_creat_pipe_node(t_ast_builder *ctx);
-void		ft_creat_redir_node(t_token **current, t_ast_builder *ctx);
+int		ft_creat_redir_node(t_token **current, t_ast_builder *ctx);
 int			ft_handle_redirection(t_redir *redir, int *saved_stdin, \
 int *saved_stdout);
 void		ft_restore_stdin_stdout(int saved_stdin, int saved_stdout);
