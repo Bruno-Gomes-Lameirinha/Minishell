@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/30 15:12:19 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/30 15:20:46 by bgomes-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,18 +28,10 @@ void	process_input(char *input)
 	ft_tokenize(input, lexeme);
 	free(input);
 	ast = ft_build_ast(lexeme);
-	if (ast && ast->status == 1)
-	{
-		ft_clean_token_list(lexeme);
-		ft_set_head_lst(ast);
-	}
-	else
-	{
-		ft_clean_token_list(lexeme);
-		ft_set_head_lst(ast);
-		ft_collect_heredocs(ast);
-		ft_execute_ast(ast);
-	}
+	ft_clean_token_list(lexeme);
+	ft_set_head_lst(ast);
+	ft_collect_heredocs(ast);
+	ft_execute_ast(ast);
 	if (ast)
 		ft_free_ast(ast->head);
 }

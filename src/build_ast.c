@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_ast.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/30 14:42:54 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/30 15:21:53 by bgomes-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,9 @@ t_ast_node	*ft_build_ast(t_token **tokens)
 			ft_creat_pipe_node(&ctx);
 		else if (cur->type_token == R_OUT || cur->type_token == R_OUTAPP || \
 				cur->type_token == R_IN || cur->type_token == R_HDOC)
-			if (ft_creat_redir_node(&cur, &ctx) == 1)
-			{
-				ctx.root->status = 1;
-				return (ctx.root);
-			}
+			ft_creat_redir_node(&cur, &ctx);
 		cur = cur->next;
 	}
-	if (ctx.root)
-		ctx.root->status = 0;
 	return (ctx.root);
 }
 
