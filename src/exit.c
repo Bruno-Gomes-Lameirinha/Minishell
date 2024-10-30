@@ -72,7 +72,11 @@ int	ft_exit_command(t_ast_node *command)
 			exit(SYNTAX_ERROR);
 		}
 		if (command->right->right)
+		{
 			ft_handle_exit_argument(command);
+			ft_free_ast(command);
+			return(1);
+		}
 	}
 	ft_free_ast(command);
 	ft_status(status);
@@ -87,6 +91,6 @@ void	ft_handle_exit_argument(t_ast_node *command)
 	{
 		write(STDERR_FILENO, "exit: too many arguments\n", 25);
 		ft_update_status_error(1);
-		exit(FAILURE);
+		//exit(FAILURE);
 	}
 }

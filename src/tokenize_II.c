@@ -54,6 +54,7 @@ void	ft_handle_pipe_operator(char ***input, char ***i_token, int **type)
 	{
 		*(**i_token)++ = *(**input)++;
 		**type = OR;
+		//dar mensagem de erro e liberar a lista de tokens e retornar a readline;
 	}
 	else
 		**type = PIPE;
