@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 19:35:42 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/30 15:38:09 by bgomes-l         ###   ########.fr       */
+/*   Updated: 2024/10/30 16:26:33 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,11 @@ int	ft_exit_command(t_ast_node *command)
 		if (ft_validate_argument(command->right->value) || \
 				*(command->right->value) == '\0')
 		{
+			//separar bloco em outra função
 			ft_printf(STDERR_FILENO, "exit:%s: numeric argument required\n", \
 			command->right->value);
 			ft_update_status_error(1);
+			ft_cleanup_and_exit(command, status);
 			exit(SYNTAX_ERROR);
 		}
 		if (command->right->right)
