@@ -6,7 +6,7 @@
 /*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/08/28 17:11:33 by bgomes-l         ###   ########.fr       */
+/*   Updated: 2024/10/30 13:53:10 by bgomes-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,11 @@ void	ft_execute_command_ast(t_ast_node *command_node)
 	if (command_node->execve_child == -1)
 		ft_handle_fork_error(args);
 	if (command_node->execve_child == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		ft_execute_child_process(command_node, executable, args);
+	}
 	else
 		ft_pid_last_exit_status(command_node->execve_child);
 	ft_free_args(args);

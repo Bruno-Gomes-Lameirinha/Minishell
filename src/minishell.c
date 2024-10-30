@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
+/*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/09 23:27:20 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/30 13:56:47 by bgomes-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,16 +62,21 @@ int	main(void)
 {
 	char	*input;
 
-	ft_setup_signal_handlers();
 	while (1)
 	{
+		ft_configure_signals_for_readline();
 		input = get_input();
+		if (!input)
+			break;
 		if (*input != '\0')
 		{
 			if (ft_check_unclosed_quotes(input))
 				free(input);
 			else
+			{
+				ft_configure_signals_for_execution();
 				process_input(input);
+			}
 		}
 	}
 	return (0);
