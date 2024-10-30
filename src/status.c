@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
+/*   status.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
+/*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/09 23:27:20 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/30 15:37:59 by bgomes-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,13 @@ int	ft_update_status_error(int exit_status)
 	if (exit_status != -1)
 		status = exit_status;
 	return (status);
+}
+
+void	ft_cleanup_and_exit(t_ast_node *command, long status)
+{
+	ft_free_ast(command);
+	ft_status(status);
+	ft_update_status_error(0);
+	ft_free_env(*ft_get_env());
+	exit(*ft_get_exit_status_env());
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins.c                                         :+:      :+:    :+:   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
+/*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 19:05:53 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/08 18:16:44 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/30 15:43:31 by bgomes-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	ft_handle_heredoc(const char *delimiter, int type)
 		line = readline("> ");
 		if (!line)
 		{
-			fprintf(stderr, "bash: aviso: here-document delimitado pelo \
+			ft_printf(2, "bash: aviso: here-document delimitado pelo \
 			fim do arquivo (desejava `%s')\n", delimiter);
 			break ;
 		}
