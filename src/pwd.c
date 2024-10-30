@@ -29,7 +29,7 @@ void	ft_pwd_command(t_ast_node *cmd_tokens)
 		}
 		else
 		{
-			printf("%s\n", path);
+			ft_printf(1, "%s\n", path);
 			ft_update_status_error(0);
 			free(path);
 		}

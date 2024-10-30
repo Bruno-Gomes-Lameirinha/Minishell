@@ -59,7 +59,7 @@ int	ft_exit_command(t_ast_node *command)
 
 	status = 0;
 	if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO))
-		printf("exit\n");
+		ft_printf(1, "exit\n");
 	if (command->right)
 	{
 		status = ft_atol(command->right->value);

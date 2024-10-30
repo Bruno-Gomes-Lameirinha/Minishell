@@ -22,13 +22,13 @@ void	ft_format_and_print(const char *env_var)
 	copy = ft_strdup(env_var);
 	equal = ft_strchr(copy, '=');
 	if (!equal)
-		printf("declare -x %s\n", copy);
+		ft_printf(1, "declare -x %s\n", copy);
 	else
 	{
 		*equal = '\0';
 		name = copy;
 		value = equal + 1;
-		printf("declare -x %s=\"%s\"\n", name, value);
+		ft_printf(1, "declare -x %s=\"%s\"\n", name, value);
 	}
 	free(copy);
 }
