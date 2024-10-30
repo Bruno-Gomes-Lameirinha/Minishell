@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_errors.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 14:43:15 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/30 15:09:12 by bgomes-l         ###   ########.fr       */
+/*   Updated: 2024/10/30 15:23:35 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ bool	is_metachar(char c)
 	return (c == '|' || c == '&' || c == '>' || c == '<');
 }
 
-int	ft_skip_quotes(const char *input, int i, int *single_quote_open, int *double_quote_open)
+int	ft_skip_quotes(const char *input, int i, int *single_quote_open, \
+int *double_quote_open)
 {
 	if (input[i] == '\'' && *double_quote_open == 0)
 		*single_quote_open = !(*single_quote_open);
@@ -28,9 +29,9 @@ int	ft_skip_quotes(const char *input, int i, int *single_quote_open, int *double
 
 int	ft_check_redirection(const char *input, int i)
 {
-	int	j = i + 1;
+	int	j;
 
-	// Pula '>>' ou '<<'
+	j = i + 1;
 	if (input[j] == input[i])
 		j++;
 	while (input[j] == ' ')
@@ -45,8 +46,9 @@ int	ft_check_redirection(const char *input, int i)
 
 int	ft_check_consecutive_pipes(const char *input, int i)
 {
-	int	j = i + 1;
+	int	j;
 
+	j = i + 1;
 	while (input[j] == ' ')
 		j++;
 	if (input[j] == '|')
@@ -59,18 +61,18 @@ int	ft_check_consecutive_pipes(const char *input, int i)
 
 int	ft_check_consecutive_metachars(const char *input, int i)
 {
-	int	j = i + 1;
+	int	j;
 
+	j = i + 1;
 	while (input[j] == ' ')
 		j++;
 	if (is_metachar(input[j]) && !(input[i] == '&' && input[j] == '&'))
 	{
-		// Verifica se `>>` ou `<<` são operadores válidos
-		if ((input[i] == '>' && input[j] == '>') || (input[i] == '<' && input[j] == '<'))
-			return (0); // Operador de redirecionamento válido
-		// Permite '|' seguido de '>' ou '<'
+		if ((input[i] == '>' && input[j] == '>') || (input[i] == '<' \
+		&& input[j] == '<'))
+			return (0);
 		if (input[i] == '|' && (input[j] == '>' || input[j] == '<'))
-			return (0); // Sequência válida
+			return (0);
 		fprintf(stderr, "Error: syntax error near unexpected token `%c`\n", input[j]);
 		return (1);
 	}

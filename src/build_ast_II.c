@@ -6,7 +6,7 @@
 /*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/30 14:43:21 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/30 15:24:49 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,13 @@ int	ft_creat_redir_node(t_token **current, t_ast_builder *ctx)
 
 	redir = create_redirection(current);
 	if (redir == NULL)
-		return(1);
+		return (1);
 	if (ctx->current_node && ctx->current_node->type == NODE_COMMAND)
 		ft_add_redirection_to_command(ctx->current_node, redir);
 	else
 		ft_add_redirection_to_pending(&ctx->pending_redir, redir);
 	*current = (*current)->next;
-	return(0);
+	return (0);
 }
 
 t_redir	*create_redirection(t_token **current)

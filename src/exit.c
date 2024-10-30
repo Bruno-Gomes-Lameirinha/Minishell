@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
+/*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 19:35:42 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/29 22:43:29 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/30 15:25:43 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,5 @@ void	ft_handle_exit_argument(t_ast_node *command)
 	{
 		write(STDERR_FILENO, "exit: too many arguments\n", 25);
 		ft_update_status_error(1);
-		//exit(FAILURE);
 	}
 }

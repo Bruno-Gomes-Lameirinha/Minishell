@@ -6,7 +6,7 @@
 /*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/30 15:12:19 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/30 15:22:33 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,11 @@ int	main(void)
 		ft_configure_signals_for_readline();
 		input = get_input();
 		if (!input)
-			break;
+			break ;
 		if (*input != '\0')
 		{
-			if (ft_check_unclosed_quotes(input) || ft_check_syntax_errors(input))
+			if (ft_check_unclosed_quotes(input) || \
+			ft_check_syntax_errors(input))
 				free(input);
 			else
 			{
