@@ -33,11 +33,13 @@ void	ft_creat_pipe_node(t_ast_builder *ctx)
 	ctx->current_node = pipe_node;
 }
 
-void	ft_creat_redir_node(t_token **current, t_ast_builder *ctx)
+int		ft_creat_redir_node(t_token **current, t_ast_builder *ctx)
 {
 	t_redir	*redir;
 
 	redir = create_redirection(current);
+	if (redir == NULL)
+		return;
 	if (ctx->current_node && ctx->current_node->type == NODE_COMMAND)
 		ft_add_redirection_to_command(ctx->current_node, redir);
 	else
@@ -49,17 +51,26 @@ t_redir	*create_redirection(t_token **current)
 {
 	t_redir	*redir;
 
+	if (!(*current)->next)
+	{
+		ft_putstr_fd("Minishell: syntax error near unexpected token `|'\n", 2);
+		redir = NULL;
+		return (redir);
+	}
 	redir = malloc(sizeof(t_redir));
 	if (!redir)
 	{
 		perror("malloc");
 		exit(EXIT_FAILURE);
 	}
-	redir->type_filename = (*current)->next->type_token;
-	redir->type_token = (*current)->type_token;
-	redir->filename = ft_strdup((*current)->next->token_node);
-	redir->heredoc_fd = -1;
-	redir->next = NULL;
+	if ((*current)->next)
+	{
+		redir->type_filename = (*current)->next->type_token;
+		redir->type_token = (*current)->type_token;
+		redir->filename = ft_strdup((*current)->next->token_node);
+		redir->heredoc_fd = -1;
+		redir->next = NULL;
+	}
 	return (redir);
 }
 

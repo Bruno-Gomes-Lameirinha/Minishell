@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 19:35:42 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/15 18:05:01 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/29 22:43:29 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,8 @@ int	ft_exit_command(t_ast_node *command)
 		if (command->right->right)
 		{
 			ft_handle_exit_argument(command);
-			ft_free_ast(command);
-			return(1);
+			status = FAILURE;
+			return(FAILURE);
 		}
 	}
 	ft_free_ast(command);
