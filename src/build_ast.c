@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_ast.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/08/28 17:11:33 by bgomes-l         ###   ########.fr       */
+/*   Updated: 2024/10/30 14:42:54 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,11 +76,8 @@ t_ast_node	*ft_initialize_cmd_node(t_token *current)
 	t_ast_node	*cmd_node;
 
 	cmd_node = malloc(sizeof(t_ast_node));
-	if (!cmd_node)
-	{
-		perror("malloc");
-		exit(EXIT_FAILURE);
-	}
+	if (cmd_node == NULL)
+		return (NULL);
 	cmd_node->type = NODE_COMMAND;
 	cmd_node->value = ft_strdup(current->token_node);
 	cmd_node->left = NULL;
@@ -97,11 +94,8 @@ void	ft_creat_arg_node(t_token *current, t_ast_builder *ctx)
 	t_ast_node	*arg_node;
 
 	arg_node = malloc(sizeof(t_ast_node));
-	if (!arg_node)
-	{
-		perror("malloc");
-		exit(EXIT_FAILURE);
-	}
+	if (arg_node == NULL)
+		return ;
 	arg_node->type = NODE_ARGUMENT;
 	arg_node->value = ft_strdup(current->token_node);
 	arg_node->left = NULL;

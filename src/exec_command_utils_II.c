@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_command.c                                     :+:      :+:    :+:   */
+/*   exec_command_utils_II.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/08/28 17:11:33 by bgomes-l         ###   ########.fr       */
+/*   Updated: 2024/10/30 14:36:19 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,8 @@ char	**ft_allocate_args(t_ast_node *command_node)
 		current = current->right;
 	}
 	args = malloc(sizeof(char *) * (n_args + 1));
-	if (!args)
-	{
-		perror("malloc");
-		exit(EXIT_FAILURE);
-	}
+	if (args == NULL)
+		return (NULL);
 	return (args);
 }
 

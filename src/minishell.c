@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/30 14:43:04 by bgomes-l         ###   ########.fr       */
+/*   Updated: 2024/10/30 15:12:19 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,8 @@ void	process_input(char *input)
 	char		*x;
 
 	lexeme = (t_token **)malloc(sizeof(t_token *));
-	if (!lexeme)
-	{
-		perror("Failed to allocate memory for lexeme");
-		exit(EXIT_FAILURE);
-	}
+	if (lexeme == NULL)
+		return ;
 	*lexeme = NULL;
 	x = ft_strchr(input, '$');
 	if (x != NULL)

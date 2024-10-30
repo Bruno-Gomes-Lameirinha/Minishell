@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: livieira < livieira@student.42sp.org.br    +#+  +:+       +#+        */
+/*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 12:02:24 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/11 15:12:56 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/30 14:37:15 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ char	**ft_convert_tokens_to_args(t_ast_node *command)
 	current = command;
 	num_tokens = ft_count_tokens(command);
 	args = malloc(sizeof(char *) * (num_tokens + 1));
-	if (!args)
+	if (args == NULL)
 		return (NULL);
 	while (current)
 	{
