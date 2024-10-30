@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_command.c                                     :+:      :+:    :+:   */
+/*   tokenize_II.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/08/28 17:11:33 by bgomes-l         ###   ########.fr       */
+/*   Updated: 2024/10/30 14:16:37 by bgomes-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ void	ft_handle_pipe_operator(char ***input, char ***i_token, int **type)
 	{
 		*(**i_token)++ = *(**input)++;
 		**type = OR;
-		//dar mensagem de erro e liberar a lista de tokens e retornar a readline;
 	}
 	else
 		**type = PIPE;

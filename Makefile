@@ -19,7 +19,7 @@ SRC_MINISHELL_MAIN = $(SRC_PATH)/minishell.c  $(SRC_PATH)/tokenize.c $(SRC_PATH)
 					$(SRC_PATH)/build_ast_II.c $(SRC_PATH)/cd_command.c $(SRC_PATH)/echo.c \
 					$(SRC_PATH)/exec_command_utils_II.c  $(SRC_PATH)/export_utils.c $(SRC_PATH)/tokenize_utils.c \
 					$(SRC_PATH)/tokenize_II.c $(SRC_PATH)/tokenize_III.c $(SRC_PATH)/enviroment_utils_II.c \
-					$(SRC_PATH)/status.c $(SRC_PATH)/redirects_utils.c
+					$(SRC_PATH)/status.c $(SRC_PATH)/redirects_utils.c $(SRC_PATH)/syntax_errors.c
 
 SRC_MINISHELL_BONUS = $(BONUS_PATH)/minishell_bonus.c 
 

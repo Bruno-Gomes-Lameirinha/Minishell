@@ -6,7 +6,7 @@
 /*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 19:00:47 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/30 13:58:52 by bgomes-l         ###   ########.fr       */
+/*   Updated: 2024/10/30 15:06:08 by bgomes-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,5 +234,7 @@ void		ft_update_status_from_children(int status[2]);
 t_ast_node	*ft_initialize_cmd_node(t_token *current);
 void	ft_configure_signals_for_execution(void);
 void	ft_configure_signals_for_readline(void);
+int	ft_check_syntax_errors(const char *input);
+int	ft_check_consecutive_metachars(const char *input, int i);
 
 #endif

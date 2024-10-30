@@ -6,7 +6,7 @@
 /*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/30 13:56:47 by bgomes-l         ###   ########.fr       */
+/*   Updated: 2024/10/30 14:43:04 by bgomes-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int	main(void)
 			break;
 		if (*input != '\0')
 		{
-			if (ft_check_unclosed_quotes(input))
+			if (ft_check_unclosed_quotes(input) || ft_check_syntax_errors(input))
 				free(input);
 			else
 			{
