@@ -6,7 +6,7 @@
 /*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 14:43:15 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/30 15:23:35 by livieira         ###   ########.fr       */
+/*   Updated: 2024/10/30 15:30:19 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,8 @@ int	ft_check_consecutive_metachars(const char *input, int i)
 			return (0);
 		if (input[i] == '|' && (input[j] == '>' || input[j] == '<'))
 			return (0);
-		fprintf(stderr, "Error: syntax error near unexpected token `%c`\n", input[j]);
+		ft_printf(stderr, "Error: syntax error near unexpected token \
+		`%c`\n", input[j]);
 		return (1);
 	}
 	return (0);

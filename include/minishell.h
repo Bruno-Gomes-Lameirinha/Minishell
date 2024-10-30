@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 19:00:47 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/30 15:23:20 by bgomes-l         ###   ########.fr       */
+/*   Updated: 2024/10/30 15:31:13 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ t_ast_node	*ft_build_ast(t_token **tokens);
 void		ft_creat_cmd_node(t_token *current, t_ast_builder *ctx);
 void		ft_creat_arg_node(t_token *current, t_ast_builder *ctx);
 void		ft_creat_pipe_node(t_ast_builder *ctx);
-void			ft_creat_redir_node(t_token **current, t_ast_builder *ctx);
+void		ft_creat_redir_node(t_token **current, t_ast_builder *ctx);
 int			ft_handle_redirection(t_redir *redir, int *saved_stdin, \
 int *saved_stdout);
 void		ft_restore_stdin_stdout(int saved_stdin, int saved_stdout);
