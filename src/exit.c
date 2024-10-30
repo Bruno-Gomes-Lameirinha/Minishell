@@ -6,7 +6,7 @@
 /*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 19:35:42 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/30 17:13:45 by bgomes-l         ###   ########.fr       */
+/*   Updated: 2024/10/30 17:39:13 by bgomes-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,9 @@ int	ft_validate_argument(char *arg)
 	return (SUCCESS);
 }
 
-int ft_exit_command(t_ast_node *command)
+int	ft_exit_command(t_ast_node *command)
 {
-	long status;
+	long	status;
 
 	status = 0;
 	if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO))
@@ -63,9 +63,11 @@ int ft_exit_command(t_ast_node *command)
 	if (command->right)
 	{
 		status = ft_atol(command->right->value);
-		if (ft_validate_argument(command->right->value) || *(command->right->value) == '\0')
+		if (ft_validate_argument(command->right->value) || \
+		*(command->right->value) == '\0')
 		{
-			ft_printf(STDERR_FILENO, "exit:%s: numeric argument required\n", command->right->value);
+			ft_printf(STDERR_FILENO, \
+			"exit:%s: numeric argument required\n", command->right->value);
 			ft_cleanup_and_exit(command, status, 1);
 			exit(SYNTAX_ERROR);
 		}

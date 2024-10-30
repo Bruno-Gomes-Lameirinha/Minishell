@@ -6,7 +6,7 @@
 /*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/07 19:00:47 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/30 17:12:12 by bgomes-l         ###   ########.fr       */
+/*   Updated: 2024/10/30 17:41:14 by bgomes-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,7 +236,7 @@ void		ft_configure_signals_for_execution(void);
 void		ft_configure_signals_for_readline(void);
 int			ft_check_syntax_errors(const char *input);
 int			ft_check_consecutive_metachars(const char *input, int i);
-void 		ft_cleanup_and_exit(t_ast_node *command, long status, \
+void		ft_cleanup_and_exit(t_ast_node *command, long status, \
 int status_error);
 int			ft_perform_syntax_checks(const char *input, int i);
 int			ft_check_consecutive_pipes(const char *input, int i);

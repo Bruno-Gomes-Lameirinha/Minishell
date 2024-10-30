@@ -6,7 +6,7 @@
 /*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 18:33:00 by bgomes-l          #+#    #+#             */
-/*   Updated: 2024/10/30 17:13:30 by bgomes-l         ###   ########.fr       */
+/*   Updated: 2024/10/30 17:40:24 by bgomes-l         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	ft_update_status_error(int exit_status)
 	return (status);
 }
 
-void ft_cleanup_and_exit(t_ast_node *command, long status, int status_error)
+void	ft_cleanup_and_exit(t_ast_node *command, long status, int status_error)
 {
 	ft_free_ast(command);
 	ft_status(status);
