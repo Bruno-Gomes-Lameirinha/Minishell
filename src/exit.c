@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bgomes-l <bgomes-l@student.42.fr>          +#+  +:+       +#+        */
+/*   By: livieira <livieira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 19:35:42 by livieira          #+#    #+#             */
-/*   Updated: 2024/10/30 17:39:13 by bgomes-l         ###   ########.fr       */
+/*   Updated: 2024/10/30 17:58:57 by livieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int	ft_exit_command(t_ast_node *command)
 		}
 	}
 	ft_cleanup_and_exit(command, status, *ft_get_exit_status_env());
-	return (SUCCESS);
+	exit(SUCCESS);
 }
 
 void	ft_handle_exit_argument(t_ast_node *command)
